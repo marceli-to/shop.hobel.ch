@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+* {
+  font-variant-ligatures: none;
+}
+
+main {
+  @apply flex-1;
+}
