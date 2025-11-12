@@ -6,7 +6,7 @@
   <h1>Rechnung</h1>
 </header>
 <footer class="page-footer">
-  Fiefelstein/Flüeler, Binzstrasse 39, 8045 Zürich, anliegen@fiefelstein.ch
+  Hobel AG, Aargauerstrasse 251, 8048 Zürich, info@hobel.ch
 </footer>
 <div class="page">
   <div class="page-address">
@@ -163,7 +163,7 @@
       
     </table>
     <p>
-      Herzlichen Dank für Ihre Bestellung und freundliche Grüsse<br>Fiefelstein/Flüeler
+      Herzlichen Dank für Ihre Bestellung und freundliche Grüsse<br>Hobel AG
     </p>
   </div>
 </div>

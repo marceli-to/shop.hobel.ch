@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-* {
-  font-variant-ligatures: none;
+[x-cloak] {
+  display: none;
 }
 
 main {

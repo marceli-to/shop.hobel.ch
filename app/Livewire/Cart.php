@@ -5,7 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Actions\Cart\GetCart;
-use App\Actions\Cart\StoreCart;
+use App\Actions\Cart\UpdateCart;
 use App\Actions\Cart\DestroyCart;
 
 class Cart extends Component
@@ -73,7 +73,8 @@ class Cart extends Component
 	private function updateTotal(): void
 	{
 		$this->cart['total'] = collect($this->cart['items'])->sum(fn($item) => $item['price'] * $item['quantity']);
-		(new StoreCart())->execute($this->cart);
+		$this->cart['quantity'] = collect($this->cart['items'])->sum('quantity');
+		(new UpdateCart())->execute($this->cart);
 	}
 
 	public function render()

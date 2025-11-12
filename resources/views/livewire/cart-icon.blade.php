@@ -1,11 +1,15 @@
-<div>
-  <a 
-    href="javascript:;" 
-    class="fixed top-20 right-16 inline-flex gap-x-10 z-100"
-    x-on:click="$dispatch('toggle-cart')">
-    @if ($cartItemCount > 0)
-      <x-dynamic-component :component="'icons.quantities.' . $cartItemCount" class="w-20 h-21" />
-      <x-icons.cart />
-    @endif
-  </a>
+<div class="relative">
+	<button
+		wire:click="toggleMiniCart"
+		class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+		aria-label="Warenkorb öffnen"
+	>
+		<x-icons.cart class="w-8 h-8" />
+
+		@if($cartItemCount > 0)
+			<span class="absolute -top-1 -right-1 bg-black text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+				{{ $cartItemCount }}
+			</span>
+		@endif
+	</button>
 </div>

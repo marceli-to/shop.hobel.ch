@@ -19,7 +19,12 @@ class CartIcon extends Component
 	public function updateCartItemCount(): void
 	{
 		$cart = (new GetCart())->execute();
-		$this->cartItemCount = $cart['quantity'] ?? 0;
+		$this->cartItemCount = count($cart['items'] ?? []);
+	}
+
+	public function toggleMiniCart(): void
+	{
+		$this->dispatch('toggle-mini-cart');
 	}
 
 	public function render()

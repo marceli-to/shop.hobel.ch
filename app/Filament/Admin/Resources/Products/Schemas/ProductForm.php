@@ -32,7 +32,11 @@ class ProductForm
 					->numeric()
 					->default(0),
 				FileUpload::make('image')
-					->image(),
+					->disk('public')
+					->directory('products')
+					->visibility('public')
+					->image()
+					->imagePreviewHeight('250'),
 				DateTimePicker::make('published_at'),
 			]);
 	}

@@ -1,26 +1,64 @@
-<div class="w-full mt-32" x-data="{ quantity: {{ $itemsInCart }} }">
-  <div class="flex items-center justify-between border-y border-black min-h-32">
-    <button 
-      x-on:click="quantity > 1 ? quantity-- : null" 
-      class="w-full min-h-30 text-center flex items-center justify-center leading-none">
-      <x-icons.minus />
-    </button>
-    <input 
-      x-model="quantity" 
-      type="number" 
-      class="w-48 min-h-30 p-0 text-sm text-center border-none appearance-none focus:outline-none focus:border-none outline-none !ring-0 !shadow-none" 
-      min="1">
-    <button 
-      x-on:click="quantity++" 
-      class="w-full min-h-30 text-center flex items-center justify-center leading-none">
-      <x-icons.plus />
-    </button>
-  </div>
-  <button 
-    wire:click="addToCart(quantity)" 
-    wire:loading.class="pointer-events-none !bg-flame !border-flame !text-white"
-    class="min-h-32 mt-32 font-bold leading-none w-full bg-white border border-black hover:border-flame hover:bg-flame hover:text-white transition-all">
-    <span wire:loading.class="hidden">Erwerben</span>
-    <span wire:loading class="hidden">Wird erworben...</span>
-  </button>
+<div>
+	@if($inCart)
+		<!-- In Cart: Show +/- controls -->
+		<div class="flex items-center gap-2">
+			<button
+				wire:click="decrement"
+				class="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors {{ $quantity <= 1 ? 'opacity-50 cursor-not-allowed' : '' }}"
+				{{ $quantity <= 1 ? 'disabled' : '' }}
+			>
+				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+				</svg>
+			</button>
+
+			<span class="w-12 text-center font-semibold">{{ $quantity }}</span>
+
+			<button
+				wire:click="increment"
+				class="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors {{ $maxStock && $quantity >= $maxStock ? 'opacity-50 cursor-not-allowed' : '' }}"
+				{{ $maxStock && $quantity >= $maxStock ? 'disabled' : '' }}
+			>
+				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+				</svg>
+			</button>
+		</div>
+	@else
+		<!-- Not in Cart: Show quantity selector + Add button -->
+		<div class="space-y-3">
+			<div class="flex items-center gap-2">
+				<button
+					wire:click="decrement"
+					class="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors {{ $quantity <= 1 ? 'opacity-50 cursor-not-allowed' : '' }}"
+					{{ $quantity <= 1 ? 'disabled' : '' }}
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+					</svg>
+				</button>
+
+				<span class="w-12 text-center font-semibold">{{ $quantity }}</span>
+
+				<button
+					wire:click="increment"
+					class="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors {{ $maxStock && $quantity >= $maxStock ? 'opacity-50 cursor-not-allowed' : '' }}"
+					{{ $maxStock && $quantity >= $maxStock ? 'disabled' : '' }}
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+					</svg>
+				</button>
+			</div>
+
+			<button
+				wire:click="addToCart"
+				wire:loading.attr="disabled"
+				class="w-full bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+			>
+				<span wire:loading.remove wire:target="addToCart">In den Warenkorb</span>
+				<span wire:loading wire:target="addToCart">Wird hinzugefügt...</span>
+			</button>
+		</div>
+	@endif
 </div>

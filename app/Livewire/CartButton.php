@@ -3,25 +3,61 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use App\Models\Product;
 use App\Actions\Cart\GetCart;
-use App\Actions\Cart\StoreCart;
+use App\Actions\Cart\UpdateCart;
 
 class CartButton extends Component
 {
 	public string $productUuid;
 	public int $quantity = 1;
-	public array $cart;
+	public ?int $maxStock = null;
+	public bool $inCart = false;
 
 	public function mount(string $productUuid): void
 	{
 		$this->productUuid = $productUuid;
-		$this->cart = (new GetCart())->execute();
+		$this->loadProduct();
+		$this->syncWithCart();
+	}
 
-		// Check if product is already in cart
-		$product = collect($this->cart['items'])->firstWhere('uuid', $this->productUuid);
+	#[On('cart-updated')]
+	public function syncWithCart(): void
+	{
+		$cart = (new GetCart())->execute();
+		$item = collect($cart['items'])->firstWhere('uuid', $this->productUuid);
+
+		if ($item) {
+			$this->quantity = $item['quantity'];
+			$this->inCart = true;
+		} else {
+			$this->quantity = 1;
+			$this->inCart = false;
+		}
+	}
+
+	private function loadProduct(): void
+	{
+		$product = Product::where('uuid', $this->productUuid)->first();
 		if ($product) {
-			$this->quantity = $product['quantity'];
+			$this->maxStock = $product->stock;
+		}
+	}
+
+	public function increment(): void
+	{
+		if ($this->maxStock && $this->quantity < $this->maxStock) {
+			$this->quantity++;
+			$this->updateCart();
+		}
+	}
+
+	public function decrement(): void
+	{
+		if ($this->quantity > 1) {
+			$this->quantity--;
+			$this->updateCart();
 		}
 	}
 
@@ -29,17 +65,17 @@ class CartButton extends Component
 	{
 		$product = Product::where('uuid', $this->productUuid)->first();
 
-		if (!$product) {
+		if (!$product || $product->stock < 1) {
 			return;
 		}
 
-		$this->cart = (new GetCart())->execute();
-		$cartItems = collect($this->cart['items']);
+		$cart = (new GetCart())->execute();
+		$cartItems = collect($cart['items']);
 		$existingItem = $cartItems->firstWhere('uuid', $product->uuid);
 
 		if ($existingItem) {
 			// Update quantity
-			$this->cart['items'] = $cartItems->map(function ($item) use ($product) {
+			$cart['items'] = $cartItems->map(function ($item) use ($product) {
 				if ($item['uuid'] === $product->uuid) {
 					$item['quantity'] = min($this->quantity, $product->stock);
 				}
@@ -47,7 +83,7 @@ class CartButton extends Component
 			})->toArray();
 		} else {
 			// Add new item
-			$this->cart['items'][] = [
+			$cart['items'][] = [
 				'uuid' => $product->uuid,
 				'name' => $product->name,
 				'description' => $product->description,
@@ -55,19 +91,44 @@ class CartButton extends Component
 				'quantity' => min($this->quantity, $product->stock),
 				'image' => $product->image,
 			];
-			$this->cart['quantity']++;
 		}
 
-		$this->updateCartTotal();
+		$this->updateTotal($cart);
+		$this->dispatch('open-mini-cart');
 	}
 
-	public function updateCartTotal(): void
+	private function updateCart(): void
 	{
-		$this->cart['total'] = collect($this->cart['items'])->sum(function ($item) {
+		if (!$this->inCart) {
+			return;
+		}
+
+		$product = Product::where('uuid', $this->productUuid)->first();
+
+		if (!$product) {
+			return;
+		}
+
+		$cart = (new GetCart())->execute();
+		$cart['items'] = collect($cart['items'])->map(function ($item) use ($product) {
+			if ($item['uuid'] === $product->uuid) {
+				$item['quantity'] = min($this->quantity, $product->stock);
+			}
+			return $item;
+		})->toArray();
+
+		$this->updateTotal($cart);
+	}
+
+	private function updateTotal(array $cart): void
+	{
+		$cart['total'] = collect($cart['items'])->sum(function ($item) {
 			return $item['price'] * $item['quantity'];
 		});
 
-		(new StoreCart())->execute($this->cart);
+		$cart['quantity'] = collect($cart['items'])->sum('quantity');
+
+		(new UpdateCart())->execute($cart);
 		$this->dispatch('cart-updated');
 	}
 
