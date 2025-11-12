@@ -64,7 +64,7 @@ class Order extends Model
 	 */
 	public function getOrderNumberAttribute(): string
 	{
-		return 'FS-' . str_pad($this->id, 6, '0', STR_PAD_LEFT);
+		return 'HO-' . str_pad($this->id, 6, '0', STR_PAD_LEFT);
 	}
 
 	/**

@@ -2,7 +2,7 @@
 
 namespace App\Actions\Cart;
 
-class StoreCart
+class Store
 {
 	public function execute(array $cart): void
 	{

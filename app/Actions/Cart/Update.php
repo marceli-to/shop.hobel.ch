@@ -2,15 +2,15 @@
 
 namespace App\Actions\Cart;
 
-class UpdateCart
+class Update
 {
 	public function execute(array $updates): array
 	{
-		$cart = (new GetCart())->execute();
+		$cart = (new Get())->execute();
 
 		$cart = array_merge($cart, $updates);
 
-		(new StoreCart())->execute($cart);
+		(new Store())->execute($cart);
 
 		return $cart;
 	}

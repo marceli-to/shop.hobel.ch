@@ -2,7 +2,7 @@
 
 namespace App\Actions\Cart;
 
-class DestroyCart
+class Destroy
 {
 	public function execute(): void
 	{

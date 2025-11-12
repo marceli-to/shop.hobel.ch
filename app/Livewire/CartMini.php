@@ -4,8 +4,8 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
-use App\Actions\Cart\GetCart;
-use App\Actions\Cart\UpdateCart;
+use App\Actions\Cart\Get as GetCartAction;
+use App\Actions\Cart\Update as UpdateCartAction;
 use App\Models\Product;
 
 class CartMini extends Component
@@ -15,7 +15,7 @@ class CartMini extends Component
 
 	public function mount(): void
 	{
-		$this->cart = (new GetCart())->execute();
+		$this->cart = (new GetCartAction())->execute();
 	}
 
 	#[On('toggle-mini-cart')]
@@ -27,7 +27,7 @@ class CartMini extends Component
 	#[On('cart-updated')]
 	public function updateCart(): void
 	{
-		$this->cart = (new GetCart())->execute();
+		$this->cart = (new GetCartAction())->execute();
 	}
 
 	#[On('open-mini-cart')]
@@ -43,7 +43,7 @@ class CartMini extends Component
 
 	public function removeItem(string $productUuid): void
 	{
-		$this->cart = (new GetCart())->execute();
+		$this->cart = (new GetCartAction())->execute();
 		$items = collect($this->cart['items'])->filter(function ($item) use ($productUuid) {
 			return $item['uuid'] !== $productUuid;
 		})->values()->toArray();
@@ -59,7 +59,7 @@ class CartMini extends Component
 			return $item['price'] * $item['quantity'];
 		});
 
-		(new UpdateCart())->execute($this->cart);
+		(new UpdateCartAction())->execute($this->cart);
 		$this->dispatch('cart-updated');
 	}
 

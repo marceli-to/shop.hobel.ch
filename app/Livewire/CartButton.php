@@ -5,8 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Models\Product;
-use App\Actions\Cart\GetCart;
-use App\Actions\Cart\UpdateCart;
+use App\Actions\Cart\Get as GetCartAction;
+use App\Actions\Cart\Update as UpdateCartAction;
 
 class CartButton extends Component
 {
@@ -25,7 +25,7 @@ class CartButton extends Component
 	#[On('cart-updated')]
 	public function syncWithCart(): void
 	{
-		$cart = (new GetCart())->execute();
+		$cart = (new GetCartAction())->execute();
 		$item = collect($cart['items'])->firstWhere('uuid', $this->productUuid);
 
 		if ($item) {
@@ -69,7 +69,7 @@ class CartButton extends Component
 			return;
 		}
 
-		$cart = (new GetCart())->execute();
+		$cart = (new GetCartAction())->execute();
 		$cartItems = collect($cart['items']);
 		$existingItem = $cartItems->firstWhere('uuid', $product->uuid);
 
@@ -109,7 +109,7 @@ class CartButton extends Component
 			return;
 		}
 
-		$cart = (new GetCart())->execute();
+		$cart = (new GetCartAction())->execute();
 		$cart['items'] = collect($cart['items'])->map(function ($item) use ($product) {
 			if ($item['uuid'] === $product->uuid) {
 				$item['quantity'] = min($this->quantity, $product->stock);
@@ -128,7 +128,7 @@ class CartButton extends Component
 
 		$cart['quantity'] = collect($cart['items'])->sum('quantity');
 
-		(new UpdateCart())->execute($cart);
+		(new UpdateCartAction())->execute($cart);
 		$this->dispatch('cart-updated');
 	}
 

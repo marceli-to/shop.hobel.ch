@@ -4,9 +4,9 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
-use App\Actions\Cart\GetCart;
-use App\Actions\Cart\UpdateCart;
-use App\Actions\Cart\DestroyCart;
+use App\Actions\Cart\Get as GetCartAction;
+use App\Actions\Cart\Update as UpdateCartAction;
+use App\Actions\Cart\Destroy as DestroyCartAction;
 
 class Cart extends Component
 {
@@ -14,18 +14,18 @@ class Cart extends Component
 
 	public function mount(): void
 	{
-		$this->cart = (new GetCart())->execute();
+		$this->cart = (new GetCartAction())->execute();
 	}
 
 	#[On('cart-updated')]
 	public function updateCart(): void
 	{
-		$this->cart = (new GetCart())->execute();
+		$this->cart = (new GetCartAction())->execute();
 	}
 
 	public function removeItem(string $productUuid): void
 	{
-		$this->cart = (new GetCart())->execute();
+		$this->cart = (new GetCartAction())->execute();
 
 		$this->cart['items'] = collect($this->cart['items'])
 			->reject(fn($item) => $item['uuid'] === $productUuid)
@@ -35,7 +35,7 @@ class Cart extends Component
 		$this->cart['quantity']--;
 
 		if ($this->cart['quantity'] <= 0) {
-			(new DestroyCart())->execute();
+			(new DestroyCartAction())->execute();
 			$this->cart = [
 				'items' => [],
 				'quantity' => 0,
@@ -55,7 +55,7 @@ class Cart extends Component
 			return;
 		}
 
-		$this->cart = (new GetCart())->execute();
+		$this->cart = (new GetCartAction())->execute();
 
 		$this->cart['items'] = collect($this->cart['items'])
 			->map(function ($item) use ($productUuid, $quantity) {
@@ -74,7 +74,7 @@ class Cart extends Component
 	{
 		$this->cart['total'] = collect($this->cart['items'])->sum(fn($item) => $item['price'] * $item['quantity']);
 		$this->cart['quantity'] = collect($this->cart['items'])->sum('quantity');
-		(new UpdateCart())->execute($this->cart);
+		(new UpdateCartAction())->execute($this->cart);
 	}
 
 	public function render()

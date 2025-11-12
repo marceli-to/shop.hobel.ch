@@ -2,7 +2,7 @@
 
 namespace App\Actions\Cart;
 
-class GetCart
+class Get
 {
 	public function execute(): array
 	{

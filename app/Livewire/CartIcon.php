@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
-use App\Actions\Cart\GetCart;
+use App\Actions\Cart\Get as GetCartAction;
 
 class CartIcon extends Component
 {
@@ -18,7 +18,7 @@ class CartIcon extends Component
 	#[On('cart-updated')]
 	public function updateCartItemCount(): void
 	{
-		$cart = (new GetCart())->execute();
+		$cart = (new GetCartAction())->execute();
 		$this->cartItemCount = count($cart['items'] ?? []);
 	}
 
