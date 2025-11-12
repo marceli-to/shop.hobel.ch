@@ -21,25 +21,25 @@
 					/>
 				@else
 					<div class="w-full h-96 flex items-center justify-center bg-gray-200">
-						<span class="text-gray-400 text-lg">Kein Bild verfügbar</span>
+						<span class="text-lg">Kein Bild verfügbar</span>
 					</div>
 				@endif
 			</div>
 
 			<!-- Product Details -->
 			<div class="flex flex-col">
-				<h1 class="text-4xl font-bold mb-4">{{ $product->name }}</h1>
+				<h1 class="text-4xl font-muoto mb-4">{{ $product->name }}</h1>
 
 				<div class="mb-6">
-					<span class="text-3xl font-bold text-gray-900">
+					<span class="text-3xl">
 						CHF {{ number_format($product->price, 2) }}
 					</span>
 				</div>
 
 				@if($product->description)
 					<div class="mb-6">
-						<h2 class="text-lg font-semibold mb-2">Beschreibung</h2>
-						<p class="text-gray-700 leading-relaxed">
+						<h2 class="text-lg font-muoto mb-2">Beschreibung</h2>
+						<p class="leading-relaxed">
 							{{ $product->description }}
 						</p>
 					</div>
@@ -73,7 +73,7 @@
 					<div class="mb-8">
 						<button
 							disabled
-							class="w-full bg-gray-300 text-gray-500 px-6 py-3 rounded-lg font-semibold cursor-not-allowed"
+							class="w-full bg-gray-300 px-6 py-3 rounded-lg font-muoto cursor-not-allowed"
 						>
 							Nicht verfügbar
 						</button>
@@ -82,8 +82,8 @@
 
 				<!-- Additional Info -->
 				<div class="mt-auto pt-6 border-t">
-					<h3 class="font-semibold mb-2">Produkt-ID</h3>
-					<p class="text-sm text-gray-600">{{ $product->uuid }}</p>
+					<h3 class="font-muoto mb-2">Produkt-ID</h3>
+					<p class="text-sm">{{ $product->uuid }}</p>
 				</div>
 			</div>
 		</div>

@@ -2,16 +2,16 @@
 	<div class="container mx-auto px-4">
 		<div class="flex items-center justify-between h-16">
 			<!-- Logo / Brand -->
-			<a href="{{ route('home') }}" class="text-xl font-bold">
+			<a href="{{ route('home') }}" class="text-xl font-muoto">
 				{{ env('APP_NAME') }}
 			</a>
 
 			<!-- Navigation -->
 			<nav class="hidden md:flex items-center space-x-6">
-				<a href="{{ route('products.index') }}" class="hover:text-gray-600 transition-colors">
+				<a href="{{ route('products.index') }}" class="hover:text-blue-400 transition-colors">
 					Produkte
 				</a>
-				<a href="{{ route('cart.index') }}" class="hover:text-gray-600 transition-colors">
+				<a href="{{ route('cart.index') }}" class="hover:text-blue-400 transition-colors">
 					Warenkorb
 				</a>
 			</nav>

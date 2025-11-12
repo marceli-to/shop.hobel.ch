@@ -1,5 +1,40 @@
 @import "tailwindcss";
 
+/* Custom Fonts */
+@font-face {
+  font-family: 'Muoto-Regular';
+  src: url('../fonts/muoto/Muoto-Regular.woff2') format('woff2'),
+       url('../fonts/muoto/Muoto-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Muoto-Light';
+  src: url('../fonts/muoto/Muoto-Light.woff2') format('woff2'),
+       url('../fonts/muoto/Muoto-Light.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Muoto-Light-Italic';
+  src: url('../fonts/muoto/Muoto-Light-Italic.woff2') format('woff2'),
+       url('../fonts/muoto/Muoto-Light-Italic.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Configure font families for Tailwind */
+@theme {
+  --font-muoto: 'Muoto-Regular', sans-serif;
+  --font-muoto-light: 'Muoto-Light', sans-serif;
+  --font-muoto-light-italic: 'Muoto-Light-Italic', sans-serif;
+}
+
 [x-cloak] {
   display: none;
 }

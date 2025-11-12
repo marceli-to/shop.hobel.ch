@@ -54,7 +54,7 @@
 			<button
 				wire:click="addToCart"
 				wire:loading.attr="disabled"
-				class="w-full bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+				class="w-full bg-black text-white px-6 py-3 rounded-lg font-muotohover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				<span wire:loading.remove wire:target="addToCart">In den Warenkorb</span>
 				<span wire:loading wire:target="addToCart">Wird hinzugefügt...</span>

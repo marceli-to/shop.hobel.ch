@@ -7,7 +7,7 @@
 		<x-icons.cart class="w-8 h-8" />
 
 		@if($cartItemCount > 0)
-			<span class="absolute -top-1 -right-1 bg-black text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+			<span class="absolute -top-1 -right-1 bg-black text-white text-xs font-muoto rounded-full w-6 h-6 flex items-center justify-center">
 				{{ $cartItemCount }}
 			</span>
 		@endif
