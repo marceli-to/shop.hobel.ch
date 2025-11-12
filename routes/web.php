@@ -20,4 +20,5 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::get('/img/{path}', [ImageController::class, 'show'])->where('path', '.*');
 
 // PDF generation
+// Test with: https://shop.hobel.ch.test/pdf/invoice/fca8c27b-c389-40d4-a6b1-38759877cbc3
 Route::get('/pdf/invoice/{order:uuid}', [PdfController::class, 'generateInvoice'])->name('pdf.invoice');
