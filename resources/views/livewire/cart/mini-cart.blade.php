@@ -41,7 +41,10 @@
 				@else
 					<div class="space-y-4">
 						@foreach($cart['items'] as $item)
-							<div class="flex gap-4 pb-4 border-b" wire:key="mini-cart-item-{{ $item['uuid'] }}">
+							@php
+								$cartKey = $item['cart_key'] ?? $item['uuid'];
+							@endphp
+							<div class="flex gap-4 pb-4 border-b" wire:key="mini-cart-item-{{ $cartKey }}">
 								@if($item['image'])
 									<img
 										src="/img/{{ $item['image'] }}?w=160&h=160&fit=crop"
@@ -57,20 +60,33 @@
 								<div class="flex-1 min-w-0">
 									<h3 class="font-muoto text-sm truncate">{{ $item['name'] }}</h3>
 									<p class="text-xs mt-1">
-										CHF {{ number_format($item['price'], 2) }}
+										CHF {{ number_format($item['price'], 2, '.', '\'') }}
 									</p>
 
-									<!-- Cart Button for this item -->
+									<!-- Configuration Details -->
+									@if(!empty($item['configuration']))
+										<div class="mt-1 space-y-0.5">
+											@foreach($item['configuration'] as $config)
+												<div class="text-xs text-gray-500">
+													{{ $config['label'] }}
+												</div>
+											@endforeach
+										</div>
+									@endif
+
+									<!-- Quantity Selector -->
 									<div class="mt-2">
-										<livewire:cart-button
+										<livewire:cart.button
 											:productUuid="$item['uuid']"
-											:key="'cart-mini-button-' . $item['uuid']"
+											:cartKey="$cartKey"
+											:showButton="false"
+											:key="'cart-mini-button-' . $cartKey"
 										/>
 									</div>
 								</div>
 
 								<button
-									wire:click="removeItem('{{ $item['uuid'] }}')"
+									wire:click="removeItem('{{ $cartKey }}')"
 									class="self-start p-1 hover:bg-gray-100 rounded transition-colors"
 									aria-label="Entfernen"
 								>
@@ -88,7 +104,7 @@
 			@if(!empty($cart['items']))
 				<div class="border-t p-4 bg-gray-50">
 					<div class="flex items-center justify-between mb-4">
-						<span class="font-semibold">Zwischensumme</span>
+						<span class="font-muoto">Zwischensumme</span>
 						<span class="text-xl font-muoto">
 							CHF {{ number_format($cart['total'] ?? 0, 2) }}
 						</span>

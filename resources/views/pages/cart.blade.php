@@ -1,5 +1,5 @@
 @extends('app')
 
 @section('content')
-	<livewire:cart />
+	<livewire:cart.cart />
 @endsection

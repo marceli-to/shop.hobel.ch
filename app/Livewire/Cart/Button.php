@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Cart;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -8,16 +8,20 @@ use App\Models\Product;
 use App\Actions\Cart\Get as GetCartAction;
 use App\Actions\Cart\Update as UpdateCartAction;
 
-class CartButton extends Component
+class Button extends Component
 {
 	public string $productUuid;
+	public ?string $cartKey = null;
 	public int $quantity = 1;
 	public ?int $maxStock = null;
 	public bool $inCart = false;
+	public bool $showButton = true;
 
-	public function mount(string $productUuid): void
+	public function mount(string $productUuid, ?string $cartKey = null, bool $showButton = true): void
 	{
 		$this->productUuid = $productUuid;
+		$this->cartKey = $cartKey ?? $productUuid;
+		$this->showButton = $showButton;
 		$this->loadProduct();
 		$this->syncWithCart();
 	}
@@ -26,7 +30,7 @@ class CartButton extends Component
 	public function syncWithCart(): void
 	{
 		$cart = (new GetCartAction())->execute();
-		$item = collect($cart['items'])->firstWhere('uuid', $this->productUuid);
+		$item = collect($cart['items'])->firstWhere('cart_key', $this->cartKey);
 
 		if ($item) {
 			$this->quantity = $item['quantity'];
@@ -71,12 +75,12 @@ class CartButton extends Component
 
 		$cart = (new GetCartAction())->execute();
 		$cartItems = collect($cart['items']);
-		$existingItem = $cartItems->firstWhere('uuid', $product->uuid);
+		$existingItem = $cartItems->firstWhere('cart_key', $this->cartKey);
 
 		if ($existingItem) {
 			// Update quantity
 			$cart['items'] = $cartItems->map(function ($item) use ($product) {
-				if ($item['uuid'] === $product->uuid) {
+				if ($item['cart_key'] === $this->cartKey) {
 					$item['quantity'] = min($this->quantity, $product->stock);
 				}
 				return $item;
@@ -84,12 +88,15 @@ class CartButton extends Component
 		} else {
 			// Add new item
 			$cart['items'][] = [
+				'cart_key' => $this->cartKey,
 				'uuid' => $product->uuid,
 				'name' => $product->name,
 				'description' => $product->description,
 				'price' => $product->price,
+				'base_price' => $product->price,
 				'quantity' => min($this->quantity, $product->stock),
 				'image' => $product->image,
+				'configuration' => [],
 			];
 		}
 
@@ -110,8 +117,9 @@ class CartButton extends Component
 		}
 
 		$cart = (new GetCartAction())->execute();
+
 		$cart['items'] = collect($cart['items'])->map(function ($item) use ($product) {
-			if ($item['uuid'] === $product->uuid) {
+			if ($item['cart_key'] === $this->cartKey) {
 				$item['quantity'] = min($this->quantity, $product->stock);
 			}
 			return $item;
@@ -134,6 +142,6 @@ class CartButton extends Component
 
 	public function render()
 	{
-		return view('livewire.cart-button');
+		return view('livewire.cart.button');
 	}
 }

@@ -18,11 +18,11 @@
 
 			<!-- Cart Icon -->
 			<div class="flex items-center">
-				<livewire:cart-icon />
+				<livewire:cart.icon />
 			</div>
 		</div>
 	</div>
 
 	<!-- Mini Cart -->
-	<livewire:cart-mini />
+	<livewire:cart.mini-cart />
 </header>

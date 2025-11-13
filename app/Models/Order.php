@@ -110,6 +110,30 @@ class Order extends Model
 	}
 
 	/**
+	 * Create an order from cart data.
+	 *
+	 * @param array $orderData Order details (customer info, addresses, etc.)
+	 * @param array $cartItems Cart items from session
+	 * @return self
+	 */
+	public static function createFromCart(array $orderData, array $cartItems): self
+	{
+		$order = self::create($orderData);
+
+		foreach ($cartItems as $item) {
+			$order->items()->create([
+				'product_name' => $item['name'],
+				'product_description' => $item['description'] ?? null,
+				'product_price' => $item['price'],
+				'quantity' => $item['quantity'],
+				'configuration' => $item['configuration'] ?? [],
+			]);
+		}
+
+		return $order->load('items');
+	}
+
+	/**
 	 * Boot the model.
 	 */
 	protected static function boot()

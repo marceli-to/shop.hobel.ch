@@ -32,7 +32,7 @@
 
 				<div class="mb-6">
 					<span class="text-3xl">
-						CHF {{ number_format($product->price, 2) }}
+						{!! $product->getDisplayPrice() !!}
 					</span>
 				</div>
 
@@ -67,7 +67,11 @@
 				<!-- Add to Cart Button -->
 				@if($product->stock > 0)
 					<div class="mb-8">
-						<livewire:cart-button :productUuid="$product->uuid" />
+						@if($product->isConfigurable())
+							<livewire:product.configurator :productUuid="$product->uuid" />
+						@else
+							<livewire:cart.button :productUuid="$product->uuid" />
+						@endif
 					</div>
 				@else
 					<div class="mb-8">

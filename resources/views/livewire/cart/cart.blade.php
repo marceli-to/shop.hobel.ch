@@ -20,7 +20,10 @@
 			<!-- Cart Items -->
 			<div class="lg:col-span-2 space-y-4">
 				@foreach($cart['items'] as $item)
-					<div class="bg-white border rounded-lg p-4" wire:key="cart-item-{{ $item['uuid'] }}">
+					@php
+						$cartKey = $item['cart_key'] ?? $item['uuid'];
+					@endphp
+					<div class="bg-white border rounded-lg p-4" wire:key="cart-item-{{ $cartKey }}">
 						<div class="flex gap-4">
 							@if($item['image'])
 								<a href="{{ route('product.show', $item['uuid']) }}" class="flex-shrink-0">
@@ -43,9 +46,23 @@
 										@if($item['description'])
 											<p class="text-sm mt-1">{{ $item['description'] }}</p>
 										@endif
+
+										<!-- Configuration Details -->
+										@if(!empty($item['configuration']))
+											<div class="mt-2 space-y-1">
+												@foreach($item['configuration'] as $key => $config)
+													<div class="text-sm text-gray-600">
+														<span class="font-medium">{{ $config['label'] }}</span>
+														@if($config['price'] > 0)
+															<span class="text-xs ml-1">(+CHF {{ number_format($config['price'], 2, '.', '\'') }})</span>
+														@endif
+													</div>
+												@endforeach
+											</div>
+										@endif
 									</div>
 									<button
-										wire:click="removeItem('{{ $item['uuid'] }}')"
+										wire:click="removeItem('{{ $item['cart_key'] ?? $item['uuid'] }}')"
 										class="p-2 hover:bg-gray-100 rounded-lg transition-colors ml-4"
 										aria-label="Entfernen"
 									>
@@ -56,14 +73,22 @@
 								</div>
 
 								<div class="flex items-center justify-between mt-4">
-									<div class="text-lg font-semibold">
-										CHF {{ number_format($item['price'], 2) }}
+									<div>
+										<div class="text-lg font-muoto">
+											CHF {{ number_format($item['price'], 2, '.', '\'') }}
+										</div>
+										@if(!empty($item['configuration']) && isset($item['base_price']) && $item['base_price'] < $item['price'])
+											<div class="text-xs text-gray-500">
+												Basis: CHF {{ number_format($item['base_price'], 2, '.', '\'') }}
+											</div>
+										@endif
 									</div>
 
 									<!-- Cart Button -->
-									<livewire:cart-button
+									<livewire:cart.button
 										:productUuid="$item['uuid']"
-										:key="'cart-page-button-' . $item['uuid']"
+										:cartKey="$cartKey"
+										:key="'cart-page-button-' . $cartKey"
 									/>
 								</div>
 							</div>

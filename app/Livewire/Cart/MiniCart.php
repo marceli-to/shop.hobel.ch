@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Cart;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -8,7 +8,7 @@ use App\Actions\Cart\Get as GetCartAction;
 use App\Actions\Cart\Update as UpdateCartAction;
 use App\Models\Product;
 
-class CartMini extends Component
+class MiniCart extends Component
 {
 	public array $cart = [];
 	public bool $show = false;
@@ -41,15 +41,15 @@ class CartMini extends Component
 		$this->show = false;
 	}
 
-	public function removeItem(string $productUuid): void
+	public function removeItem(string $cartKey): void
 	{
 		$this->cart = (new GetCartAction())->execute();
-		$items = collect($this->cart['items'])->filter(function ($item) use ($productUuid) {
-			return $item['uuid'] !== $productUuid;
+		$items = collect($this->cart['items'])->filter(function ($item) use ($cartKey) {
+			return ($item['cart_key'] ?? $item['uuid']) !== $cartKey;
 		})->values()->toArray();
 
 		$this->cart['items'] = $items;
-		$this->cart['quantity'] = count($items);
+		$this->cart['quantity'] = collect($items)->sum('quantity');
 		$this->updateTotal();
 	}
 
@@ -65,6 +65,6 @@ class CartMini extends Component
 
 	public function render()
 	{
-		return view('livewire.cart-mini');
+		return view('livewire.cart.mini-cart');
 	}
 }

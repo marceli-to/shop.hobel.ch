@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Cart;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Actions\Cart\Get as GetCartAction;
 
-class CartIcon extends Component
+class Icon extends Component
 {
 	public int $cartItemCount = 0;
 
@@ -29,6 +29,6 @@ class CartIcon extends Component
 
 	public function render()
 	{
-		return view('livewire.cart-icon');
+		return view('livewire.cart.icon');
 	}
 }
