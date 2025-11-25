@@ -7,14 +7,21 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PdfController;
 
 // Landing page
-Route::view('/', 'pages.landing')->name('home');
+Route::view('/', 'pages.landing')->name('page.landing');
+Route::view('/tische', 'pages.tables')->name('page.tables');
 
-// Product(s) page
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.show');
+/** Prototype */
+// // Landing page
+// Route::view('/', 'pages.landing')->name('home');
 
-// Cart page
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+// // Product(s) page
+// Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+// Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.show');
+
+// // Cart page
+// Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+
+/** // Prototype */
 
 // Image manipulation
 Route::get('/img/{path}', [ImageController::class, 'show'])->where('path', '.*');
