@@ -1,7 +1,6 @@
 <div
   class="
-    _bg-white
-    bg-red-200
+    bg-white
     w-[70%]
     lg:w-col-padded-5
     fixed
