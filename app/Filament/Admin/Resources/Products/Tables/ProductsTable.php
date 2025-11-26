@@ -30,7 +30,7 @@ class ProductsTable
 					->limit(50),
 				TextColumn::make('price')
 					->label('Preis')
-					->money('CHF')
+					->formatStateUsing(fn ($state) => 'CHF ' . number_format($state, 2, '.', '\''))
 					->sortable(),
 				TextColumn::make('stock')
 					->label('Verfügbar')
