@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Categories\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class CategoryForm
@@ -11,23 +12,29 @@ class CategoryForm
 	public static function configure(Schema $schema): Schema
 	{
 		return $schema
+			->columns(3)
 			->components([
-				TextInput::make('name')
-					->label('Name')
-					->required()
-					->live(onBlur: true)
-					->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
+				// Main Section - Kategorie
+				Section::make('Kategorie')
+					->schema([
+						TextInput::make('name')
+							->label('Name')
+							->required()
+							->live(onBlur: true)
+							->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
 
-				TextInput::make('slug')
-					->label('Slug')
-					->required()
-					->disabled()
-					->dehydrated()
-					->unique(ignoreRecord: true),
+						TextInput::make('slug')
+							->label('Slug')
+							->required()
+							->disabled()
+							->dehydrated()
+							->unique(ignoreRecord: true),
 
-				Textarea::make('description')
-					->label('Beschreibung')
-					->rows(4),
+						Textarea::make('description')
+							->label('Beschreibung')
+							->rows(4),
+					])
+					->columnSpan(2),
 			]);
 	}
 }

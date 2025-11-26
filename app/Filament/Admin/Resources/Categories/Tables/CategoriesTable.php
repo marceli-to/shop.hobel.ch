@@ -20,10 +20,6 @@ class CategoriesTable
 					->label('Name')
 					->searchable()
 					->sortable(),
-				TextColumn::make('slug')
-					->label('Slug')
-					->searchable()
-					->sortable(),
 				TextColumn::make('products_count')
 					->label('Produkte')
 					->counts('products')
@@ -31,6 +27,14 @@ class CategoriesTable
 				TextColumn::make('description')
 					->label('Beschreibung')
 					->limit(50),
+				TextColumn::make('uuid')
+					->label('UUID')
+					->searchable()
+					->toggleable(isToggledHiddenByDefault: true),
+				TextColumn::make('slug')
+					->label('Slug')
+					->searchable()
+					->toggleable(isToggledHiddenByDefault: true),
 			])
 			->filters([
 				//

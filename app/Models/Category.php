@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -12,6 +13,7 @@ class Category extends Model
 	use HasSlug;
 
 	protected $fillable = [
+		'uuid',
 		'name',
 		'slug',
 		'description',
@@ -41,5 +43,19 @@ class Category extends Model
 	public function products(): BelongsToMany
 	{
 		return $this->belongsToMany(Product::class);
+	}
+
+	/**
+	 * Boot the model.
+	 */
+	protected static function boot()
+	{
+		parent::boot();
+
+		static::creating(function ($category) {
+			if (empty($category->uuid)) {
+				$category->uuid = (string) Str::uuid();
+			}
+		});
 	}
 }
