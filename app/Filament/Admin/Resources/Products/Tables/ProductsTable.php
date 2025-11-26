@@ -15,28 +15,45 @@ class ProductsTable
 	{
 		return $table
 			->columns([
-				TextColumn::make('uuid')
-					->label('UUID')
-					->searchable(),
+				ImageColumn::make('image')
+					->label('Bild')
+					->circular()
+					->size(60),
 				TextColumn::make('name')
-					->searchable(),
-				TextColumn::make('slug')
-					->searchable(),
+					->label('Titel')
+					->searchable()
+					->sortable(),
+				TextColumn::make('description')
+					->label('Beschreibung')
+					->searchable()
+					->limit(50),
 				TextColumn::make('price')
-					->money()
+					->label('Preis')
+					->money('CHF')
 					->sortable(),
 				TextColumn::make('stock')
+					->label('Verfügbar')
 					->numeric()
 					->sortable(),
-				ImageColumn::make('image'),
+				TextColumn::make('uuid')
+					->label('UUID')
+					->searchable()
+					->toggleable(isToggledHiddenByDefault: true),
+				TextColumn::make('slug')
+					->searchable()
+					->toggleable(isToggledHiddenByDefault: true),
 				TextColumn::make('published_at')
+					->label('Veröffentlicht')
 					->dateTime()
-					->sortable(),
+					->sortable()
+					->toggleable(isToggledHiddenByDefault: true),
 				TextColumn::make('created_at')
+					->label('Erstellt')
 					->dateTime()
 					->sortable()
 					->toggleable(isToggledHiddenByDefault: true),
 				TextColumn::make('updated_at')
+					->label('Aktualisiert')
 					->dateTime()
 					->sortable()
 					->toggleable(isToggledHiddenByDefault: true),
