@@ -12,8 +12,14 @@ class EditProduct extends EditRecord
 
 	protected function getHeaderActions(): array
 	{
-		return [
-			DeleteAction::make(),
-		];
+		return [];
 	}
+
+  protected function getFormActions(): array
+  {
+    return [
+      ...parent::getFormActions(),
+      DeleteAction::make(),
+    ];
+  }
 }

@@ -12,9 +12,14 @@ class EditCategory extends EditRecord
 
 	protected function getHeaderActions(): array
 	{
-		return [
-			DeleteAction::make()
-				->label('Löschen'),
-		];
+		return [];
 	}
+
+  protected function getFormActions(): array
+  {
+    return [
+      ...parent::getFormActions(),
+      DeleteAction::make(),
+    ];
+  }
 }
