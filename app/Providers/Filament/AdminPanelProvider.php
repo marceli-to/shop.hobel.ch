@@ -29,15 +29,15 @@ class AdminPanelProvider extends PanelProvider
 			->path('admin')
 			->login()
 			->colors([
-        'danger' => Color::Rose,
+        'danger' => Color::Red,
         'gray' => Color::Gray,
         'info' => Color::Blue,
         'primary' => Color::Gray,
-        'success' => Color::Emerald,
+        'success' => Color::Green,
         'warning' => Color::Orange,
 			])
       ->brandLogo(asset('img/logo.svg'))
-      ->brandLogoHeight('3rem')
+      ->brandLogoHeight('2.5rem')
       ->favicon(asset('favicon.svg'))
       ->font('Inter')
 			->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
