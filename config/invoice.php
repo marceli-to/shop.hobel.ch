@@ -34,6 +34,6 @@ return [
    * Prefix for invoice name
    */
 
-  'invoice_prefix' => 'fiefelstein.ch-rechnung-',
+  'invoice_prefix' => 'hobel.ch-rechnung-',
 
 ];

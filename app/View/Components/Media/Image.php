@@ -25,6 +25,19 @@ use Illuminate\View\Component;
  *     :formats="['avif', 'webp', 'jpg']"
  * />
  *
+ * With responsive breakpoints:
+ * <x-media.image
+ *     src="products/image.jpg"
+ *     alt="Product"
+ *     :breakpoints="[
+ *         ['media' => '(min-width: 1280px)', 'width' => 1580, 'height' => 1200],
+ *         ['media' => '(min-width: 1024px)', 'width' => 1280, 'height' => 960],
+ *         ['media' => '(min-width: 768px)', 'width' => 1024, 'height' => 768],
+ *         ['width' => 768, 'height' => 576],
+ *     ]"
+ *     :formats="['avif', 'webp', 'jpg']"
+ * />
+ *
  * With custom class and eager loading:
  * <x-media.image
  *     src="products/image.jpg"
@@ -82,6 +95,21 @@ class Image extends Component
 	public string $loading;
 
 	/**
+	 * Responsive breakpoints configuration.
+	 */
+	public array $breakpoints;
+
+	/**
+	 * Prepared source URLs for each format and breakpoint.
+	 */
+	public array $sources = [];
+
+	/**
+	 * Fallback image URL.
+	 */
+	public string $fallbackUrl;
+
+	/**
 	 * Create a new component instance.
 	 */
 	public function __construct(
@@ -92,6 +120,7 @@ class Image extends Component
 		string $fit = 'crop',
 		int $quality = 85,
 		array $formats = ['avif', 'webp', 'jpg'],
+		array $breakpoints = [],
 		string $class = '',
 		string $loading = 'lazy'
 	) {
@@ -102,23 +131,78 @@ class Image extends Component
 		$this->fit = $fit;
 		$this->quality = $quality;
 		$this->formats = $formats;
+		$this->breakpoints = $breakpoints;
 		$this->class = $class;
 		$this->loading = $loading;
+
+		// Use responsive breakpoints if provided
+		if (!empty($this->breakpoints)) {
+			$this->buildResponsiveSources();
+		} else {
+			$this->buildSimpleSources();
+		}
+	}
+
+	/**
+	 * Build sources for responsive breakpoints.
+	 */
+	protected function buildResponsiveSources(): void
+	{
+		foreach ($this->breakpoints as $breakpoint) {
+			$bpWidth = $breakpoint['width'] ?? $this->width;
+			$bpHeight = $breakpoint['height'] ?? $this->height;
+			$media = $breakpoint['media'] ?? null;
+
+			foreach ($this->formats as $format) {
+				$this->sources[] = [
+					'srcset' => $this->buildUrl($format, $bpWidth, $bpHeight),
+					'type' => $this->getMimeType($format),
+					'media' => $media,
+				];
+			}
+		}
+
+		// Set fallback to the last breakpoint's jpg version
+		$lastBreakpoint = end($this->breakpoints);
+		$this->fallbackUrl = $this->buildUrl('jpg', $lastBreakpoint['width'] ?? $this->width, $lastBreakpoint['height'] ?? $this->height);
+	}
+
+	/**
+	 * Build sources for simple (non-responsive) images.
+	 */
+	protected function buildSimpleSources(): void
+	{
+		// Prepare source URLs for each format
+		foreach ($this->formats as $format) {
+			if ($format !== 'jpg' && $format !== 'jpeg') {
+				$this->sources[] = [
+					'srcset' => $this->buildUrl($format),
+					'type' => $this->getMimeType($format),
+					'media' => null,
+				];
+			}
+		}
+
+		// Prepare fallback URL
+		$this->fallbackUrl = $this->buildUrl('jpg');
 	}
 
 	/**
 	 * Build the image URL with parameters.
 	 */
-	public function buildUrl(string $format = null): string
+	public function buildUrl(string $format = null, ?int $width = null, ?int $height = null): string
 	{
 		$params = [];
 
-		if ($this->width) {
-			$params[] = 'w=' . $this->width;
+		$useWidth = $width ?? $this->width;
+		$useHeight = $height ?? $this->height;
+
+		if ($useWidth) {
+			$params[] = 'w=' . $useWidth;
 		}
 
-		if ($this->height) {
-			$params[] = 'h=' . $this->height;
+		if ($useHeight) {
+			$params[] = 'h=' . $useHeight;
 		}
 
 		if ($this->fit) {

@@ -1,15 +1,14 @@
 <picture>
-	@foreach($formats as $format)
-		@if($format !== 'jpg' && $format !== 'jpeg')
-			<source
-				srcset="{{ $buildUrl($format) }}"
-				type="{{ $getMimeType($format) }}"
-			>
-		@endif
+	@foreach($sources as $source)
+		<source
+			srcset="{{ $source['srcset'] }}"
+			type="{{ $source['type'] }}"
+			@if($source['media']) media="{{ $source['media'] }}" @endif
+		>
 	@endforeach
 
 	<img
-		src="{{ $buildUrl('jpg') }}"
+		src="{{ $fallbackUrl }}"
 		alt="{{ $alt }}"
 		@if($width) width="{{ $width }}" @endif
 		@if($height) height="{{ $height }}" @endif

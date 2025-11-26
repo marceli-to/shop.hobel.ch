@@ -18,8 +18,8 @@
     pt-20
     lg:pt-32
     sticky
-    h-[var(--header-height-sm)]
-    lg:h-[var(--header-height-lg)]
+    h-(--header-height-sm)
+    lg:h-(--header-height-lg)
     @if($dynamic)
     transition-[height]
     will-change-[height]
@@ -85,7 +85,7 @@
             block
             w-auto
             @if(!$dynamic)
-            h-[var(--logo-height-sm)]
+            h-(--logo-height-sm)
             @endif
             lg:h-80
             @if($dynamic)
