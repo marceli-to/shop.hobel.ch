@@ -19,12 +19,10 @@ class Product extends Model
 		'price',
 		'stock',
 		'image',
-		'published_at',
 	];
 
 	protected $casts = [
 		'price' => 'decimal:2',
-		'published_at' => 'datetime',
 	];
 
 	/**
@@ -43,22 +41,6 @@ class Product extends Model
 	public function getRouteKeyName(): string
 	{
 		return 'slug';
-	}
-
-	/**
-	 * Scope a query to only include published products.
-	 */
-	public function scopePublished($query)
-	{
-		return $query->whereNotNull('published_at');
-	}
-
-	/**
-	 * Check if product is published.
-	 */
-	public function isPublished(): bool
-	{
-		return !is_null($this->published_at);
 	}
 
 	/**

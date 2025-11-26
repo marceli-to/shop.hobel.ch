@@ -45,11 +45,6 @@ class ProductsTable
 				TextColumn::make('slug')
 					->searchable()
 					->toggleable(isToggledHiddenByDefault: true),
-				TextColumn::make('published_at')
-					->label('Veröffentlicht')
-					->dateTime()
-					->sortable()
-					->toggleable(isToggledHiddenByDefault: true),
 				TextColumn::make('created_at')
 					->label('Erstellt')
 					->dateTime()

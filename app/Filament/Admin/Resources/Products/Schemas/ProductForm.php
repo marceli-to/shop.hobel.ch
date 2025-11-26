@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources\Products\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -28,6 +27,8 @@ class ProductForm
 						TextInput::make('slug')
 							->label('Slug')
 							->required()
+							->disabled()
+							->dehydrated()
 							->unique(ignoreRecord: true),
 
 						Textarea::make('description')
@@ -47,16 +48,6 @@ class ProductForm
 							->numeric()
 							->default(0)
 							->minValue(0),
-
-						DateTimePicker::make('published_at')
-							->label('Veröffentlicht am')
-							->native(false),
-
-						TextInput::make('uuid')
-							->label('UUID')
-							->disabled()
-							->dehydrated(false)
-							->visible(fn ($record) => $record !== null),
 					])
 					->columnSpan(2),
 
