@@ -26,7 +26,7 @@ class ProductResource extends Resource
 
 	protected static ?string $pluralModelLabel = 'Produkte';
 
-	protected static ?string $breadcrumb = 'Übersicht';
+	protected static ?string $breadcrumb = 'Produkte';
 
 	public static function form(Schema $schema): Schema
 	{
