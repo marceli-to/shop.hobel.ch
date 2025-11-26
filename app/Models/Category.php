@@ -4,26 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Str;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Product extends Model
+class Category extends Model
 {
 	use HasSlug;
 
 	protected $fillable = [
-		'uuid',
 		'name',
 		'slug',
 		'description',
-		'price',
-		'stock',
-		'image',
-	];
-
-	protected $casts = [
-		'price' => 'decimal:2',
 	];
 
 	/**
@@ -45,24 +36,10 @@ class Product extends Model
 	}
 
 	/**
-	 * Categories that belong to this product.
+	 * Products that belong to this category.
 	 */
-	public function categories(): BelongsToMany
+	public function products(): BelongsToMany
 	{
-		return $this->belongsToMany(Category::class);
-	}
-
-	/**
-	 * Boot the model.
-	 */
-	protected static function boot()
-	{
-		parent::boot();
-
-		static::creating(function ($product) {
-			if (empty($product->uuid)) {
-				$product->uuid = (string) Str::uuid();
-			}
-		});
+		return $this->belongsToMany(Product::class);
 	}
 }

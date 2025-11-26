@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Products\Schemas;
 
+use App\Models\Category;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -48,6 +50,13 @@ class ProductForm
 							->numeric()
 							->default(0)
 							->minValue(0),
+
+						CheckboxList::make('categories')
+							->label('Kategorien')
+							->relationship('categories', 'name')
+							->options(Category::pluck('name', 'id'))
+							->columns(2)
+							->helperText('Wählen Sie eine oder mehrere Kategorien aus'),
 					])
 					->columnSpan(2),
 
