@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -64,10 +65,12 @@ class ProductsTable
 				//
 			])
 			->recordActions([
-				EditAction::make()
-					->label('Bearbeiten'),
-				DeleteAction::make()
-					->label('Löschen'),
+				ActionGroup::make([
+					EditAction::make()
+						->label('Bearbeiten'),
+					DeleteAction::make()
+						->label('Löschen'),
+				]),
 			])
 			->toolbarActions([
 				BulkActionGroup::make([
