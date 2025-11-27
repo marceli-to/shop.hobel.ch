@@ -5,12 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Product extends Model
+class Product extends Model implements HasMedia
 {
 	use HasSlug;
+	use InteractsWithMedia;
 
 	protected $fillable = [
 		'uuid',
@@ -19,7 +22,6 @@ class Product extends Model
 		'description',
 		'price',
 		'stock',
-		'image',
 	];
 
 	protected $casts = [
@@ -50,6 +52,40 @@ class Product extends Model
 	public function categories(): BelongsToMany
 	{
 		return $this->belongsToMany(Category::class);
+	}
+
+	/**
+	 * Register media collections.
+	 */
+	public function registerMediaCollections(): void
+	{
+		$this->addMediaCollection('gallery')
+			->useDisk('public');
+	}
+
+	/**
+	 * Get the first image path from the gallery collection for use with Glide.
+	 */
+	public function getImagePath(?string $collection = 'gallery'): ?string
+	{
+		$media = $this->getFirstMedia($collection);
+
+		if (!$media) {
+			return null;
+		}
+
+		// Return path relative to storage/app/public for Glide
+		return str_replace(storage_path('app/public/'), '', $media->getPath());
+	}
+
+	/**
+	 * Get all image paths from the gallery collection for use with Glide.
+	 */
+	public function getImagePaths(?string $collection = 'gallery'): array
+	{
+		return $this->getMedia($collection)->map(function ($media) {
+			return str_replace(storage_path('app/public/'), '', $media->getPath());
+		})->toArray();
 	}
 
 	/**

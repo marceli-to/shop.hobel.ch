@@ -4,11 +4,14 @@ namespace App\Filament\Admin\Resources\Products\Schemas;
 
 use App\Models\Category;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Spatie\Image\Image;
 
 class ProductForm
 {
@@ -63,17 +66,30 @@ class ProductForm
 				// Right Column - Medien Section
 				Section::make('Medien')
 					->schema([
-						FileUpload::make('image')
-							->label('Hauptbild')
-							->disk('public')
-							->directory('products')
-							->visibility('public')
+						SpatieMediaLibraryFileUpload::make('gallery')
+							->label('Bilder')
+							->collection('gallery')
+							->multiple()
+							->reorderable()
 							->image()
-							->imageEditor()
 							->imagePreviewHeight('250')
 							->maxSize(5120)
 							->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
-							->helperText('Erlaubte Dateitypen: JPG, PNG, WebP'),
+							->helperText('Laden Sie ein oder mehrere Bilder hoch. Erlaubte Dateitypen: JPG, PNG, WebP')
+							->mediaName(function (TemporaryUploadedFile $file): string {
+								$originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+								$randomString = Str::random(8);
+
+								return Str::slug($originalName) . '-' . $randomString;
+							})
+							->customProperties(function (TemporaryUploadedFile $file): array {
+								$image = Image::load($file->getRealPath());
+
+								return [
+									'width' => $image->getWidth(),
+									'height' => $image->getHeight(),
+								];
+							}),
 					])
 					->columnSpan(1)
 					->collapsible(),
