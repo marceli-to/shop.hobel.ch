@@ -3,7 +3,6 @@
 namespace App\Filament\Admin\Resources\Categories\Schemas;
 
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -29,10 +28,6 @@ class CategoryForm
 							->disabled()
 							->dehydrated()
 							->unique(ignoreRecord: true),
-
-						Textarea::make('description')
-							->label('Beschreibung')
-							->rows(4),
 					])
 					->columnSpan(2),
 			]);

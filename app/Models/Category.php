@@ -16,7 +16,6 @@ class Category extends Model
 		'uuid',
 		'name',
 		'slug',
-		'description',
 	];
 
 	/**
