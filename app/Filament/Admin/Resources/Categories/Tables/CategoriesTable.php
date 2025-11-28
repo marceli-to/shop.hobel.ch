@@ -17,14 +17,13 @@ class CategoriesTable
 	public static function configure(Table $table): Table
 	{
 		return $table
+			->reorderable('order')
+			->defaultSort('order', 'asc')
 			->columns([
-				ImageColumn::make('media.file_path')
+				ImageColumn::make('image.file_path')
 					->label('Bild')
 					->disk('public')
-					->size(40)
-					->getStateUsing(function ($record) {
-						return $record->media()->orderBy('order')->first()?->file_path;
-					}),
+					->size(40),
 				TextColumn::make('name')
 					->label('Name')
 					->searchable()

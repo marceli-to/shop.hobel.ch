@@ -1,13 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PdfController;
 
 // Landing page
-Route::view('/', 'pages.landing')->name('page.landing');
+Route::get('/', [LandingController::class, 'index'])->name('page.landing');
 Route::view('/tische', 'pages.tables')->name('page.tables');
 
 /** Prototype */

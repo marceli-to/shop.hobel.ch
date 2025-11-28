@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -21,6 +20,7 @@ class Category extends Model
 		'name',
 		'slug',
 		'featured',
+		'order',
 	];
 
 	protected $casts = [
@@ -46,19 +46,29 @@ class Category extends Model
 	}
 
 	/**
+	 * Scope a query to only include featured categories.
+	 */
+	public function scopeFeatured($query)
+	{
+		return $query->where('featured', true);
+	}
+
+	/**
+	 * Scope a query to only include categories with published products.
+	 */
+	public function scopeWithPublishedProducts($query)
+	{
+		return $query->whereHas('products', function ($query) {
+			$query->where('published', true);
+		});
+	}
+
+	/**
 	 * Products that belong to this category.
 	 */
 	public function products(): BelongsToMany
 	{
 		return $this->belongsToMany(Product::class);
-	}
-
-	/**
-	 * Get all media items for this category.
-	 */
-	public function media(): MorphMany
-	{
-		return $this->morphMany(Media::class, 'mediable')->orderBy('order');
 	}
 
 	/**

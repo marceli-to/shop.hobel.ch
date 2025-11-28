@@ -49,9 +49,9 @@ class CategoryForm
 				// Left Column - Bild Section
 				Section::make('Bild')
 					->schema([
-						Repeater::make('media')
+						Repeater::make('image')
 							->label('Bild')
-							->relationship('media')
+							->relationship('image')
 							->maxItems(1)
 							->addActionLabel('Bild hinzufügen')
 							->collapsible()
