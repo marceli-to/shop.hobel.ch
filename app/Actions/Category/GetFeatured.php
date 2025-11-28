@@ -5,7 +5,7 @@ namespace App\Actions\Category;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 
-class Featured
+class GetFeatured
 {
   /**
    * Get all featured categories that have published products.

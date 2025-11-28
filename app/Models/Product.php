@@ -65,19 +65,11 @@ class Product extends Model
 	}
 
 	/**
-	 * Get the first image.
+	 * Get the preview image (for category views).
 	 */
-	public function getFirstImage(): ?Media
+	public function getPreviewImage(): ?Media
 	{
-		return $this->media()->first();
-	}
-
-	/**
-	 * Get all images.
-	 */
-	public function getImages()
-	{
-		return $this->media;
+		return $this->media()->where('preview', true)->first() ?? $this->media->first();
 	}
 
 	/**

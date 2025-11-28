@@ -106,6 +106,11 @@ class ProductForm
 									->label('Bildunterschrift')
 									->maxLength(255)
 									->columnSpanFull(),
+                Toggle::make('preview')
+                  ->label('Vorschaubild')
+                  ->helperText('Dieses Bild wird in der Kategorieansicht angezeigt')
+                  ->inline(false)
+                  ->columnSpanFull(),
 							])
 							->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
 								$data['file_name'] = basename($data['file_path']);

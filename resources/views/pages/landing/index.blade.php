@@ -6,7 +6,7 @@
   <x-grid.span class="flex flex-col gap-y-20 lg:col-span-6">
 
     @foreach($categories as $category)
-      <x-product.teaser :url="route('page.category', $category)" :title="$category->name">
+      <x-product.teaser url="{{ route('page.category', $category) }}" :title="$category->name">
 
         <x-headings.h2 class="text-md lg:text-lg absolute top-16 lg:top-31 left-20 z-20">
           {{ $category->name }}

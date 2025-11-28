@@ -5,17 +5,21 @@
 
   <x-grid.span class="flex flex-col gap-y-20 lg:col-span-6">
 
-    @foreach($categories as $category)
-      <x-product.teaser :url="route('page.category', $category)" :title="$category->name">
+    @foreach($products as $product)
+      @php
+        $firstMedia = $product->media->first();
+      @endphp
+
+      <x-product.teaser url="" :title="$product->name">
 
         <x-headings.h2 class="text-md lg:text-lg absolute top-16 lg:top-31 left-20 z-20">
-          {{ $category->name }}
+          {{ $product->name }}
         </x-headings.h2>
 
-        @if($category->image)
+        @if($firstMedia)
           <x-media.image
-            :src="$category->image->file_path"
-            :alt="$category->name"
+            :src="$firstMedia->file_path"
+            :alt="$product->name"
             fit="max"
             :quality="90"
             :formats="['avif', 'webp', 'jpg']"

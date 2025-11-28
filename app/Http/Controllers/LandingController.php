@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-use App\Actions\Category\Featured as GetFeaturedAction;
+use App\Actions\Category\GetFeatured as GetFeaturedAction;
 use Illuminate\View\View;
 
 class LandingController extends Controller
@@ -13,7 +13,7 @@ class LandingController extends Controller
   public function index(): View
   {
     $categories = (new GetFeaturedAction())->execute();
-    return view('pages.landing', [
+    return view('pages.landing.index', [
       'categories' => $categories,
     ]);
   }

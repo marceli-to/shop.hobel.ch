@@ -76,15 +76,7 @@ class Category extends Model
 	 */
 	public function image(): MorphOne
 	{
-		return $this->morphOne(Media::class, 'mediable')->oldestOfMany('order');
-	}
-
-	/**
-	 * Get the first/only image.
-	 */
-	public function getImage(): ?Media
-	{
-		return $this->image;
+		return $this->morphOne(Media::class, 'mediable');
 	}
 
 	/**
