@@ -76,9 +76,9 @@ class ProductForm
 				// Left Column - Bilder Section
 				Section::make('Bilder')
 					->schema([
-						Repeater::make('media')
+						Repeater::make('images')
 							->label('Bilder')
-							->relationship('media')
+							->relationship('images')
 							->addActionLabel('Bild hinzufügen')
 							->orderColumn('order')
 							->reorderable()

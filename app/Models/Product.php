@@ -57,20 +57,23 @@ class Product extends Model
 	}
 
 	/**
-	 * Get all media items for this product.
+	 * Get all images for this product.
 	 */
-	public function media(): MorphMany
+	public function images(): MorphMany
 	{
-		return $this->morphMany(Media::class, 'mediable')->orderBy('order');
+		return $this->morphMany(Image::class, 'imageable')->orderBy('order');
 	}
 
 	/**
 	 * Get the preview image (for category views).
 	 */
-	public function getPreviewImage(): ?Media
-	{
-		return $this->media()->where('preview', true)->first() ?? $this->media->first();
-	}
+  public function previewImage()
+  {
+    return $this->morphOne(Image::class, 'imageable')->ofMany([
+      'preview' => 'MAX', // 1 (true) will come before 0 (false)
+      'id'      => 'MIN', // Tie-breaker: if no preview, pick the oldest/first uploaded
+    ]);
+  }
 
 	/**
 	 * Boot the model.

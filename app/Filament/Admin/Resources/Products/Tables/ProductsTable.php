@@ -23,7 +23,7 @@ class ProductsTable
 					->disk('public')
 					->size(40)
 					->getStateUsing(function ($record) {
-						return $record->media()->orderBy('order')->first()?->file_path;
+						return $record->images()->orderBy('order')->first()?->file_path;
 					}),
 				TextColumn::make('name')
 					->label('Titel')

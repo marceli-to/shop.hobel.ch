@@ -17,9 +17,7 @@ class GetProducts
   {
     return $category->products()
       ->where('published', true)
-      ->with(['media' => function ($query) {
-        $query->orderBy('order');
-      }])
+      ->with('previewImage')
       ->orderBy('name')
       ->get();
   }

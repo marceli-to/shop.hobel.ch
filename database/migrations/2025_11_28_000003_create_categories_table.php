@@ -16,6 +16,8 @@ return new class extends Migration
 			$table->uuid('uuid')->unique();
 			$table->string('name');
 			$table->string('slug')->unique();
+			$table->boolean('featured')->default(true);
+			$table->integer('order')->default(0);
 			$table->timestamps();
 			$table->softDeletes();
 		});

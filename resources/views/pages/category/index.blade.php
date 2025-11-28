@@ -6,9 +6,6 @@
   <x-grid.span class="flex flex-col gap-y-20 lg:col-span-6">
 
     @foreach($products as $product)
-      @php
-        $firstMedia = $product->media->first();
-      @endphp
 
       <x-product.teaser url="" :title="$product->name">
 
@@ -16,9 +13,9 @@
           {{ $product->name }}
         </x-headings.h2>
 
-        @if($firstMedia)
+        @if($product->previewImage)
           <x-media.image
-            :src="$firstMedia->file_path"
+            :src="$product->previewImage->file_path"
             :alt="$product->name"
             fit="max"
             :quality="90"
@@ -37,9 +34,7 @@
   </x-grid.span>
 
   <x-grid.span class="lg:col-span-5 lg:col-start-8 px-20 lg:pl-0">
-    <div class="hidden lg:block lg:fixed lg:left-start-8 lg:bottom-40">
-      <x-misc.claim />
-    </div>
+
   </x-grid.span>
 
 </x-grid.wrapper>
