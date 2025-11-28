@@ -4,16 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Product extends Model implements HasMedia
+class Product extends Model
 {
 	use HasSlug;
-	use InteractsWithMedia;
+	use SoftDeletes;
 
 	protected $fillable = [
 		'uuid',
@@ -22,10 +22,12 @@ class Product extends Model implements HasMedia
 		'description',
 		'price',
 		'stock',
+		'published',
 	];
 
 	protected $casts = [
 		'price' => 'decimal:2',
+		'published' => 'boolean',
 	];
 
 	/**
@@ -55,37 +57,27 @@ class Product extends Model implements HasMedia
 	}
 
 	/**
-	 * Register media collections.
+	 * Get all media items for this product.
 	 */
-	public function registerMediaCollections(): void
+	public function media(): MorphMany
 	{
-		$this->addMediaCollection('gallery')
-			->useDisk('public');
+		return $this->morphMany(Media::class, 'mediable')->orderBy('order');
 	}
 
 	/**
-	 * Get the first image path from the gallery collection for use with Glide.
+	 * Get the first image.
 	 */
-	public function getImagePath(?string $collection = 'gallery'): ?string
+	public function getFirstImage(): ?Media
 	{
-		$media = $this->getFirstMedia($collection);
-
-		if (!$media) {
-			return null;
-		}
-
-		// Return path relative to storage/app/public for Glide
-		return str_replace(storage_path('app/public/'), '', $media->getPath());
+		return $this->media()->first();
 	}
 
 	/**
-	 * Get all image paths from the gallery collection for use with Glide.
+	 * Get all images.
 	 */
-	public function getImagePaths(?string $collection = 'gallery'): array
+	public function getImages()
 	{
-		return $this->getMedia($collection)->map(function ($media) {
-			return str_replace(storage_path('app/public/'), '', $media->getPath());
-		})->toArray();
+		return $this->media;
 	}
 
 	/**

@@ -2,13 +2,12 @@
 
 namespace App\Filament\Admin\Resources\Categories\Schemas;
 
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Spatie\Image\Image;
 
 class CategoryForm
 {
@@ -17,7 +16,7 @@ class CategoryForm
 		return $schema
 			->columns(3)
 			->components([
-				// Main Section - Kategorie
+				// Left Column - Kategorie Section
 				Section::make('Kategorie')
 					->schema([
 						TextInput::make('name')
@@ -35,33 +34,85 @@ class CategoryForm
 					])
 					->columnSpan(2),
 
-				// Right Column - Medien Section
-				Section::make('Bild')
+				// Right Column - Einstellungen Section
+				Section::make('Einstellungen')
 					->schema([
-						SpatieMediaLibraryFileUpload::make('image')
-							->label('Kategoriebild')
-							->collection('image')
-							->image()
-							->imagePreviewHeight('250')
-							->maxSize(5120)
-							->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
-							->helperText('Laden Sie ein Bild für die Kategorie hoch. Erlaubte Dateitypen: JPG, PNG, WebP')
-							->mediaName(function (TemporaryUploadedFile $file): string {
-								$originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-								$randomString = Str::random(8);
-
-								return Str::slug($originalName) . '-' . $randomString;
-							})
-							->customProperties(function (TemporaryUploadedFile $file): array {
-								$image = Image::load($file->getRealPath());
-
-								return [
-									'width' => $image->getWidth(),
-									'height' => $image->getHeight(),
-								];
-							}),
+						Toggle::make('featured')
+							->label('Featured')
+							->inline(false)
+							->default(true)
+							->helperText('Kategorie auf der Startseite anzeigen'),
 					])
 					->columnSpan(1)
+					->collapsible(),
+
+				// Left Column - Bild Section
+				Section::make('Bild')
+					->schema([
+						Repeater::make('media')
+							->label('Bild')
+							->relationship('media')
+							->maxItems(1)
+							->addActionLabel('Bild hinzufügen')
+							->collapsible()
+							->collapsed()
+							->itemLabel(fn (array $state): ?string => $state['caption'] ?? 'Bild')
+							->schema([
+								FileUpload::make('file_path')
+									->label('Bild')
+									->image()
+									->directory('categories')
+									->disk('public')
+									->imagePreviewHeight('250')
+									->maxSize(5120)
+									->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+									->helperText('Erlaubte Dateitypen: JPG, PNG, WebP')
+									->required()
+									->columnSpanFull()
+									->getUploadedFileNameForStorageUsing(function ($file) {
+										$fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+										$name = $fileName . '-' . uniqid() . '.' . $file->extension();
+										return (string) str($name);
+									}),
+								TextInput::make('caption')
+									->label('Bildunterschrift')
+									->maxLength(255)
+									->columnSpanFull(),
+							])
+							->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+								$data['file_name'] = basename($data['file_path']);
+
+								// Get image dimensions
+								$filePath = storage_path('app/public/' . $data['file_path']);
+								if (file_exists($filePath)) {
+									$imageInfo = getimagesize($filePath);
+									if ($imageInfo !== false) {
+										$data['width'] = $imageInfo[0];
+										$data['height'] = $imageInfo[1];
+									}
+								}
+
+								return $data;
+							})
+							->mutateRelationshipDataBeforeSaveUsing(function (array $data): array {
+								if (isset($data['file_path'])) {
+									$data['file_name'] = basename($data['file_path']);
+
+									// Get image dimensions if file path changed
+									$filePath = storage_path('app/public/' . $data['file_path']);
+									if (file_exists($filePath)) {
+										$imageInfo = getimagesize($filePath);
+										if ($imageInfo !== false) {
+											$data['width'] = $imageInfo[0];
+											$data['height'] = $imageInfo[1];
+										}
+									}
+								}
+								return $data;
+							})
+							->columns(1),
+					])
+					->columnSpan(2)
 					->collapsible(),
 			]);
 	}

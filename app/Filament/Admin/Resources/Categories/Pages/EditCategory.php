@@ -15,11 +15,16 @@ class EditCategory extends EditRecord
 		return [];
 	}
 
-  protected function getFormActions(): array
-  {
-    return [
-      ...parent::getFormActions(),
-      DeleteAction::make(),
-    ];
-  }
+	protected function getFormActions(): array
+	{
+		return [
+			...parent::getFormActions(),
+			DeleteAction::make(),
+		];
+	}
+
+	protected function getRedirectUrl(): string
+	{
+		return $this->getResource()::getUrl('index');
+	}
 }

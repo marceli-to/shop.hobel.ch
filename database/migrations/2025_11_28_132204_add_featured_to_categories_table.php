@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('order_items', function (Blueprint $table) {
-            $table->json('configuration')->nullable()->after('quantity');
+        Schema::table('categories', function (Blueprint $table) {
+            $table->boolean('featured')->default(true)->after('slug');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('order_items', function (Blueprint $table) {
-            $table->dropColumn('configuration');
+        Schema::table('categories', function (Blueprint $table) {
+            $table->dropColumn('featured');
         });
     }
 };

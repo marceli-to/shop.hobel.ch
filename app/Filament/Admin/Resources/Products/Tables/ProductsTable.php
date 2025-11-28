@@ -7,6 +7,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -17,11 +18,13 @@ class ProductsTable
 	{
 		return $table
 			->columns([
-				ImageColumn::make('image')
+				ImageColumn::make('media.file_path')
 					->label('Bild')
 					->disk('public')
-					->circular()
-					->size(60),
+					->size(40)
+					->getStateUsing(function ($record) {
+						return $record->media()->orderBy('order')->first()?->file_path;
+					}),
 				TextColumn::make('name')
 					->label('Titel')
 					->searchable()
@@ -37,6 +40,10 @@ class ProductsTable
 				TextColumn::make('stock')
 					->label('Verfügbar')
 					->numeric()
+					->sortable(),
+				IconColumn::make('published')
+					->label('Publiziert')
+					->boolean()
 					->sortable(),
 				TextColumn::make('uuid')
 					->label('UUID')

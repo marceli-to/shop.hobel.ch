@@ -4,21 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Category extends Model implements HasMedia
+class Category extends Model
 {
 	use HasSlug;
-	use InteractsWithMedia;
+	use SoftDeletes;
 
 	protected $fillable = [
 		'uuid',
 		'name',
 		'slug',
+		'featured',
+	];
+
+	protected $casts = [
+		'featured' => 'boolean',
 	];
 
 	/**
@@ -48,28 +54,27 @@ class Category extends Model implements HasMedia
 	}
 
 	/**
-	 * Register media collections.
+	 * Get all media items for this category.
 	 */
-	public function registerMediaCollections(): void
+	public function media(): MorphMany
 	{
-		$this->addMediaCollection('image')
-			->singleFile()
-			->useDisk('public');
+		return $this->morphMany(Media::class, 'mediable')->orderBy('order');
 	}
 
 	/**
-	 * Get the image path for use with Glide.
+	 * Get the single image for this category.
 	 */
-	public function getImagePath(?string $collection = 'image'): ?string
+	public function image(): MorphOne
 	{
-		$media = $this->getFirstMedia($collection);
+		return $this->morphOne(Media::class, 'mediable')->oldestOfMany('order');
+	}
 
-		if (!$media) {
-			return null;
-		}
-
-		// Return path relative to storage/app/public for Glide
-		return str_replace(storage_path('app/public/'), '', $media->getPath());
+	/**
+	 * Get the first/only image.
+	 */
+	public function getImage(): ?Media
+	{
+		return $this->image;
 	}
 
 	/**

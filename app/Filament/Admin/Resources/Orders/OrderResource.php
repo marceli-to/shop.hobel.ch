@@ -30,6 +30,8 @@ class OrderResource extends Resource
 
 	protected static ?string $breadcrumb = 'Übersicht';
 
+  protected static ?int $navigationSort = 3;
+
 	public static function form(Schema $schema): Schema
 	{
 		return OrderForm::configure($schema);
