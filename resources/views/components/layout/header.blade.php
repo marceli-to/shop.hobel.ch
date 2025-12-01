@@ -1,6 +1,7 @@
 @props([
   'dynamic' => false,
   'title' => 'Shop',
+  'backlink' => null,
   'showMobileTitle' => true,
   'showDesktopTitle' => true,
 ])
@@ -45,13 +46,25 @@
         lg:col-span-6
         lg:pl-20">
 
-      @if($title)
-      <h1
-        class="
-          text-lg
-          leading-none">
-        {{ $title }}
-      </h1>
+      @if ($backlink)
+        <div 
+          class="
+            flex 
+            justify-between 
+            items-start">
+          <h1 class="text-lg leading-none">
+            {{ $title }}
+          </h1>
+          <x-misc.backlink />
+        </div>
+      @else 
+
+        @if($title)
+          <h1 class="text-lg leading-none">
+            {{ $title }}
+          </h1>
+        @endif
+
       @endif
 
     </div>

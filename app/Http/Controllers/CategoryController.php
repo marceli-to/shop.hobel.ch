@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Actions\Category\GetProducts as GetProductsAction;
 use App\Models\Category;
 use Illuminate\View\View;
@@ -14,7 +12,7 @@ class CategoryController extends Controller
    * @param Category $category
    * @return View
    */
-  public function category(Category $category): View
+  public function get(Category $category): View
   {
     $products = (new GetProductsAction())->execute($category);
 
