@@ -19,6 +19,7 @@ class Product extends Model
 		'uuid',
 		'name',
 		'slug',
+    'short_description',
 		'description',
 		'price',
 		'stock',

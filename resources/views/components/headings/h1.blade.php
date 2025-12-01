@@ -1,6 +1,3 @@
-@props([
-  'class' => ''
-])
-<h1 class="{{ $class }}">
+<h1 {{ $attributes->merge(['class' => '']) }}>
   {{ $slot }}
 </h1>

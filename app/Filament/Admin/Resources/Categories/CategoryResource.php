@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Filament\Admin\Resources\Categories;
-
 use App\Filament\Admin\Resources\Categories\Pages\CreateCategory;
 use App\Filament\Admin\Resources\Categories\Pages\EditCategory;
 use App\Filament\Admin\Resources\Categories\Pages\ListCategories;

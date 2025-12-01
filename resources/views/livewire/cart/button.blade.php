@@ -1,7 +1,9 @@
-<div class="{{ $showButton ? 'space-y-3' : '' }}">
-	<x-product.quantity-selector :quantity="$quantity" :maxStock="$maxStock" />
+<div class="{{ $showButton ? 'space-y-40' : '' }}">
 
-	@if($showButton)
-		<x-product.add-button :inCart="$inCart" />
+	<x-cart.quantity :quantity="$quantity" :maxStock="$maxStock" />
+
+	@if ($showButton)
+		<x-cart.button :inCart="$inCart" />
 	@endif
+
 </div>

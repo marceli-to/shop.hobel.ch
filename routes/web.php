@@ -32,6 +32,6 @@ Route::get('/{category}/{product}', [ProductController::class, 'show'])->name('p
 // Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 // Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.show');
 // // Cart page
-// Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 /** // Prototype */
 

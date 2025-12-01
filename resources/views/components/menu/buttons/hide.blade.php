@@ -4,6 +4,6 @@
   x-on:click="menu = !menu"
   x-show="menu"
   aria-label="Menü verbergen"
-  class="{{ $class }}">
+  {{ $attributes->merge(['class' => '']) }}>
   <x-icons.cross class="w-full h-auto" />
 </a>

@@ -133,7 +133,7 @@
           lg:gap-x-80">
 
         <div class="lg:order-2">
-          <x-icons.cart />
+          <livewire:cart.icon />
         </div>
 
         <!-- Menu Buttons -->
@@ -158,5 +158,5 @@
   </div>
 
 </header>
-
+<livewire:cart.mini-cart />
 <x-menu.wrapper />

@@ -8,6 +8,9 @@
   --font-muoto-light: 'Muoto-Light', sans-serif;
   --font-muoto-light-italic: 'Muoto-Light-Italic', sans-serif;
 
+  --color-olive: #646E23;
+  --color-maroon: #782414;
+
   --text-xxs: 0.9375rem; /* 15px */
   --text-xs: 1.063rem;   /* 17px */
   --text-sm: 1.125rem;   /* 18px */
