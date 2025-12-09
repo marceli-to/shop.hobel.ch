@@ -36,7 +36,7 @@
     <!-- Items -->
     @if(!empty($cart['items']))
       <div class="overflow-y-auto">
-        <div>
+        <div class="flex flex-col gap-y-40">
 
           @foreach($cart['items'] as $item)
 
