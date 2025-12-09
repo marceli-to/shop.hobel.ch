@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Products\Schemas;
 
 use App\Models\Category;
+use App\Models\ShippingMethod;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -151,6 +152,13 @@ class ProductForm
 							->options(Category::pluck('name', 'id'))
 							->columns(2)
 							->helperText('Wählen Sie eine oder mehrere Kategorien aus'),
+
+						CheckboxList::make('shippingMethods')
+							->label('Versandarten')
+							->relationship('shippingMethods', 'name')
+							->options(ShippingMethod::orderBy('order')->pluck('name', 'id'))
+							->columns(1)
+							->helperText('Wählen Sie die verfügbaren Versandarten für dieses Produkt'),
 					])
 					->columnSpan(['lg' => 4]),
 			])

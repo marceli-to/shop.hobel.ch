@@ -17,6 +17,7 @@ Route::get('/img/{path}', [ImageController::class, 'show'])->where('path', '.*')
 Route::get('/pdf/invoice/{order:uuid}', [PdfController::class, 'generateInvoice'])->name('pdf.invoice');
 
 Route::get('/', [LandingController::class, 'index'])->name('page.landing');
+Route::view('/bestellung/warenkorb', 'pages.order.basket')->name('page.order.basket');
 Route::get('/{category}', [CategoryController::class, 'get'])->name('page.category');
 Route::get('/{category}/{product}', [ProductController::class, 'show'])->name('page.product')->scopeBindings();
 

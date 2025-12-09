@@ -19,7 +19,7 @@
     wire:model.blur="quantity"
     min="1"
     {{ $maxStock ? 'max=' . $maxStock : '' }}
-    class="w-[40%] h-full text-center bg-transparent !outline-none no-spinner" />
+    class="w-[40%] h-full text-center font-sans bg-transparent !outline-none no-spinner" />
 
 	<button
 		type="button"

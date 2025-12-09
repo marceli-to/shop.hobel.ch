@@ -15,12 +15,28 @@ class Cart extends Component
 	public function mount(): void
 	{
 		$this->cart = (new GetCartAction())->execute();
+		$this->calculateTotals();
 	}
 
 	#[On('cart-updated')]
 	public function updateCart(): void
 	{
 		$this->cart = (new GetCartAction())->execute();
+		$this->calculateTotals();
+	}
+
+	private function calculateTotals(): void
+	{
+		$taxRate = config('invoice.tax_rate') / 100;
+		$items = collect($this->cart['items'] ?? []);
+		
+		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
+		$shipping = $items->sum(fn($item) => $item['shipping_price'] ?? 0);
+		
+		$this->cart['subtotal'] = $subtotal + $shipping;
+		$this->cart['shipping'] = $shipping;
+		$this->cart['tax'] = $this->cart['subtotal'] * $taxRate;
+		$this->cart['total'] = $this->cart['subtotal'] + $this->cart['tax'];
 	}
 
 	public function removeItem(string $cartKey): void
@@ -70,10 +86,40 @@ class Cart extends Component
 		$this->dispatch('cart-updated');
 	}
 
+	public function updateShipping(string $cartKey, int $shippingMethodId): void
+	{
+		$this->cart = (new GetCartAction())->execute();
+
+		$this->cart['items'] = collect($this->cart['items'])
+			->map(function ($item) use ($cartKey, $shippingMethodId) {
+				if (($item['cart_key'] ?? $item['uuid']) === $cartKey) {
+					$item['selected_shipping'] = $shippingMethodId;
+					// Find the price for this shipping method
+					$method = collect($item['shipping_methods'] ?? [])->firstWhere('id', $shippingMethodId);
+					$item['shipping_price'] = $method['price'] ?? 0;
+				}
+				return $item;
+			})
+			->toArray();
+
+		$this->updateTotal();
+		$this->dispatch('cart-updated');
+	}
+
 	private function updateTotal(): void
 	{
-		$this->cart['total'] = collect($this->cart['items'])->sum(fn($item) => $item['price'] * $item['quantity']);
-		$this->cart['quantity'] = collect($this->cart['items'])->sum('quantity');
+		$taxRate = config('invoice.tax_rate') / 100;
+		$items = collect($this->cart['items']);
+		
+		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
+		$shipping = $items->sum(fn($item) => $item['shipping_price'] ?? 0);
+		
+		$this->cart['subtotal'] = $subtotal + $shipping;
+		$this->cart['shipping'] = $shipping;
+		$this->cart['tax'] = $this->cart['subtotal'] * $taxRate;
+		$this->cart['total'] = $this->cart['subtotal'] + $this->cart['tax'];
+		$this->cart['quantity'] = $items->sum('quantity');
+		
 		(new UpdateCartAction())->execute($this->cart);
 	}
 

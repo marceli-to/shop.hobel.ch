@@ -77,6 +77,17 @@ class Product extends Model
   }
 
 	/**
+	 * Shipping methods available for this product.
+	 */
+	public function shippingMethods(): BelongsToMany
+	{
+		return $this->belongsToMany(ShippingMethod::class, 'product_shipping_method')
+			->withPivot('price')
+			->withTimestamps()
+			->orderBy('order');
+	}
+
+	/**
 	 * Boot the model.
 	 */
 	protected static function boot()

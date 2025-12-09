@@ -92,6 +92,16 @@ class Button extends Component
 				return $item;
 			})->toArray();
 		} else {
+			// Get shipping methods for this product
+			$shippingMethods = $product->shippingMethods->map(function ($method) {
+				return [
+					'id' => $method->id,
+					'name' => $method->name,
+					'key' => $method->key,
+					'price' => $method->pivot->price ?? $method->price,
+				];
+			})->toArray();
+
 			// Add new item
 			$cart['items'][] = [
 				'cart_key' => $this->cartKey,
@@ -103,6 +113,9 @@ class Button extends Component
 				'quantity' => min($this->quantity, $product->stock),
 				'image' => $product->image,
 				'configuration' => [],
+				'shipping_methods' => $shippingMethods,
+				'selected_shipping' => $shippingMethods[0]['id'] ?? null,
+				'shipping_price' => $shippingMethods[0]['price'] ?? 0,
 			];
 		}
 
