@@ -1,6 +1,6 @@
-@props(['quantity', 'maxStock' => null])
+@props(['quantity', 'maxStock' => null, 'class' => 'border-black' ])
 
-<div class="flex items-center border-black border h-40">
+<div class="w-full flex items-center border {{ $class }} h-40">
 
 	<button
 		type="button"

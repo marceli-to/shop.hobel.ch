@@ -2,7 +2,7 @@
   class="
     bg-white
     w-[70%]
-    lg:w-col-padded-5
+    lg:w-col-5-padded
     fixed
     right-0
     z-30

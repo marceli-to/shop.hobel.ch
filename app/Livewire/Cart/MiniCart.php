@@ -12,10 +12,12 @@ class MiniCart extends Component
 {
 	public array $cart = [];
 	public bool $show = false;
+  public bool $isLanding = false;
 
 	public function mount(): void
 	{
 		$this->cart = (new GetCartAction())->execute();
+    $this->isLanding = request()->routeIs('page.landing');
 	}
 
 	#[On('toggle-mini-cart')]

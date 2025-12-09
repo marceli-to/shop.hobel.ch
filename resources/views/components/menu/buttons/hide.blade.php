@@ -5,5 +5,5 @@
   x-show="menu"
   aria-label="Menü verbergen"
   {{ $attributes->merge(['class' => '']) }}>
-  <x-icons.cross class="w-full h-auto" />
+  <x-icons.cross class="w-full h-auto" :size="'lg'" />
 </a>

@@ -1,6 +1,6 @@
-<div class="{{ $showButton ? 'space-y-40' : '' }}">
+<div class="w-full {{ $showButton ? 'space-y-40' : '' }}">
 
-	<x-cart.quantity :quantity="$quantity" :maxStock="$maxStock" />
+	<x-cart.quantity :quantity="$quantity" :maxStock="$maxStock" :class="$class ?? ''" />
 
 	@if ($showButton)
 		<x-cart.button :inCart="$inCart" />

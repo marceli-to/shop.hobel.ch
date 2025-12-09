@@ -34,7 +34,7 @@
 
     <x-grid.span class="lg:col-span-5 lg:col-start-8 px-20 lg:pl-0">
 
-      <div class="hidden lg:block lg:fixed lg:left-start-8 lg:bottom-40">
+      <div class="hidden lg:block lg:fixed lg:offset-col-8 lg:bottom-40">
         <x-misc.claim />
       </div>
       

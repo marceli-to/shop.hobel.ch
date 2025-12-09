@@ -10,9 +10,6 @@ use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 
-// Landing page
-Route::get('/', [LandingController::class, 'index'])->name('page.landing');
-
 // Image manipulation
 Route::get('/img/{path}', [ImageController::class, 'show'])->where('path', '.*');
 
