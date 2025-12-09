@@ -113,7 +113,7 @@
         @if($showMobileTitle && $title)
         <!-- Title, Backlink -->
         <h1 class="
-          font-muoto-regular
+          font-sans
           text-xxs
           leading-none
           lg:hidden">

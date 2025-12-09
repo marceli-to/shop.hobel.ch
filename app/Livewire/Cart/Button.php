@@ -65,6 +65,12 @@ class Button extends Component
 		}
 	}
 
+	public function updatedQuantity($value): void
+	{
+		$this->quantity = max(1, min((int) $value, $this->maxStock ?? PHP_INT_MAX));
+		$this->updateCart();
+	}
+
 	public function addToCart(): void
 	{
 		$product = Product::where('uuid', $this->productUuid)->first();

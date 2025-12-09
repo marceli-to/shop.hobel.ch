@@ -1,10 +1,22 @@
-<div class="bg-olive fixed left-0 lg:offset-col-8-inset w-full lg:w-col-3-padded {{ $isLanding ? 'top-(--header-height-expanded)' : 'top-(--header-height-sm)' }} lg:top-(--header-height-lg) h-dvh lg:h-[calc(100dvh_-_var(--header-height-lg))] {{ $show ? 'opacity-100 z-20' : '-z-1 opacity-0' }}">
+<div 
+  class="
+    bg-olive 
+    fixed 
+    left-0 
+    lg:offset-col-8-inset 
+    w-full 
+    h-dvh 
+    lg:h-[calc(100dvh_-_var(--header-height-lg))] 
+    lg:w-col-3-padded 
+    {{ $isLanding ? 'top-(--header-height-expanded) lg:top-(--header-height-lg)' : 'top-(--header-height-sm) lg:top-(--header-height-lg)' }} 
+    {{ $show ? 'opacity-100 z-30' : '-z-1 opacity-0' }}">
+
   <div class="flex flex-col h-full p-15 lg:p-20 text-white">
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-40">
 
-      <x-headings.h2 class="font-muoto-regular font-regular text-md leading-none">
+      <x-headings.h2 class="font-sans text-md leading-none">
         Warenkorb
       </x-headings.h2>
 
@@ -12,44 +24,44 @@
         wire:click="close"
         class="cursor-pointer"
         aria-label="Schließen">
-        <x-icons.cross :size="'sm'" />
+        <x-icons.cross :size="'md'" />
       </button>
     </div>
 
-    <!-- Cart Items -->
-    <div class="overflow-y-auto">
-      @if(empty($cart['items']))
-        <div class="text-center py-12">
-          <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-          </svg>
-          <p>Ihr Warenkorb ist leer</p>
-        </div>
-      @else
-        <div class="space-y-4">
+    <!-- Empty -->
+    @if (empty($cart['items']))
+      <p>Ihr Warenkorb ist leer</p>
+    @endif
+
+    <!-- Items -->
+    @if(!empty($cart['items']))
+      <div class="overflow-y-auto">
+        <div>
+
           @foreach($cart['items'] as $item)
+
             @php $cartKey = $item['cart_key'] ?? $item['uuid']; @endphp
 
             <div 
               class="flex flex-col gap-y-40"
               wire:key="mini-cart-item-{{ $cartKey }}">
 
-              <div class="flex items-center justify-between h-40 border-y border-white">
+              <x-misc.row class="justify-between border-y !border-white relative">
                 
-                <x-headings.h3 class="font-muoto-regular font-regular">
+                <x-headings.h3 class="font-sans">
                   {{ $item['name'] }}
                 </x-headings.h3>
 
                 <button
                   wire:click="removeItem('{{ $cartKey }}')"
-                  class=""
-                  aria-label="Entfernen">
+                  class="group flex items-center justify-center cursor-pointer w-40 h-40 absolute left-1/2 -translate-x-1/2"
+                  aria-label="Artikel entfernen">
+                  <x-icons.cross :size="'sm'" class="group-hover:rotate-180 transition-all" />
                 </button>
 
-                <span>
-                  Fr. {{ number_format($item['price'] * $item['quantity'], 2, '.', '\'') }}
-                </span>
-              </div>
+                <x-cart.money :amount="$item['price'] * $item['quantity']" />
+
+              </x-misc.row>
 
               <!-- Configuration Details -->
               {{-- @if(!empty($item['configuration']))
@@ -73,28 +85,28 @@
             </div>  
           @endforeach
         </div>
-      @endif
-    </div>
+      </div>
+    @endif
 
     <!-- Footer -->
     @if(!empty($cart['items']))
       <div class="flex flex-col gap-y-40 mt-40">
 
-        <div class="flex items-center justify-between font-muoto-regular font-regular min-h-40 border-y border-y-white">
+        <x-misc.row class="font-sans justify-between border-y !border-white">
           <span>Total</span>
-          <span>
-            Fr. {{ number_format($cart['total'] ?? 0, 2, '.', '\'') }}
-          </span>
-        </div>
+          <x-cart.money :amount="$cart['total']" />
+        </x-misc.row>
 
         <a
           href="{{ route('cart.index') }}"
           wire:click="close"
-          class="flex items-center justify-center font-muoto-regular font-regular w-full border border-whiite h-40 cursor-pointer">
+          class="flex items-center justify-center font-sans w-full border border-white h-40 cursor-pointer">
           <span>Zum Warenkorb</span>
         </a>
+
       </div>
     @endif
 
   </div>
+  
 </div>

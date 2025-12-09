@@ -24,7 +24,7 @@
 
     <x-grid.span class="lg:col-span-3 lg:col-start-8 px-20 lg:px-0 lg:mt-80">
       
-      <x-misc.row class="font-muoto-regular font-regular">
+      <x-misc.row class="font-sans">
         {{ $product->name }}
       </x-misc.row>
       
@@ -39,7 +39,7 @@
       </x-misc.row>
 
       <x-misc.row class="border-b border-b-black">
-        Fr. {{ number_format($product->price, 2, '.', '\'') }}
+        <x-cart.money :amount="$product->price" />
       </x-misc.row>
 
       <div class="mt-40">

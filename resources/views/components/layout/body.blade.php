@@ -2,7 +2,6 @@
   x-data="{ menu: false }"
   class="
     antialiased 
-    font-muoto-light 
     font-light 
     text-sm 
     leading-[1.35] 

@@ -4,9 +4,9 @@
 @import "./spacing.css";
 
 @theme {
-  --font-muoto-regular: 'Muoto-Regular', sans-serif;
-  --font-muoto-light: 'Muoto-Light', sans-serif;
-  --font-muoto-light-italic: 'Muoto-Light-Italic', sans-serif;
+  --font-sans: 'Muoto-Regular', sans-serif;
+  --font-light: 'Muoto-Light', sans-serif;
+  --font-light-italic: 'Muoto-Light-Italic', sans-serif;
 
   --color-olive: #646E23;
   --color-maroon: #782414;
@@ -58,7 +58,7 @@
   }
 
   strong {
-    @apply font-muoto-regular font-normal;
+    @apply font-sans;
   }
 
 }
@@ -97,4 +97,13 @@
 @utility w-col-5-padded {
   width: calc(var(--col-width) * 5 + var(--grid-gap) * 4 + 1.25rem);
   padding-left: 1.25rem;
+}
+
+@utility no-spinner {
+  appearance: none;
+  -moz-appearance: textfield;
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    appearance: none;
+  }
 }
