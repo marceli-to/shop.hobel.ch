@@ -14,10 +14,17 @@ class PayrexxService
 
     public function __construct()
     {
-        $this->payrexx = new Payrexx(
-            config('payrexx.instance'),
-            config('payrexx.secret')
-        );
+        $instance = config('payrexx.instance');
+        $secret = config('payrexx.secret');
+        
+        // Debug: Log the config values (masked)
+        Log::debug('Payrexx Config', [
+            'instance' => $instance,
+            'secret_length' => strlen($secret ?? ''),
+            'secret_first_chars' => substr($secret ?? '', 0, 4) . '...',
+        ]);
+        
+        $this->payrexx = new Payrexx($instance, $secret);
     }
 
     /**
