@@ -181,8 +181,8 @@ class PayrexxService
         $design->setHeaderBackgroundColor($options['headerBackgroundColor'] ?? '000000');
         
         // VPOS gradient colors
-        $design->setVPOSGradientColor1($options['vposGradientColor1'] ?? '000000');
-        $design->setVPOSGradientColor2($options['vposGradientColor2'] ?? '000000');
+        $design->setVPOSGradientColor1($options['vposGradientColor1'] ?? 'ffffff');
+        $design->setVPOSGradientColor2($options['vposGradientColor2'] ?? 'ffffff');
         
         // Typography
         $design->setFontFamily($options['fontFamily'] ?? 'Arial');
@@ -203,9 +203,10 @@ class PayrexxService
         $design->setUseIndividualEmailLogo($options['useIndividualEmailLogo'] ?? false);
         $design->setEmailHeaderBackgroundColor($options['emailHeaderBackgroundColor'] ?? 'FAFAFA');
         
-        // Header image (logo) - pass a CURLFile if provided
-        if (!empty($options['headerImagePath']) && file_exists($options['headerImagePath'])) {
-            $design->setHeaderImage(new \CURLFile($options['headerImagePath']));
+        // Header image (logo) - use default or custom path
+        $logoPath = $options['headerImagePath'] ?? public_path('img/logo.png');
+        if (file_exists($logoPath)) {
+            $design->setHeaderImage(new \CURLFile($logoPath));
         }
         
         // Custom header links per language
