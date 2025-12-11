@@ -47,4 +47,16 @@ return [
 
     'psp' => [],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Design ID
+    |--------------------------------------------------------------------------
+    |
+    | Custom design ID for the payment page. Create a design via the API
+    | or Payrexx dashboard and set the ID here.
+    |
+    */
+
+    'design_id' => env('PAYREXX_DESIGN_ID', null),
+
 ];

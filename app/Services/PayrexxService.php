@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Payrexx\Payrexx;
 use Payrexx\Models\Request\Gateway;
+use Payrexx\Models\Request\Design;
 use Payrexx\Models\Request\Transaction;
 use Payrexx\PayrexxException;
 use Illuminate\Support\Facades\Log;
@@ -50,6 +51,12 @@ class PayrexxService
         $gateway->setSuccessRedirectUrl(route('payment.success', ['reference' => $referenceId]));
         $gateway->setCancelRedirectUrl(route('payment.cancel', ['reference' => $referenceId]));
         $gateway->setFailedRedirectUrl(route('payment.cancel', ['reference' => $referenceId]));
+        
+        // Apply custom design if configured
+        $designId = config('payrexx.design_id');
+        if ($designId) {
+            $gateway->setDesign($designId);
+        }
         
         // Optional: Set specific PSPs (payment methods)
         $psp = config('payrexx.psp', []);
@@ -141,5 +148,83 @@ class PayrexxService
         }
 
         return $gateway['status'] === 'confirmed';
+    }
+
+    /**
+     * Create a custom design for the payment page.
+     *
+     * @param array $options Design options
+     * @return array Design data
+     * @throws PayrexxException
+     */
+    public function createDesign(array $options = []): array
+    {
+        $design = new Design();
+        
+        // Basic settings
+        $design->setDefault($options['default'] ?? false);
+        $design->setName($options['name'] ?? 'Shop Design');
+        
+        // Header image shape: square, rectangular or round
+        $design->setHeaderImageShape($options['headerImageShape'] ?? 'rectangular');
+        
+        // Logo settings (Hex codes without #)
+        $design->setLogoBackgroundColor($options['logoBackgroundColor'] ?? 'FFFFFF');
+        $design->setLogoBorderColor($options['logoBorderColor'] ?? 'DDDDDD');
+        
+        // Background: 'color' or 'image'
+        $design->setBackground($options['background'] ?? 'color');
+        $design->setBackgroundColor($options['backgroundColor'] ?? 'F9FAFA');
+        
+        // Header background: 'color' or 'image'
+        $design->setHeaderBackground($options['headerBackground'] ?? 'color');
+        $design->setHeaderBackgroundColor($options['headerBackgroundColor'] ?? '00AFF0');
+        
+        // VPOS gradient colors
+        $design->setVPOSGradientColor1($options['vposGradientColor1'] ?? '00AFF0');
+        $design->setVPOSGradientColor2($options['vposGradientColor2'] ?? '00AFF0');
+        
+        // Typography
+        $design->setFontFamily($options['fontFamily'] ?? 'Arial');
+        $design->setFontSize($options['fontSize'] ?? '14');
+        $design->setTextColor($options['textColor'] ?? '24363A');
+        $design->setTextColorVPOS($options['textColorVPOS'] ?? '24363A');
+        
+        // Link colors
+        $design->setLinkColor($options['linkColor'] ?? '0074D6');
+        $design->setLinkHoverColor($options['linkHoverColor'] ?? '2A6496');
+        
+        // Button colors
+        $design->setButtonColor($options['buttonColor'] ?? '99CC33');
+        $design->setButtonHoverColor($options['buttonHoverColor'] ?? '19B8F2');
+        
+        // Other settings
+        $design->setEnableRoundedCorners($options['enableRoundedCorners'] ?? true);
+        $design->setUseIndividualEmailLogo($options['useIndividualEmailLogo'] ?? false);
+        $design->setEmailHeaderBackgroundColor($options['emailHeaderBackgroundColor'] ?? 'FAFAFA');
+        
+        // Header image (logo) - pass a CURLFile if provided
+        if (!empty($options['headerImagePath']) && file_exists($options['headerImagePath'])) {
+            $design->setHeaderImage(new \CURLFile($options['headerImagePath']));
+        }
+        
+        // Custom header links per language
+        if (!empty($options['headerImageCustomLink'])) {
+            $design->setHeaderImageCustomLink($options['headerImageCustomLink']);
+        }
+
+        try {
+            $response = $this->payrexx->create($design);
+            
+            return [
+                'id' => $response->getId(),
+                'name' => $response->getName(),
+            ];
+        } catch (PayrexxException $e) {
+            Log::error('Payrexx Design Creation Failed', [
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
     }
 }
