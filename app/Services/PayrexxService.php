@@ -166,11 +166,11 @@ class PayrexxService
         $design->setName($options['name'] ?? 'Shop Design');
         
         // Header image shape: square, rectangular or round
-        $design->setHeaderImageShape($options['headerImageShape'] ?? 'rectangular');
+        $design->setHeaderImageShape($options['headerImageShape'] ?? 'square');
         
         // Logo settings (Hex codes without #)
         $design->setLogoBackgroundColor($options['logoBackgroundColor'] ?? 'FFFFFF');
-        $design->setLogoBorderColor($options['logoBorderColor'] ?? 'DDDDDD');
+        $design->setLogoBorderColor($options['logoBorderColor'] ?? 'ffffff');
         
         // Background: 'color' or 'image'
         $design->setBackground($options['background'] ?? 'color');
