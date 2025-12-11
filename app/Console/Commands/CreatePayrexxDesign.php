@@ -27,15 +27,22 @@ class CreatePayrexxDesign extends Command
             $this->newLine();
             $this->info('✓ Design created successfully!');
             $this->table(['Property', 'Value'], [
-                ['ID', $design['id']],
+                ['ID', $design['id'] ?? 'N/A'],
                 ['Name', $design['name']],
             ]);
 
-            $this->newLine();
-            $this->line('Add this to your <comment>.env</comment> file:');
-            $this->newLine();
-            $this->line("  <info>PAYREXX_DESIGN_ID={$design['id']}</info>");
-            $this->newLine();
+            if ($design['id']) {
+                $this->newLine();
+                $this->line('Add this to your <comment>.env</comment> file:');
+                $this->newLine();
+                $this->line("  <info>PAYREXX_DESIGN_ID={$design['id']}</info>");
+                $this->newLine();
+            } else {
+                $this->newLine();
+                $this->warn('No design ID returned. Check the Payrexx dashboard for the design ID.');
+                $this->line('Check logs for full response: storage/logs/laravel.log');
+                $this->newLine();
+            }
 
             return Command::SUCCESS;
         } catch (PayrexxException $e) {

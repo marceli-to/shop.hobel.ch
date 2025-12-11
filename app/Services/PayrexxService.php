@@ -216,9 +216,30 @@ class PayrexxService
         try {
             $response = $this->payrexx->create($design);
             
+            // Debug: log the full response to see what's available
+            Log::debug('Payrexx Design Response', [
+                'response' => print_r($response, true),
+            ]);
+            
+            $id = null;
+            $name = $options['name'] ?? 'Shop Design';
+            
+            try {
+                $id = $response->getId();
+            } catch (\Error $e) {
+                // ID not set in response
+            }
+            
+            try {
+                $name = $response->getName();
+            } catch (\Error $e) {
+                // Name not set in response
+            }
+            
             return [
-                'id' => $response->getId(),
-                'name' => $response->getName(),
+                'id' => $id,
+                'name' => $name,
+                'response' => $response,
             ];
         } catch (PayrexxException $e) {
             Log::error('Payrexx Design Creation Failed', [
