@@ -17,14 +17,6 @@ class PayrexxService
     {
         $instance = config('payrexx.instance');
         $secret = config('payrexx.secret');
-        
-        // Debug: Log the config values (masked)
-        Log::debug('Payrexx Config', [
-            'instance' => $instance,
-            'secret_length' => strlen($secret ?? ''),
-            'secret_first_chars' => substr($secret ?? '', 0, 4) . '...',
-        ]);
-        
         $this->payrexx = new Payrexx($instance, $secret);
     }
 
@@ -64,16 +56,38 @@ class PayrexxService
             $gateway->setPsp($psp);
         }
         
-        // Optional: Add basket items for display
+        // Add basket items for display (including shipping and tax)
         if (!empty($cart['items'])) {
             $basketItems = [];
+            
             foreach ($cart['items'] as $item) {
+                // Product item
                 $basketItems[] = [
                     'name' => $item['name'],
                     'quantity' => $item['quantity'],
                     'amount' => (int) round($item['price'] * 100),
                 ];
+                
+                // Shipping per item (if applicable)
+                if (!empty($item['shipping_price']) && $item['shipping_price'] > 0) {
+                    $basketItems[] = [
+                        'name' => 'Versand: ' . $item['name'],
+                        'quantity' => 1,
+                        'amount' => (int) round($item['shipping_price'] * 100),
+                    ];
+                }
             }
+            
+            // Add tax as separate line item
+            if (!empty($cart['tax']) && $cart['tax'] > 0) {
+                $taxRate = config('invoice.tax_rate', 8.1);
+                $basketItems[] = [
+                    'name' => "MwSt. {$taxRate}%",
+                    'quantity' => 1,
+                    'amount' => (int) round($cart['tax'] * 100),
+                ];
+            }
+            
             $gateway->setBasket($basketItems);
         }
 
@@ -216,11 +230,6 @@ class PayrexxService
 
         try {
             $response = $this->payrexx->create($design);
-            
-            // Debug: log the full response to see what's available
-            Log::debug('Payrexx Design Response', [
-                'response' => print_r($response, true),
-            ]);
             
             $id = null;
             $name = $options['name'] ?? 'Shop Design';
