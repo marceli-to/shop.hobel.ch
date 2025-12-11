@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ImageController;
-
+use App\Http\Controllers\PaymentController;
 
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ProductController;
@@ -18,6 +18,14 @@ Route::get('/pdf/invoice/{order:uuid}', [PdfController::class, 'generateInvoice'
 
 Route::get('/', [LandingController::class, 'index'])->name('page.landing');
 Route::view('/bestellung/warenkorb', 'pages.order.basket')->name('page.order.basket');
+
+// Checkout & Payment
+Route::get('/checkout/summary', [PaymentController::class, 'summary'])->name('checkout.summary');
+Route::post('/payment/initiate', [PaymentController::class, 'initiate'])->name('payment.initiate');
+Route::get('/payment/success/{reference}', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payment/cancel/{reference}', [PaymentController::class, 'cancel'])->name('payment.cancel');
+Route::post('/payment/webhook', [PaymentController::class, 'webhook'])->name('payment.webhook');
+
 Route::get('/{category}', [CategoryController::class, 'get'])->name('page.category');
 Route::get('/{category}/{product}', [ProductController::class, 'show'])->name('page.product')->scopeBindings();
 
@@ -31,5 +39,7 @@ Route::get('/{category}/{product}', [ProductController::class, 'show'])->name('p
 // Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.show');
 // // Cart page
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+
+
 /** // Prototype */
 
