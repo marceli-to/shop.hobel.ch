@@ -174,15 +174,15 @@ class PayrexxService
         
         // Background: 'color' or 'image'
         $design->setBackground($options['background'] ?? 'color');
-        $design->setBackgroundColor($options['backgroundColor'] ?? 'F9FAFA');
+        $design->setBackgroundColor($options['backgroundColor'] ?? 'f9f9f9');
         
         // Header background: 'color' or 'image'
         $design->setHeaderBackground($options['headerBackground'] ?? 'color');
-        $design->setHeaderBackgroundColor($options['headerBackgroundColor'] ?? '00AFF0');
+        $design->setHeaderBackgroundColor($options['headerBackgroundColor'] ?? '000000');
         
         // VPOS gradient colors
-        $design->setVPOSGradientColor1($options['vposGradientColor1'] ?? '00AFF0');
-        $design->setVPOSGradientColor2($options['vposGradientColor2'] ?? '00AFF0');
+        $design->setVPOSGradientColor1($options['vposGradientColor1'] ?? '000000');
+        $design->setVPOSGradientColor2($options['vposGradientColor2'] ?? '000000');
         
         // Typography
         $design->setFontFamily($options['fontFamily'] ?? 'Arial');
