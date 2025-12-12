@@ -17,7 +17,12 @@ Route::get('/img/{path}', [ImageController::class, 'show'])->where('path', '.*')
 Route::get('/pdf/invoice/{order:uuid}', [PdfController::class, 'generateInvoice'])->name('pdf.invoice');
 
 Route::get('/', [LandingController::class, 'index'])->name('page.landing');
-Route::view('/bestellung/warenkorb', 'pages.order.basket')->name('page.order.basket');
+Route::view('/bestellung/warenkorb', 'pages.checkout.basket')->name('page.checkout.basket');
+Route::view('/bestellung/rechnungsadresse', 'pages.checkout.invoice-address')->name('page.checkout.invoice-address');
+Route::view('/bestellung/lieferadresse', 'pages.checkout.delivery-address')->name('page.checkout.delivery-address');
+Route::view('/bestellung/zahlung', 'pages.checkout.payment')->name('page.checkout.payment');
+Route::view('/bestellung/zusammenfassung', 'pages.checkout.summary')->name('page.checkout.summary');
+Route::view('/bestellung/bestaetigung', 'pages.checkout.confirmation')->name('page.checkout.confirmation');
 
 // Checkout & Payment
 Route::get('/checkout/summary', [PaymentController::class, 'summary'])->name('checkout.summary');

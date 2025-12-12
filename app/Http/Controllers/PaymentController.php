@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Services\PayrexxService;
@@ -41,8 +40,7 @@ class PaymentController extends Controller
         $cart = (new GetCartAction())->execute();
 
         if (empty($cart['items'])) {
-            return redirect()->route('cart.index')
-                ->with('error', 'Ihr Warenkorb ist leer.');
+          return redirect()->route('cart.index')->with('error', 'Ihr Warenkorb ist leer.');
         }
 
         // Generate unique reference ID
@@ -62,8 +60,7 @@ class PaymentController extends Controller
             return redirect()->away($gateway['link']);
 
         } catch (PayrexxException $e) {
-            return redirect()->route('checkout.summary')
-                ->with('error', 'Zahlung konnte nicht initialisiert werden. Bitte versuchen Sie es erneut.');
+            return redirect()->route('checkout.summary')->with('error', 'Zahlung konnte nicht initialisiert werden. Bitte versuchen Sie es erneut.');
         }
     }
 
@@ -77,8 +74,7 @@ class PaymentController extends Controller
 
         // Verify reference matches
         if ($reference !== $storedReference) {
-            return redirect()->route('cart.index')
-                ->with('error', 'Ungültige Zahlungsreferenz.');
+            return redirect()->route('cart.index')->with('error', 'Ungültige Zahlungsreferenz.');
         }
 
         // Verify payment with Payrexx
@@ -109,8 +105,7 @@ class PaymentController extends Controller
         // Clear payment session data but keep cart
         session()->forget(['payment_reference', 'payment_gateway_id', 'payment_cart']);
 
-        return redirect()->route('checkout.summary')
-            ->with('error', 'Die Zahlung wurde abgebrochen. Bitte versuchen Sie es erneut.');
+        return redirect()->route('checkout.summary')->with('error', 'Die Zahlung wurde abgebrochen. Bitte versuchen Sie es erneut.');
     }
 
     /**

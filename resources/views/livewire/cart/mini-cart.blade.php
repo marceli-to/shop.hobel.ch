@@ -98,7 +98,7 @@
         </x-misc.row>
 
         <a
-          href="{{ route('page.order.basket') }}"
+          href="{{ route('page.checkout.basket') }}"
           wire:click="close"
           class="flex items-center justify-center font-sans w-full border border-white h-40 cursor-pointer">
           <span>Zum Warenkorb</span>

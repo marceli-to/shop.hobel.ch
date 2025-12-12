@@ -146,8 +146,8 @@
             justify-center
             lg:order-1">
 
-          <x-menu.buttons.show class="w-40 h-auto" />
-          <x-menu.buttons.hide class="w-30 h-auto" />
+          <x-menu.page.buttons.show class="w-40 h-auto" />
+          <x-menu.page.buttons.hide class="w-30 h-auto" />
 
         </div>
 
@@ -159,4 +159,4 @@
 
 </header>
 <livewire:cart.mini-cart />
-<x-menu.wrapper />
+<x-menu.page.wrapper />

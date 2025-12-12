@@ -111,14 +111,8 @@
 
       </div>
 
-      <!-- Checkout Button -->
-      <div>
-        <a 
-          href="{{ route('checkout.summary') }}"
-          class="block w-full py-15 px-20 bg-black text-white font-sans text-center hover:bg-gray-800 transition-colors">
-          Zur Kasse
-        </a>
-      </div>
+
+      <x-form.button route="{{ route('page.checkout.invoice-address') }}" :title="'Rechnungsadresse'" />
 
     </div>
   @endif
