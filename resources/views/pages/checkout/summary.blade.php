@@ -13,53 +13,53 @@
       <div class="flex flex-col gap-y-40">
 
         <!-- Header -->
-        <x-misc.row class="border-t-0">
+        <x-layout.row class="border-t-0">
           <x-headings.h2>Zusammenfassung</x-headings.h2>
-        </x-misc.row>
+        </x-layout.row>
 
         <!-- Items -->
         @foreach($cart['items'] as $item)
           <div>
-            <x-misc.row class="justify-between">
+            <x-layout.row class="justify-between">
               <span class="font-sans">{{ $item['name'] }}</span>
               <x-cart.money :amount="$item['price'] * $item['quantity']" />
-            </x-misc.row>
+            </x-layout.row>
 
             @if($item['description'])
-              <x-misc.row>
+              <x-layout.row>
                 <span class="text-gray-600">{{ $item['description'] }}</span>
-              </x-misc.row>
+              </x-layout.row>
             @endif
 
-            <x-misc.row class="justify-between">
+            <x-layout.row class="justify-between">
               <span>Anzahl: {{ $item['quantity'] }}</span>
-            </x-misc.row>
+            </x-layout.row>
 
             @if(!empty($item['shipping_price']) && $item['shipping_price'] > 0)
-              <x-misc.row class="justify-between border-b">
+              <x-layout.row class="justify-between border-b">
                 <span>Versand</span>
                 <x-cart.money :amount="$item['shipping_price']" />
-              </x-misc.row>
+              </x-layout.row>
             @endif
           </div>
         @endforeach
 
         <!-- Totals -->
         <div>
-          <x-misc.row class="justify-between">
+          <x-layout.row class="justify-between">
             <span>Netto</span>
             <x-cart.money :amount="$cart['subtotal'] ?? $cart['total']" />
-          </x-misc.row>
+          </x-layout.row>
 
-          <x-misc.row class="justify-between">
+          <x-layout.row class="justify-between">
             <span>MwSt. {{ config('invoice.tax_rate') }}%</span>
             <x-cart.money :amount="$cart['tax'] ?? 0" />
-          </x-misc.row>
+          </x-layout.row>
 
-          <x-misc.row class="justify-between font-sans border-b">
+          <x-layout.row class="justify-between font-sans border-b">
             <span>Total</span>
             <x-cart.money :amount="$cart['total']" />
-          </x-misc.row>
+          </x-layout.row>
         </div>
 
         <!-- Payment Button -->

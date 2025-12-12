@@ -18,9 +18,9 @@
         </div>
 
         <!-- Order Reference -->
-        <x-misc.row class="justify-center">
+        <x-layout.row class="justify-center">
           <span>Bestellreferenz: <strong>{{ $reference }}</strong></span>
-        </x-misc.row>
+        </x-layout.row>
 
         <!-- Continue Shopping -->
         <div class="text-center">

@@ -24,23 +24,23 @@
 
     <x-grid.span class="lg:col-span-3 lg:col-start-8 px-20 lg:px-0 lg:mt-80">
       
-      <x-misc.row class="font-sans">
+      <x-layout.row class="font-sans">
         {{ $product->name }}
-      </x-misc.row>
+      </x-layout.row>
       
       @if ($product->short_description)
-        <x-misc.row>
+        <x-layout.row>
           {{ $product->short_description }}
-        </x-misc.row>
+        </x-layout.row>
       @endif
       
-      <x-misc.row>
+      <x-layout.row>
         Lieferfrist ca. 4 Wochen
-      </x-misc.row>
+      </x-layout.row>
 
-      <x-misc.row class="border-b border-b-black">
+      <x-layout.row class="border-b border-b-black">
         <x-cart.money :amount="$product->price" />
-      </x-misc.row>
+      </x-layout.row>
 
       <div class="mt-40">
         <livewire:cart.button :productUuid="$product->uuid" />

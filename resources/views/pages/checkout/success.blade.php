@@ -18,28 +18,28 @@
         </div>
 
         <!-- Order Reference -->
-        <x-misc.row class="justify-center">
+        <x-layout.row class="justify-center">
           <span>Bestellreferenz: <strong>{{ $reference }}</strong></span>
-        </x-misc.row>
+        </x-layout.row>
 
         <!-- Order Summary -->
         @if(!empty($cart['items']))
           <div>
-            <x-misc.row class="border-t-0">
+            <x-layout.row class="border-t-0">
               <span class="font-sans">Bestellübersicht</span>
-            </x-misc.row>
+            </x-layout.row>
 
             @foreach($cart['items'] as $item)
-              <x-misc.row class="justify-between">
+              <x-layout.row class="justify-between">
                 <span>{{ $item['name'] }} × {{ $item['quantity'] }}</span>
                 <x-cart.money :amount="$item['price'] * $item['quantity']" />
-              </x-misc.row>
+              </x-layout.row>
             @endforeach
 
-            <x-misc.row class="justify-between font-sans border-b">
+            <x-layout.row class="justify-between font-sans border-b">
               <span>Total</span>
               <x-cart.money :amount="$cart['total']" />
-            </x-misc.row>
+            </x-layout.row>
           </div>
         @endif
 

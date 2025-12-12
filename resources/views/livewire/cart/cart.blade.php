@@ -2,9 +2,9 @@
 
   <!-- Empty -->
   @if (empty($cart['items']))
-    <x-misc.row class="border-t-0 items-start">
+    <x-layout.row class="border-t-0 items-start">
       <span>Ihr Warenkorb ist leer</span>
-    </x-misc.row>
+    </x-layout.row>
   @endif
 
   <!-- Items/Totals -->
@@ -23,7 +23,7 @@
           <div>
 
             <!-- Product header row: Name, X button, Price -->
-            <x-misc.row class="justify-between border-t relative">
+            <x-layout.row class="justify-between border-t relative">
               
               <x-headings.h3 class="font-sans">
                 {{ $item['name'] }}
@@ -38,21 +38,21 @@
 
               <x-cart.money :amount="$item['price'] * $item['quantity']" />
 
-            </x-misc.row>
+            </x-layout.row>
 
             <!-- Description -->
             @if($item['description'])
-              <x-misc.row class="border-b">
+              <x-layout.row class="border-b">
                 <span>{{ $item['description'] }}</span>
-              </x-misc.row>
+              </x-layout.row>
             @endif
 
             <!-- Configuration Details -->
             @if(!empty($item['configuration']))
               @foreach($item['configuration'] as $config)
-                <x-misc.row>
+                <x-layout.row>
                   <span>{{ $config['label'] }}</span>
-                </x-misc.row>
+                </x-layout.row>
               @endforeach
             @endif
           </div>
@@ -61,7 +61,7 @@
           @if(!empty($item['shipping_methods']))
             <div>
               @foreach($item['shipping_methods'] as $index => $method)
-                <x-misc.row class="justify-between {{ $loop->last ? 'border-b' : '' }}">
+                <x-layout.row class="justify-between {{ $loop->last ? 'border-b' : '' }}">
                   <label class="flex items-center gap-x-20 cursor-pointer">
                     <input 
                       type="radio" 
@@ -76,7 +76,7 @@
                     <span>{{ $method['name'] }}</span>
                   </label>
                   <x-cart.money :amount="$method['price']" />
-                </x-misc.row>
+                </x-layout.row>
               @endforeach
             </div>
           @endif
@@ -94,20 +94,20 @@
       <!-- Totals -->
       <div>
 
-        <x-misc.row class="justify-between">
+        <x-layout.row class="justify-between">
           <span>Netto</span>
           <x-cart.money :amount="$cart['subtotal'] ?? $cart['total']" />
-        </x-misc.row>
+        </x-layout.row>
 
-        <x-misc.row class="justify-between">
+        <x-layout.row class="justify-between">
           <span>MwSt. {{ config('invoice.tax_rate') }}%</span>
           <x-cart.money :amount="$cart['tax'] ?? 0" />
-        </x-misc.row>
+        </x-layout.row>
 
-        <x-misc.row class="justify-between font-sans border-b">
+        <x-layout.row class="justify-between font-sans border-b">
           <span>Total</span>
           <x-cart.money :amount="$cart['total']" />
-        </x-misc.row>
+        </x-layout.row>
 
       </div>
 

@@ -2,7 +2,7 @@
 
   <form wire:submit="save" class="lg:grid lg:grid-cols-6 lg:gap-x-20">
 
-    <x-misc.row class="col-span-3 lg:border-b">
+    <x-layout.row class="col-span-3 lg:border-b">
       <label class="flex items-center cursor-pointer w-full h-80">
         <span class="block w-35">
           <input 
@@ -19,9 +19,9 @@
           <span>Kreditkarte</span>
         </span>
       </label>
-    </x-misc.row>
+    </x-layout.row>
 
-    <x-misc.row class="col-span-3 border-b">
+    <x-layout.row class="col-span-3 border-b">
       <label class="flex items-center cursor-pointer w-full h-80">
         <span class="block w-35">
           <input 
@@ -38,7 +38,7 @@
           <span>Rechnung</span>
         </span>
       </label>
-    </x-misc.row>
+    </x-layout.row>
 
     <x-form.button type="submit" :title="'Zusammenfassung'" class="col-span-6 mt-40" />
 

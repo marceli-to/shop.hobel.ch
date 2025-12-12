@@ -46,7 +46,7 @@
               class="flex flex-col gap-y-40"
               wire:key="mini-cart-item-{{ $cartKey }}">
 
-              <x-misc.row class="justify-between border-y !border-white relative">
+              <x-layout.row class="justify-between border-y !border-white relative">
                 
                 <x-headings.h3 class="font-sans">
                   {{ $item['name'] }}
@@ -61,7 +61,7 @@
 
                 <x-cart.money :amount="$item['price'] * $item['quantity']" />
 
-              </x-misc.row>
+              </x-layout.row>
 
               <!-- Configuration Details -->
               {{-- @if(!empty($item['configuration']))
@@ -92,10 +92,10 @@
     @if(!empty($cart['items']))
       <div class="flex flex-col gap-y-40 mt-40">
 
-        <x-misc.row class="font-sans justify-between border-y !border-white">
+        <x-layout.row class="font-sans justify-between border-y !border-white">
           <span>Total</span>
           <x-cart.money :amount="$cart['total']" />
-        </x-misc.row>
+        </x-layout.row>
 
         <a
           href="{{ route('page.checkout.basket') }}"

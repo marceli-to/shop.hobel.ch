@@ -146,8 +146,8 @@
             justify-center
             lg:order-1">
 
-          <x-menu.page.buttons.show class="w-40 h-auto" />
-          <x-menu.page.buttons.hide class="w-30 h-auto" />
+          <x-menu.page.button-show class="w-40 h-auto" />
+          <x-menu.page.button-hide class="w-30 h-auto" />
 
         </div>
 
