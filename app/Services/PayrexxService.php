@@ -192,7 +192,7 @@ class PayrexxService
         
         // Header background: 'color' or 'image'
         $design->setHeaderBackground($options['headerBackground'] ?? 'color');
-        $design->setHeaderBackgroundColor($options['headerBackgroundColor'] ?? '000000');
+        $design->setHeaderBackgroundColor($options['headerBackgroundColor'] ?? 'ffffff');
         
         // VPOS gradient colors
         $design->setVPOSGradientColor1($options['vposGradientColor1'] ?? 'ffffff');
