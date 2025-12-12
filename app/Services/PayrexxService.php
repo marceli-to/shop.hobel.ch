@@ -188,7 +188,7 @@ class PayrexxService
         
         // Background: 'color' or 'image'
         $design->setBackground($options['background'] ?? 'color');
-        $design->setBackgroundColor($options['backgroundColor'] ?? 'f9f9f9');
+        $design->setBackgroundColor($options['backgroundColor'] ?? 'ffffff');
         
         // Header background: 'color' or 'image'
         $design->setHeaderBackground($options['headerBackground'] ?? 'color');
