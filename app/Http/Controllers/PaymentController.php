@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Services\PayrexxService;
 use App\Actions\Cart\Get as GetCartAction;
+use App\Actions\Cart\Update as UpdateCartAction;
 use App\Actions\Cart\Destroy as DestroyCartAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -79,16 +80,17 @@ class PaymentController extends Controller
 
         // Verify payment with Payrexx
         if ($gatewayId && $this->payrexxService->isPaymentSuccessful($gatewayId)) {
-            $cart = session()->get('payment_cart');
+            // Mark cart as paid and set order step to finalize
+            (new UpdateCartAction())->execute([
+                'is_paid' => true,
+                'order_step' => 6,
+                'payment_reference' => $reference,
+            ]);
 
-            // Clear cart and payment session data
-            (new DestroyCartAction())->execute();
+            // Clear payment session data but keep cart for confirmation page
             session()->forget(['payment_reference', 'payment_gateway_id', 'payment_cart']);
 
-            return view('pages.checkout.success', [
-                'reference' => $reference,
-                'cart' => $cart,
-            ]);
+            return redirect()->route('page.checkout.confirmation');
         }
 
         // Payment not confirmed yet - could be pending

@@ -111,7 +111,7 @@ class Button extends Component
 				'price' => $product->price,
 				'base_price' => $product->price,
 				'quantity' => min($this->quantity, $product->stock),
-				'image' => $product->image,
+				'image' => $product->images->first()?->file_path,
 				'configuration' => [],
 				'shipping_methods' => $shippingMethods,
 				'selected_shipping' => $shippingMethods[0]['id'] ?? null,
@@ -154,6 +154,11 @@ class Button extends Component
 		});
 
 		$cart['quantity'] = collect($cart['items'])->sum('quantity');
+
+		// Initialize order_step if not set (cart has items, so step 1 is complete)
+		if (!isset($cart['order_step'])) {
+			$cart['order_step'] = 1;
+		}
 
 		(new UpdateCartAction())->execute($cart);
 		$this->dispatch('cart-updated');

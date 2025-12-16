@@ -100,6 +100,10 @@
   padding-left: 1.25rem;
 }
 
+@utility pl-half-col {
+  padding-left: calc((100vw - (11 * var(--grid-gap))) / var(--grid-columns) / 2);
+}
+
 @utility no-spinner {
   appearance: none;
   -moz-appearance: textfield;

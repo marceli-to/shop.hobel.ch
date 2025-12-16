@@ -14,6 +14,12 @@
 
     </x-grid.span>
 
+    <x-grid.span class="hidden lg:block lg:col-span-2">
+
+      <livewire:cart.cart-images />
+
+    </x-grid.span>
+
   </x-grid.wrapper>
 
 </x-layout.app>

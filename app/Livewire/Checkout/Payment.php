@@ -1,6 +1,7 @@
 <?php
 namespace App\Livewire\Checkout;
 use Livewire\Component;
+use App\Actions\Cart\Update as UpdateCart;
 
 class Payment extends Component
 {
@@ -24,6 +25,8 @@ class Payment extends Component
     $this->validate();
 
     session()->put('payment_method', $this->payment_method);
+
+    (new UpdateCart())->execute(['order_step' => 4]);
 
     $this->redirect(route('page.checkout.summary'));
   }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Livewire\Checkout;
 use Livewire\Component;
+use App\Actions\Cart\Update as UpdateCart;
 
 class DeliveryAddress extends Component
 {
@@ -63,6 +64,8 @@ class DeliveryAddress extends Component
       'city' => $this->city,
       'country' => $this->country,
     ]);
+
+    (new UpdateCart())->execute(['order_step' => 3]);
 
     $this->redirect(route('page.checkout.payment'));
   }
