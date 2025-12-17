@@ -8,15 +8,9 @@
 
     </x-grid.span>
 
-    <x-grid.span class="lg:col-span-4 px-20 lg:px-0">
+    <x-grid.span class="lg:col-span-6 px-20 lg:px-0">
 
       <livewire:cart.cart />
-
-    </x-grid.span>
-
-    <x-grid.span class="hidden lg:block lg:col-span-2">
-
-      <livewire:cart.cart-images />
 
     </x-grid.span>
 

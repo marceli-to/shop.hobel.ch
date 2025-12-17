@@ -52,15 +52,12 @@ class Cart extends Component
 
 		if ($this->cart['quantity'] <= 0) {
 			(new DestroyCartAction())->execute();
-			$this->cart = [
-				'items' => [],
-				'quantity' => 0,
-				'total' => 0,
-			];
-		} else {
-			$this->updateTotal();
+			$this->dispatch('cart-updated');
+			$this->redirect(route('page.checkout.basket'));
+			return;
 		}
 
+		$this->updateTotal();
 		$this->dispatch('cart-updated');
 	}
 
@@ -94,9 +91,9 @@ class Cart extends Component
 			->map(function ($item) use ($cartKey, $shippingMethodId) {
 				if (($item['cart_key'] ?? $item['uuid']) === $cartKey) {
 					$item['selected_shipping'] = $shippingMethodId;
-					// Find the price for this shipping method
 					$method = collect($item['shipping_methods'] ?? [])->firstWhere('id', $shippingMethodId);
 					$item['shipping_price'] = $method['price'] ?? 0;
+					$item['shipping_name'] = $method['name'] ?? 'Versand';
 				}
 				return $item;
 			})

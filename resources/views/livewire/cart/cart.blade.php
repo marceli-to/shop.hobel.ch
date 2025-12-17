@@ -9,110 +9,132 @@
 
   <!-- Items/Totals -->
   @if(!empty($cart['items']))
-    <div class="flex flex-col gap-y-40">
+    <div class="lg:grid lg:grid-cols-6 gap-x-20">
 
-      <!-- Items -->
-      @foreach($cart['items'] as $item)
+      <!-- Cart Details -->
+      <div class="lg:col-span-4 flex flex-col gap-y-40">
 
-        @php $cartKey = $item['cart_key'] ?? $item['uuid']; @endphp
+        <!-- Items -->
+        @foreach($cart['items'] as $item)
 
-        <div 
-          class="flex flex-col gap-y-40"
-          wire:key="cart-item-{{ $cartKey }}">
-          
-          <div>
+          @php $cartKey = $item['cart_key'] ?? $item['uuid']; @endphp
 
-            <!-- Product header row: Name, X button, Price -->
-            <x-layout.row class="justify-between border-t relative">
-              
-              <x-headings.h3 class="font-sans">
-                {{ $item['name'] }}
-              </x-headings.h3>
+          <div
+            class="flex flex-col gap-y-40"
+            wire:key="cart-item-{{ $cartKey }}">
 
-              <button
-                wire:click="removeItem('{{ $cartKey }}')"
-                class="group flex items-center justify-center cursor-pointer w-40 h-40 absolute left-1/2 -translate-x-1/2"
-                aria-label="Artikel entfernen">
-                <x-icons.cross :size="'sm'" class="group-hover:rotate-180 transition-all" />
-              </button>
-
-              <x-cart.money :amount="$item['price'] * $item['quantity']" />
-
-            </x-layout.row>
-
-            <!-- Description -->
-            @if($item['description'])
-              <x-layout.row class="border-b">
-                <span>{{ $item['description'] }}</span>
-              </x-layout.row>
-            @endif
-
-            <!-- Configuration Details -->
-            @if(!empty($item['configuration']))
-              @foreach($item['configuration'] as $config)
-                <x-layout.row>
-                  <span>{{ $config['label'] }}</span>
-                </x-layout.row>
-              @endforeach
-            @endif
-          </div>
-
-          <!-- Shipping options -->
-          @if(!empty($item['shipping_methods']))
             <div>
-              @foreach($item['shipping_methods'] as $index => $method)
-                <x-layout.row class="justify-between {{ $loop->last ? 'border-b' : '' }}">
-                  <label class="flex items-center gap-x-20 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="shipping_{{ $cartKey }}" 
-                      value="{{ $method['id'] }}"
-                      wire:click="updateShipping('{{ $cartKey }}', {{ $method['id'] }})"
-                      {{ ($item['selected_shipping'] ?? null) == $method['id'] ? 'checked' : '' }}
-                      class="peer sr-only"
-                    >
-                    <x-icons.radio-unchecked class="peer-checked:hidden" />
-                    <x-icons.radio-checked class="hidden peer-checked:block" />
-                    <span>{{ $method['name'] }}</span>
-                  </label>
-                  <x-cart.money :amount="$method['price']" />
+
+              <!-- Product header row: Name, X button, Price -->
+              <x-layout.row class="justify-between border-t relative">
+
+                <x-headings.h3 class="font-sans">
+                  {{ $item['name'] }}
+                </x-headings.h3>
+
+                <button
+                  wire:click="removeItem('{{ $cartKey }}')"
+                  class="group flex items-center justify-center cursor-pointer w-40 h-40 absolute left-1/2 -translate-x-1/2"
+                  aria-label="Artikel entfernen">
+                  <x-icons.cross :size="'sm'" class="group-hover:rotate-180 transition-all" />
+                </button>
+
+                <x-cart.money :amount="$item['price'] * $item['quantity']" />
+
+              </x-layout.row>
+
+              <!-- Description -->
+              @if($item['description'])
+                <x-layout.row class="border-b">
+                  <span>{{ $item['description'] }}</span>
                 </x-layout.row>
-              @endforeach
+              @endif
+
+              <!-- Configuration Details -->
+              @if(!empty($item['configuration']))
+                @foreach($item['configuration'] as $config)
+                  <x-layout.row>
+                    <span>{{ $config['label'] }}</span>
+                  </x-layout.row>
+                @endforeach
+              @endif
             </div>
-          @endif
-          
-          <!-- Quantity Selector -->
-          <livewire:cart.button
-            :productUuid="$item['uuid']"
-            :cartKey="$cartKey"
-            :showButton="false"
-            :key="'cart-page-button-' . $cartKey" />
 
-        </div>  
-      @endforeach
+            <!-- Shipping options -->
+            @if(!empty($item['shipping_methods']))
+              <div>
+                @foreach($item['shipping_methods'] as $index => $method)
+                  <x-layout.row class="justify-between {{ $loop->last ? 'border-b' : '' }}">
+                    <label class="flex items-center gap-x-20 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="shipping_{{ $cartKey }}"
+                        value="{{ $method['id'] }}"
+                        wire:click="updateShipping('{{ $cartKey }}', {{ $method['id'] }})"
+                        {{ ($item['selected_shipping'] ?? null) == $method['id'] ? 'checked' : '' }}
+                        class="peer sr-only"
+                      >
+                      <x-icons.radio-unchecked class="peer-checked:hidden" />
+                      <x-icons.radio-checked class="hidden peer-checked:block" />
+                      <span>{{ $method['name'] }}</span>
+                    </label>
+                    <x-cart.money :amount="$method['price']" />
+                  </x-layout.row>
+                @endforeach
+              </div>
+            @endif
 
-      <!-- Totals -->
-      <div>
+            <!-- Quantity Selector -->
+            <livewire:cart.button
+              :productUuid="$item['uuid']"
+              :cartKey="$cartKey"
+              :showButton="false"
+              :key="'cart-page-button-' . $cartKey" />
 
-        <x-layout.row class="justify-between">
-          <span>Netto</span>
-          <x-cart.money :amount="$cart['subtotal'] ?? $cart['total']" />
-        </x-layout.row>
+          </div>
+        @endforeach
 
-        <x-layout.row class="justify-between">
-          <span>MwSt. {{ config('invoice.tax_rate') }}%</span>
-          <x-cart.money :amount="$cart['tax'] ?? 0" />
-        </x-layout.row>
+        <!-- Totals -->
+        <div>
 
-        <x-layout.row class="justify-between font-sans border-b">
-          <span>Total</span>
-          <x-cart.money :amount="$cart['total']" />
-        </x-layout.row>
+          <x-layout.row class="justify-between">
+            <span>Netto</span>
+            <x-cart.money :amount="$cart['subtotal'] ?? $cart['total']" />
+          </x-layout.row>
+
+          <x-layout.row class="justify-between">
+            <span>MwSt. {{ config('invoice.tax_rate') }}%</span>
+            <x-cart.money :amount="$cart['tax'] ?? 0" />
+          </x-layout.row>
+
+          <x-layout.row class="justify-between font-sans border-b">
+            <span>Total</span>
+            <x-cart.money :amount="$cart['total']" />
+          </x-layout.row>
+
+        </div>
+
+        <x-form.button route="{{ route('page.checkout.invoice-address') }}" :title="'Rechnungsadresse'" />
 
       </div>
 
-
-      <x-form.button route="{{ route('page.checkout.invoice-address') }}" :title="'Rechnungsadresse'" />
+      <!-- Cart Images (desktop only) -->
+      <div class="hidden lg:flex lg:col-span-2 flex-col gap-y-20 pl-half-col">
+        @foreach($cart['items'] as $item)
+          @if($item['image'])
+            <div wire:key="cart-image-{{ $item['cart_key'] ?? $item['uuid'] }}">
+              <x-media.image
+                :src="$item['image']"
+                :alt="$item['name']"
+                :width="300"
+                :height="300"
+                fit="contain"
+                class="w-full"
+              />
+            </div>
+          @endif
+        @endforeach
+      </div>
 
     </div>
   @endif

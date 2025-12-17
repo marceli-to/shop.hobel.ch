@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Actions\Cart\Get as GetCartAction;
 use App\Actions\Cart\Update as UpdateCartAction;
+use App\Actions\Cart\Destroy as DestroyCartAction;
 use App\Models\Product;
 
 class MiniCart extends Component
@@ -52,6 +53,14 @@ class MiniCart extends Component
 
 		$this->cart['items'] = $items;
 		$this->cart['quantity'] = collect($items)->sum('quantity');
+
+		if ($this->cart['quantity'] <= 0) {
+			(new DestroyCartAction())->execute();
+			$this->dispatch('cart-updated');
+			$this->redirect(route('page.checkout.basket'));
+			return;
+		}
+
 		$this->updateTotal();
 	}
 

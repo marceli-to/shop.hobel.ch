@@ -36,18 +36,3 @@ Route::post('/payment/webhook', [PaymentController::class, 'webhook'])->name('pa
 
 Route::get('/{category}', [CategoryController::class, 'get'])->name('page.category');
 Route::get('/{category}/{product}', [ProductController::class, 'show'])->name('page.product')->scopeBindings();
-
-
-
-/** Prototype */
-// // Landing page
-// Route::view('/', 'pages.landing')->name('home');
-// // Product(s) page
-// Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-// Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.show');
-// // Cart page
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-
-
-/** // Prototype */
-
