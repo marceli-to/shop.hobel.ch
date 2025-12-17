@@ -1,4 +1,4 @@
-<x-layout.app :title="'Bestellung abschliessen'">
+<x-layout.app :title="'Bestellbestätigung'">
   
   <x-grid.wrapper>
 
@@ -10,7 +10,7 @@
 
     <x-grid.span class="lg:col-span-6 px-20 lg:px-0">
 
-      <livewire:checkout.summary />
+      <livewire:checkout.confirmation />
 
     </x-grid.span>
 

@@ -25,11 +25,9 @@ Route::middleware(['ensure.cart.not.empty'])->group(function () {
   Route::view('/bestellung/zahlung', 'pages.checkout.payment')->middleware('ensure.correct.order.step:3')->name('page.checkout.payment');
   Route::view('/bestellung/zusammenfassung', 'pages.checkout.summary')->middleware('ensure.correct.order.step:4')->name('page.checkout.summary');
 });
-Route::view('/bestellung/bestaetigung', 'pages.checkout.confirmation')->middleware(['ensure.cart.not.empty', 'ensure.order.is.paid'])->name('page.checkout.confirmation');
+Route::view('/bestellung/bestaetigung', 'pages.checkout.confirmation')->name('page.checkout.confirmation');
 
-// Checkout & Payment
-Route::get('/checkout/summary', [PaymentController::class, 'summary'])->name('checkout.summary');
-Route::post('/payment/initiate', [PaymentController::class, 'initiate'])->name('payment.initiate');
+// Payment callbacks (Payrexx)
 Route::get('/payment/success/{reference}', [PaymentController::class, 'success'])->name('payment.success');
 Route::get('/payment/cancel/{reference}', [PaymentController::class, 'cancel'])->name('payment.cancel');
 Route::post('/payment/webhook', [PaymentController::class, 'webhook'])->name('payment.webhook');

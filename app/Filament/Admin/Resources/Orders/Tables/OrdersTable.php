@@ -16,11 +16,11 @@ class OrdersTable
 	{
 		return $table
 			->columns([
-				TextColumn::make('customer_name')
+				TextColumn::make('invoice_name')
 					->label('Name')
-					->searchable()
-					->sortable(),
-				TextColumn::make('customer_email')
+					->searchable(['invoice_firstname', 'invoice_lastname'])
+					->sortable(['invoice_lastname', 'invoice_firstname']),
+				TextColumn::make('invoice_email')
 					->label('E-Mail')
 					->searchable()
 					->sortable(),
@@ -30,7 +30,12 @@ class OrdersTable
 					->sortable(),
 				TextColumn::make('payment_method')
 					->label('Zahlungsmethode')
+					->formatStateUsing(fn ($state) => $state === 'invoice' ? 'Rechnung' : 'Kreditkarte')
 					->searchable()
+					->sortable(),
+				TextColumn::make('created_at')
+					->label('Datum')
+					->dateTime('d.m.Y H:i')
 					->sortable(),
 			])
 			->filters([

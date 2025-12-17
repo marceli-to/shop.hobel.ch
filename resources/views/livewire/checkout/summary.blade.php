@@ -1,4 +1,16 @@
-<div>
+<div class="relative">
+
+  @if(session('error'))
+    <x-form.alert type="error">
+      {{ session('error') }}
+    </x-form.alert>
+  @endif
+
+  @error('terms_accepted')
+    <x-form.alert type="error">
+      {{ $message }}
+    </x-form.alert>
+  @enderror
 
   <div class="lg:grid lg:grid-cols-6 gap-x-20">
 
@@ -21,7 +33,7 @@
 
           <!-- Description -->
           @if($item['description'])
-            <x-layout.row>
+            <x-layout.row class="{{ empty($item['shipping_price']) ? 'border-b' : '' }}">
               <span>{{ $item['description'] }}</span>
             </x-layout.row>
           @endif
@@ -59,15 +71,53 @@
 
       <!-- Addresses -->
       <div class="flex flex-col gap-y-40">
-        <x-layout.row class="justify-between border-b">
-          <span class="font-sans">Rechnungsadresse</span>
-          <x-icons.chevron-right size="sm" class="rotate-90" />
-        </x-layout.row>
+        <x-ui.accordion title="Rechnungsadresse">
+          @if(!empty($invoice_address))
+            @if(!empty($invoice_address['salutation']))
+              <x-layout.row class="border-t-0">
+                <span>{{ $invoice_address['salutation'] }}</span>
+              </x-layout.row>
+            @endif
+            <x-layout.row class="{{ empty($invoice_address['salutation']) ? 'border-t-0' : '' }}">
+              <span>{{ $invoice_address['firstname'] ?? '' }} {{ $invoice_address['lastname'] ?? '' }}</span>
+            </x-layout.row>
+            <x-layout.row>
+              <span>{{ $invoice_address['street'] ?? '' }}@if(!empty($invoice_address['street_number'])) {{ $invoice_address['street_number'] }}@endif</span>
+            </x-layout.row>
+            <x-layout.row>
+              <span>{{ $invoice_address['zip'] ?? '' }} {{ $invoice_address['city'] ?? '' }}</span>
+            </x-layout.row>
+            <x-layout.row class="border-b">
+              <span>{{ $invoice_address['country'] ?? '' }}</span>
+            </x-layout.row>
+          @endif
+        </x-ui.accordion>
 
-        <x-layout.row class="justify-between border-b">
-          <span class="font-sans">Lieferadresse</span>
-          <x-icons.chevron-right size="sm" class="rotate-90" />
-        </x-layout.row>
+        <x-ui.accordion title="Lieferadresse">
+          @if(!empty($delivery_address))
+            @if(!empty($delivery_address['salutation']))
+              <x-layout.row class="border-t-0">
+                <span>{{ $delivery_address['salutation'] }}</span>
+              </x-layout.row>
+            @endif
+            <x-layout.row class="{{ empty($delivery_address['salutation']) ? 'border-t-0' : '' }}">
+              <span>{{ $delivery_address['firstname'] ?? '' }} {{ $delivery_address['lastname'] ?? '' }}</span>
+            </x-layout.row>
+            <x-layout.row>
+              <span>{{ $delivery_address['street'] ?? '' }}@if(!empty($delivery_address['street_number'])) {{ $delivery_address['street_number'] }}@endif</span>
+            </x-layout.row>
+            <x-layout.row>
+              <span>{{ $delivery_address['zip'] ?? '' }} {{ $delivery_address['city'] ?? '' }}</span>
+            </x-layout.row>
+            <x-layout.row class="border-b">
+              <span>{{ $delivery_address['country'] ?? '' }}</span>
+            </x-layout.row>
+          @else
+            <x-layout.row class="border-b">
+              <span>Identisch mit Rechnungsadresse</span>
+            </x-layout.row>
+          @endif
+        </x-ui.accordion>
       </div>
 
       <!-- Payment Method -->
@@ -94,7 +144,7 @@
       <div>
         <x-layout.row class="border-b">
           <label class="flex items-center gap-x-20 cursor-pointer w-full h-80">
-            <span class="block w-35">
+            <span class="block w-35 -mt-22">
               <input 
                 type="checkbox" 
                 wire:model="terms_accepted"
@@ -106,16 +156,9 @@
           </label>
         </x-layout.row>
 
-        @error('terms_accepted')
-          <x-layout.row class="text-red-600">
-            {{ $message }}
-          </x-layout.row>
-        @enderror
-
-        <form action="{{ route('payment.initiate') }}" method="POST" class="mt-40">
-          @csrf
-          <x-form.button type="submit" :title="'Bestellen'" />
-        </form>
+        <div class="mt-40">
+          <x-form.button type="button" wire:click="placeOrder" :title="'Bestellen'" />
+        </div>
       </div>
 
     </div>
