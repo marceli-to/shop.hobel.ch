@@ -124,9 +124,7 @@
 
   </div>
   @else
-    <x-layout.row>
-      <span>Bestellung nicht gefunden.</span>
-    </x-layout.row>
+    <p>Bestellung nicht gefunden.</p>
   @endif
 
 </div>

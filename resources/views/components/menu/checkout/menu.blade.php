@@ -25,9 +25,13 @@
       @endphp
       <li>
         @if($canAccess)
-          <a href="{{ route($step['route']) }}" class="{{ $isActive ? '' : 'text-ash' }}">{{ $step['label'] }}</a>
+          <a href="{{ route($step['route']) }}" class="{{ $isActive ? '' : 'text-ash' }}">
+            {{ $step['label'] }}
+          </a>
         @else
-          <span class="text-ash">{{ $step['label'] }}</span>
+          <span class="{{ $isActive ? 'text-black' : 'text-ash' }}">
+            {{ $step['label'] }}
+          </span>
         @endif
       </li>
     @endforeach

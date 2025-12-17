@@ -16,6 +16,10 @@ class OrdersTable
 	{
 		return $table
 			->columns([
+				TextColumn::make('order_number')
+					->label('Bestellnr.')
+					->searchable()
+					->sortable(),
 				TextColumn::make('invoice_name')
 					->label('Name')
 					->searchable(['invoice_firstname', 'invoice_lastname'])

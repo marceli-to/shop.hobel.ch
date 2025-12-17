@@ -1,43 +1,79 @@
 <x-mail::message>
   <div class="main text-base">
-    <h1>Folgende Bestellung ist eingegangen:</h1>
+    <p>Folgende Bestellung ist eingegangen:</p>
     <div class="table">
       <table cellpadding="0" cellspacing="0">
-        @foreach($data->orderProducts as $product)
+        @foreach($data->items as $item)
           <tr>
-            <td colspan="2">{{ $product->title }}</td>
-            <td class="quantity">{{ $product->quantity }}</td>
-          </tr>
-          <tr>
-            <td>{{ $product->description }}</td>
-            <td class="currency">CHF</td>
-            <td class="amount text-right">{{ $product->price }}</td>
-          </tr>
-          <tr>
-            <td>Verpackung und Versand</td>
-            <td class="currency">CHF</td>
-            <td class="amount text-right">
-              {!! number_format($product->shipping, 2, '.', '&thinsp;') !!}
-            </td>
-          </tr>
-          <tr>
-            <td>Total</td>
-            <td class="currency">CHF</td>
-            <td class="amount text-right">
-              {!! number_format($product->price + $product->shipping, 2, '.', '&thinsp;') !!}
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3">&nbsp;</td>
+            <td><strong>{{ $item->product_name }}</strong></td>
+            <td class="currency">Fr.</td>
+            <td class="amount text-right">{!! number_format($item->subtotal, 2, '.', "'") !!}</td>
           </tr>
         @endforeach
         <tr>
-          <td colspan="3">Lieferadresse</td>
+          <td>Netto</td>
+          <td class="currency">Fr.</td>
+          <td class="amount text-right">{!! number_format($data->subtotal, 2, '.', "'") !!}</td>
+        </tr>
+        <tr>
+          <td>MwSt. ({{ config('invoice.tax_rate') }}%)</td>
+          <td class="currency">Fr.</td>
+          <td class="amount text-right">{!! number_format($data->tax, 2, '.', "'") !!}</td>
+        </tr>
+        <tr>
+          <td><strong>Total</strong></td>
+          <td class="currency"><strong>Fr.</strong></td>
+          <td class="amount text-right"><strong>{!! number_format($data->total, 2, '.', "'") !!}</strong></td>
+        </tr>
+        <tr>
+          <td colspan="3" class="no-border">&nbsp;</td>
+        </tr>
+        <tr>
+          <td>Zahlung: {{ $data->payment_method === 'creditcard' ? 'Kreditkarte' : 'Rechnung' }} / {{ $data->created_at->format('d.m.Y, H:i') }}</td>
+          <td class="currency">Fr.</td>
+          <td class="amount text-right">{!! number_format($data->total, 2, '.', "'") !!}</td>
+        </tr>
+        <tr>
+          <td colspan="3" class="no-border">&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="3"><strong>Rechnungsadresse</strong></td>
+        </tr>
+        @if ($data->invoice_salutation)
+          <tr>
+            <td colspan="3">{{ $data->invoice_salutation }}</td>
+          </tr>
+        @endif
+        <tr>
+          <td colspan="3">{{ $data->invoice_name }}</td>
+        </tr>
+        <tr>
+          <td colspan="3">{{ $data->invoice_address }}</td>
+        </tr>
+        <tr>
+          <td colspan="3">{{ $data->invoice_location }}</td>
+        </tr>
+        <tr>
+          <td colspan="3">{{ $data->invoice_country }}</td>
+        </tr>
+        <tr>
+          <td colspan="3">{{ $data->invoice_email }}</td>
+        </tr>
+        @if ($data->invoice_phone)
+          <tr>
+            <td colspan="3">{{ $data->invoice_phone }}</td>
+          </tr>
+        @endif
+        <tr>
+          <td colspan="3" class="no-border">&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="3"><strong>Lieferadresse</strong></td>
         </tr>
         @if ($data->use_invoice_address)
-          @if ($data->salutation)
+          @if ($data->invoice_salutation)
             <tr>
-              <td colspan="3">{{ $data->salutation }}</td>
+              <td colspan="3">{{ $data->invoice_salutation }}</td>
             </tr>
           @endif
           <tr>
@@ -50,17 +86,17 @@
             <td colspan="3">{{ $data->invoice_location }}</td>
           </tr>
           <tr>
-            <td colspan="3">{{ $data->country }}</td>
+            <td colspan="3">{{ $data->invoice_country }}</td>
           </tr>
         @else
-          <tr>
-            <td colspan="3">{{ $data->shipping_full_name }}</td>
-          </tr>
-          @if ($data->shipping_company)
+          @if ($data->shipping_salutation)
             <tr>
-              <td colspan="3">{{ $data->shipping_company }}</td>
+              <td colspan="3">{{ $data->shipping_salutation }}</td>
             </tr>
           @endif
+          <tr>
+            <td colspan="3">{{ $data->shipping_name }}</td>
+          </tr>
           <tr>
             <td colspan="3">{{ $data->shipping_address }}</td>
           </tr>
@@ -71,23 +107,10 @@
             <td colspan="3">{{ $data->shipping_country }}</td>
           </tr>
         @endif
-        <tr>
-          <td colspan="3">&nbsp;</td>
-        </tr>
-        <tr>
-          <td colspan="3">Zahlung</td>
-        </tr>
-        <tr>
-          <td>{{ $data->payment_info }}</td>
-          <td class="currency">CHF</td>
-          <td class="amount text-right">{{ $data->total }}</td>
-        </tr>
       </table>
     </div>
-    <div class="pt-xl">
-      <a href="https://www.instagram.com/fiefelstein/" target="_blank" title="fiefelstein.ch auf Instagram">
-        <img src="{{ config('app.url') }}/img/instagram.png" alt="fiefelstein.ch auf Instagram" height="20" width="20" style="display:block; height:auto; width: 20px;">
-      </a>
+    <div class="pt-lg">
+      <p><strong>HOBEL</strong><br>Genossenschaft<br>für Möbel<br>und Innenausbau</p>
     </div>
   </div>
 </x-mail::message>

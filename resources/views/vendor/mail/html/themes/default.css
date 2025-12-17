@@ -87,7 +87,7 @@ strong, b {
 .header {
   background-color: #ffffff;
   color: #000;
-  padding: 40px 16px;
+  padding: 40px 20px;
   text-align: left;
 }
 
@@ -139,7 +139,7 @@ table.header__content {
 
 /* Tables */
 .table {
-  padding-top: 45px;
+  padding-top: 25px;
 }
 
 .table table {
@@ -175,6 +175,10 @@ table.header__content {
   padding: 8px 0;
 }
 
+.table.td.no-border {
+  border-bottom: none;
+}
+
 .table td.currency {
   width: 30px;
 }
@@ -201,8 +205,8 @@ table.header__content {
 
 .main {
   background-color: #ffffff;
-  margin: 0 auto;
   max-width: 500px;
+  padding-left: 20px;
   padding-bottom: 40px;
 }
 
@@ -213,6 +217,10 @@ table.header__content {
 
 .text-right {
   text-align: right;
+}
+
+.pt-md {
+  padding-top: 20px;
 }
 
 .pt-lg {

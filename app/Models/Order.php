@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Actions\Order\GenerateOrderNumber;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,6 +14,7 @@ class Order extends Model
 
 	protected $fillable = [
 		'uuid',
+		'order_number',
 		'invoice_salutation',
 		'invoice_firstname',
 		'invoice_lastname',
@@ -51,7 +53,6 @@ class Order extends Model
 	];
 
 	protected $appends = [
-		'order_number',
 		'invoice_name',
 		'invoice_address',
 		'invoice_location',
@@ -74,14 +75,6 @@ class Order extends Model
 	public function getRouteKeyName(): string
 	{
 		return 'uuid';
-	}
-
-	/**
-	 * Get the order number attribute.
-	 */
-	public function getOrderNumberAttribute(): string
-	{
-		return 'HO-' . str_pad($this->id, 6, '0', STR_PAD_LEFT);
 	}
 
 	/**
@@ -169,6 +162,7 @@ class Order extends Model
 		$useInvoiceAddress = empty($deliveryAddress);
 
 		$order = self::create([
+			'order_number' => $paymentReference,
 			'invoice_salutation' => !empty($invoiceAddress['salutation']) ? $invoiceAddress['salutation'] : null,
 			'invoice_firstname' => $invoiceAddress['firstname'],
 			'invoice_lastname' => $invoiceAddress['lastname'],
@@ -219,6 +213,9 @@ class Order extends Model
 		static::creating(function ($order) {
 			if (empty($order->uuid)) {
 				$order->uuid = (string) Str::uuid();
+			}
+			if (empty($order->order_number)) {
+				$order->order_number = (new GenerateOrderNumber())->execute();
 			}
 		});
 	}
