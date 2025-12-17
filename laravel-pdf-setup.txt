@@ -1,0 +1,154 @@
+# Laravel PDF with Browsershot + AWS Lambda Setup
+
+## Required Composer Packages
+
+```bash
+composer require spatie/laravel-pdf
+composer require hammerstone/sidecar
+composer require wnx/sidecar-browsershot
+```
+
+## Publish Config Files
+
+```bash
+php artisan vendor:publish --tag=sidecar-config
+php artisan vendor:publish --tag=sidecar-browsershot-config
+```
+
+This creates:
+- config/sidecar.php
+- config/sidecar-browsershot.php
+
+## Environment Variables (.env)
+
+```
+SIDECAR_ACCESS_KEY_ID=your-aws-access-key
+SIDECAR_SECRET_ACCESS_KEY=your-aws-secret-key
+SIDECAR_REGION=eu-west-1
+SIDECAR_ARTIFACT_BUCKET_NAME=sidecar-eu-west-1-xxxxxxxxxx
+SIDECAR_EXECUTION_ROLE=arn:aws:iam::xxxxxxxxxxxx:role/sidecar-execution-role
+```
+
+## AWS Setup
+
+### 1. Create IAM User
+- Go to AWS IAM Console
+- Create a new user with programmatic access
+- Attach the following policies:
+  - AWSLambda_FullAccess
+  - AmazonS3FullAccess
+  - IAMFullAccess (or create a custom policy for execution roles)
+
+### 2. Create S3 Bucket
+- Create an S3 bucket in your chosen region (e.g., eu-west-1)
+- Name it something like: sidecar-eu-west-1-xxxxxxxxxx
+- This stores the Lambda deployment packages
+
+### 3. Create Execution Role
+- Go to IAM > Roles
+- Create a new role for Lambda
+- Name it: sidecar-execution-role
+- Attach policy: AWSLambdaBasicExecutionRole
+- Copy the ARN for SIDECAR_EXECUTION_ROLE
+
+## Configure sidecar.php
+
+```php
+<?php
+
+return [
+    'functions' => [
+        \Wnx\SidecarBrowsershot\Functions\BrowsershotFunction::class,
+    ],
+
+    'aws_key' => env('SIDECAR_ACCESS_KEY_ID'),
+    'aws_secret' => env('SIDECAR_SECRET_ACCESS_KEY'),
+    'aws_region' => env('SIDECAR_REGION', 'eu-central-1'),
+    'aws_bucket' => env('SIDECAR_ARTIFACT_BUCKET_NAME'),
+    'execution_role' => env('SIDECAR_EXECUTION_ROLE'),
+    'name' => env('SIDECAR_APP_NAME', env('APP_NAME', 'Laravel')),
+    'env' => env('SIDECAR_ENV', env('APP_ENV', 'production')),
+];
+```
+
+## Deploy Lambda Function
+
+```bash
+php artisan sidecar:deploy --activate
+```
+
+This deploys the Browsershot Lambda function to AWS.
+
+## Usage in Controller
+
+```php
+use Spatie\LaravelPdf\Facades\Pdf;
+
+// For production (Lambda)
+Pdf::view('pdf.my-template', ['data' => $data])
+    ->format('a4')
+    ->margins(30, 20, 30, 20)
+    ->onLambda()
+    ->save($path);
+
+// For local development (requires Chrome/Puppeteer)
+Pdf::view('pdf.my-template', ['data' => $data])
+    ->format('a4')
+    ->withBrowsershot(function (\Spatie\Browsershot\Browsershot $browsershot) {
+        $browsershot
+            ->setNodeBinary('/path/to/node')
+            ->setNpmBinary('/path/to/npm');
+    })
+    ->save($path);
+```
+
+## Environment-Aware Helper
+
+```php
+protected function buildPdf(string $view, array $data = []): PdfBuilder
+{
+    $pdf = Pdf::view($view, $data)->format('a4');
+
+    if (app()->environment('production')) {
+        $pdf->onLambda();
+    } else {
+        $pdf->withBrowsershot(function (\Spatie\Browsershot\Browsershot $browsershot) {
+            $browsershot
+                ->setNodeBinary('/path/to/node')
+                ->setNpmBinary('/path/to/npm');
+        });
+    }
+
+    return $pdf;
+}
+```
+
+## Local Development Requirements
+
+For local development (non-Lambda), you need:
+- Node.js installed
+- Puppeteer: `npm install puppeteer`
+
+## Optional: Custom Fonts
+
+Place fonts in: resources/sidecar-browsershot/fonts/
+They will be bundled with the Lambda function on deploy.
+
+## Artisan Commands
+
+```bash
+# Deploy Lambda function
+php artisan sidecar:deploy --activate
+
+# Check deployment status
+php artisan sidecar:active
+
+# View logs
+php artisan sidecar:logs
+```
+
+## Troubleshooting
+
+1. **Lambda timeout**: Increase SIDECAR_BROWSERSHOT_TIMEOUT in .env (default: 300 seconds)
+2. **Memory issues**: Increase SIDECAR_BROWSERSHOT_MEMORY in .env (default: 2048 MB)
+3. **Region mismatch**: Ensure S3 bucket and Lambda are in the same region

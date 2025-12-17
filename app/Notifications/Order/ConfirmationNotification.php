@@ -39,12 +39,20 @@ class ConfirmationNotification extends Notification
    */
   public function toMail($notifiable)
   {
-    return (new MailMessage)
+    $mail = (new MailMessage)
       ->from(env('MAIL_FROM_ADDRESS'))
       ->replyTo(env('MAIL_REPLY_TO'))
       ->subject('Bestellbestätigung ' . $this->order->order_number)
-      //->attach(storage_path('app/public/files/' . $this->invoice['name']))
       ->markdown('mail.order-confirmation', ['data' => $this->order]);
+
+    if ($this->invoice) {
+      $mail->attach(storage_path('app/' . $this->invoice), [
+        'as' => 'Rechnung-' . $this->order->order_number . '.pdf',
+        'mime' => 'application/pdf',
+      ]);
+    }
+
+    return $mail;
   }
 
   /**
