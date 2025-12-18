@@ -46,10 +46,9 @@
 
     </x-grid.span>
 
-    <x-grid.span class="lg:col-span-3 lg:col-start-8 px-20 lg:px-0">
+    <x-grid.span class="lg:col-span-3 lg:col-start-8 px-20 lg:px-0 lg:mt-80">
 
       @if($tags->count() > 0)
-      <div class="lg:-mt-5">
         <x-headings.h3 class="text-sm text-ash mb-8 w-full">Filter</x-headings.h3>
         <ul class="flex flex-col border-b">
           <li class="border-t border-black py-6">
@@ -75,7 +74,6 @@
             </li>
           @endforeach
         </ul>
-      </div>
       @endif
 
     </x-grid.span>
