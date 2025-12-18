@@ -13,6 +13,9 @@ class GenerateInvoicePdf
 		$filename = "invoice-{$order->order_number}.pdf";
 		$path = "invoices/{$filename}";
 
+		// Ensure the invoices directory exists
+		Storage::disk('local')->makeDirectory('invoices');
+
 		$pdf = Pdf::view('pdf.invoice', ['order' => $order])
 			->format('a4')
       ->headerView('pdf.partials.logo')
