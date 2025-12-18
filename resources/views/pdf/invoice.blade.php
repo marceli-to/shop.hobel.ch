@@ -25,16 +25,20 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
       font-style: normal;
     }
 
+    @page :first {
+      margin-top: 6mm;
+    }
+
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     body {
       font-family: 'Muoto', sans-serif;
       font-size: 9pt;
-      line-height: 1.4;
+      line-height: 14pt;
       font-weight: 400;
       color: #000;
     }
@@ -47,26 +51,20 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
       font-weight: 500;
     }
 
-    .page {
-      position: relative;
-      width: 210mm;
-      min-height: 297mm;
-    }
-
     /* Sender info - top left at 6mm */
     .sender-info {
       position: absolute;
-      top: 6mm;
-      left: 6mm;
+      top: 0mm;
+      left: 0;
       font-size: 9pt;
       line-height: 1.2;
     }
 
     /* Website - top right */
-    .website {
+    .sender-website {
       position: absolute;
-      top: 14.5mm;
-      right: 12mm;
+      top: 8.4mm;
+      left: 171.5mm;
       font-size: 15pt;
       font-weight: 400;
     }
@@ -74,25 +72,24 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
     /* Date - below sender info */
     .date {
       position: absolute;
-      top: 32mm;
-      left: 48mm;
+      top: 25mm;
+      left: 42mm;
       font-size: 9pt;
     }
 
     /* Recipient address - starts at 93mm from top */
     .recipient {
       position: absolute;
-      top: 52mm;
-      left: 48mm;
+      top: 45mm;
+      left: 42mm;
       font-size: 9pt;
-      line-height: 1.5;
     }
 
     /* Invoice header - starts at 92mm from top */
     .invoice-header {
       position: absolute;
-      top: 92mm;
-      left: 48mm;
+      top: 84mm;
+      left: 42mm;
       font-size: 14pt;
       font-weight: 400;
     }
@@ -100,8 +97,8 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
     /* Logo - left side, aligned with table area */
     .logo-area {
       position: absolute;
-      top: 120mm;
-      left: 6mm;
+      top: 114mm;
+      left: 0mm;
       width: 17.5mm;
     }
 
@@ -113,8 +110,8 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
     /* Contact details - bottom left */
     .contact-area {
       position: absolute;
-      bottom: 0mm;
-      left: 6mm;
+      top: 240mm;
+      left: 0mm;
       width: 42mm;
     }
 
@@ -125,8 +122,8 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
     /* Main content area */
     .content {
       position: absolute;
-      top: 120mm;
-      left: 48mm;
+      top: 114mm;
+      left: 42mm;
     }
 
     /* Invoice item table */
@@ -165,10 +162,6 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
       padding: 2mm 0;
     }
 
-    .invoice-row-label.is-bold {
-      font-weight: 400;
-    }
-
     .invoice-row-fr {
       width: 6mm;
       padding: 2mm 0;
@@ -184,7 +177,7 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
       display: flex;
       align-items: center;
       border-bottom: 0.15mm solid black;
-      padding: 2mm 0;
+      padding: 1.5mm 0;
     }
 
     /* Totals table */
@@ -200,7 +193,7 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
       border-top: 0.15mm solid transparent;
       width: 8mm;
       vertical-align: top;
-      padding: 2mm 0 0 0;
+      padding: 1.5mm 0 0 0;
     }
 
     .invoice-totals .col-content {
@@ -221,13 +214,18 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
       border-top: 0.15mm solid transparent;
       width: 8mm;
       vertical-align: top;
-      padding: 2mm 0 0 0;
+      padding: 1.5mm 0 0 0;
     }
 
     .invoice-payment .col-content {
       border-top: 0.15mm solid black;
       vertical-align: top;
     }
+
+    .no-page-break {
+      page-break-inside: avoid;
+    }
+
   </style>
 </head>
 <body>
@@ -242,7 +240,7 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
     </div>
 
     <!-- Website - top right -->
-    <div class="website">
+    <div class="sender-website">
       hobel.ch
     </div>
 
@@ -281,15 +279,15 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
       @foreach($order->items as $index => $item)
         <table cellpadding="0" cellspacing="0" class="invoice-item">
           <tr>
-            <td class="col-qty">{{ $index + 1 }}</td>
+            <td class="col-qty font-medium">{{ $item->quantity }}</td>
             <td class="col-content">
               <div class="invoice-row">
-                <div class="invoice-row-label is-bold">{{ $item->product_name }}</div>
+                <div class="invoice-row-label font-medium">{{ $item->product_name }}</div>
                 <div class="invoice-row-fr">Fr.</div>
                 <div class="invoice-row-price">{!! number_format($item->subtotal, 2, '.', "'") !!}</div>
               </div>
               @if($item->product_description)
-              <div class="invoice-detail-row">{{ $item->product_description }}</div>
+                <div class="invoice-detail-row">{{ $item->product_description }}</div>
               @endif
               <div class="invoice-row">
                 <div class="invoice-row-label">{{ $order->shipping > 0 ? 'Versand' : 'Abholung' }}</div>
@@ -301,49 +299,52 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
         </table>
       @endforeach
 
-      <!-- Totals -->
-      <table cellpadding="0" cellspacing="0" class="invoice-totals">
-        <tr>
-          <td class="col-qty">&nbsp;</td>
-          <td class="col-content">
-            <div class="invoice-row">
-              <div class="invoice-row-label">Netto</div>
-              <div class="invoice-row-fr">Fr.</div>
-              <div class="invoice-row-price">{!! number_format($order->subtotal + $order->shipping, 2, '.', "'") !!}</div>
-            </div>
-            <div class="invoice-row">
-              <div class="invoice-row-label">MwSt.</div>
-              <div class="invoice-row-fr">Fr.</div>
-              <div class="invoice-row-price">{!! number_format($order->tax, 2, '.', "'") !!}</div>
-            </div>
-            <div class="invoice-row">
-              <div class="invoice-row-label is-bold">Total</div>
-              <div class="invoice-row-fr">Fr.</div>
-              <div class="invoice-row-price">{!! number_format($order->total, 2, '.', "'") !!}</div>
-            </div>
-          </td>
-        </tr>
-      </table>
-
-      <!-- Payment -->
-      <table cellpadding="0" cellspacing="0" class="invoice-payment">
-        <tr>
-          <td class="col-qty">&nbsp;</td>
-          <td class="col-content">
-            <div class="invoice-row">
-              <div class="invoice-row-label">
-                @if($order->payment_method === 'invoice')
-                  Zahlung: Rechnung / {{ $order->created_at->addDays(30)->format('d.m.Y') }}
-                @else
-                  Zahlung: {{ ucfirst($order->payment_method) }} / {{ $order->paid_at ? $order->paid_at->format('d.m.Y, H:i') : '' }}
-                @endif
+      <div class="no-page-break">
+        <!-- Totals -->
+        <table cellpadding="0" cellspacing="0" class="invoice-totals">
+          <tr>
+            <td class="col-qty">&nbsp;</td>
+            <td class="col-content">
+              <div class="invoice-row">
+                <div class="invoice-row-label">Netto</div>
+                <div class="invoice-row-fr">Fr.</div>
+                <div class="invoice-row-price">{!! number_format($order->subtotal + $order->shipping, 2, '.', "'") !!}</div>
               </div>
-              <div class="invoice-row-fr">Fr.</div>
-              <div class="invoice-row-price">{!! number_format($order->total, 2, '.', "'") !!}</div>
-            </div>
-          </td>
-        </tr>
-      </table>
+              <div class="invoice-row">
+                <div class="invoice-row-label">MwSt.</div>
+                <div class="invoice-row-fr">Fr.</div>
+                <div class="invoice-row-price">{!! number_format($order->tax, 2, '.', "'") !!}</div>
+              </div>
+              <div class="invoice-row">
+                <div class="invoice-row-label font-medium">Total</div>
+                <div class="invoice-row-fr">Fr.</div>
+                <div class="invoice-row-price">{!! number_format($order->total, 2, '.', "'") !!}</div>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Payment -->
+        <table cellpadding="0" cellspacing="0" class="invoice-payment">
+          <tr>
+            <td class="col-qty">&nbsp;</td>
+            <td class="col-content">
+              <div class="invoice-row">
+                <div class="invoice-row-label">
+                  @if($order->payment_method === 'invoice')
+                    Zahlung: Rechnung / {{ $order->created_at->addDays(30)->format('d.m.Y') }}
+                  @else
+                    Zahlung: {{ ucfirst($order->payment_method) }} / {{ $order->paid_at ? $order->paid_at->format('d.m.Y, H:i') : '' }}
+                  @endif
+                </div>
+                <div class="invoice-row-fr">Fr.</div>
+                <div class="invoice-row-price">{!! number_format($order->total, 2, '.', "'") !!}</div>
+              </div>
+            </td>
+          </tr>
+        </table>
+        
+      </div>
 
     </div>
 
