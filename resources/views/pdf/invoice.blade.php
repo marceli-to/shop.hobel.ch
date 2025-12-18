@@ -94,19 +94,6 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
       font-weight: 400;
     }
 
-    /* Logo - left side, aligned with table area */
-    .logo-area {
-      position: absolute;
-      top: 114mm;
-      left: 0mm;
-      width: 17.5mm;
-    }
-
-    .logo-area .logo {
-      width: 17.5mm;
-      height: auto;
-    }
-
     /* Contact details - bottom left */
     .contact-area {
       position: absolute;
@@ -135,14 +122,14 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
     }
 
     .invoice-item + .invoice-item {
-      margin-top: 9mm;
+      margin-top: 7.5mm;
     }
 
     .invoice-item .col-qty {
       border-top: 0.15mm solid black;
       width: 8mm;
       vertical-align: top;
-      padding: 2mm 0 0 0;
+      padding: 1.5mm 0 0 0;
     }
 
     .invoice-item .col-content {
@@ -159,17 +146,17 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
       display: flex;
       align-items: center;
       width: 110mm;
-      padding: 2mm 0;
+      padding: 1.5mm 0;
     }
 
     .invoice-row-fr {
       width: 6mm;
-      padding: 2mm 0;
+      padding: 1.5mm 0;
     }
 
     .invoice-row-price {
       width: 26mm;
-      padding: 2mm 0;
+      padding: 1.5mm 0;
       text-align: right;
     }
 
@@ -260,11 +247,6 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
     <!-- Invoice header -->
     <div class="invoice-header">
       Rechnung Nr. {{ $order->order_number }}
-    </div>
-
-    <!-- Logo - left side -->
-    <div class="logo-area">
-      <img src="{{ public_path('img/logo.svg') }}" alt="HOBEL" class="logo">
     </div>
 
     <!-- Contact details - bottom left -->

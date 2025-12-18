@@ -15,7 +15,8 @@ class GenerateInvoicePdf
 
 		$pdf = Pdf::view('pdf.invoice', ['order' => $order])
 			->format('a4')
-      // ->headerView('pdf.partials.header')
+      ->headerView('pdf.partials.logo')
+			->footerView('pdf.partials.page-number')
 			->margins(32, 12, 8, 6);
 
 		if (app()->environment('production') || app()->bound('force_lambda_pdf')) {
