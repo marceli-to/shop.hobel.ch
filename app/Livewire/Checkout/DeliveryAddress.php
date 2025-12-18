@@ -5,13 +5,13 @@ use App\Actions\Cart\Update as UpdateCart;
 
 class DeliveryAddress extends Component
 {
-  public string $salutation = 'Dr.';
-  public string $firstname = 'Pierluigi';
-  public string $lastname = 'Menefregista';
-  public string $street = 'Marktgasse';
-  public string $street_number = '3';
-  public string $zip = '8765';
-  public string $city = 'Esempione';
+  public string $salutation = 'Herr';
+  public string $firstname = 'Marcel';
+  public string $lastname = 'Stadelmann';
+  public string $street = 'Letzigraben';
+  public string $street_number = '149';
+  public string $zip = '8047';
+  public string $city = 'Zürich';
   public string $country = 'Schweiz';
 
   protected $rules = [
