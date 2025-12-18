@@ -4,15 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use App\Traits\HasGermanSlug;
 
 class Category extends Model
 {
 	use HasSlug;
+	use HasGermanSlug;
 	use SoftDeletes;
 
 	protected $fillable = [
@@ -77,6 +80,14 @@ class Category extends Model
 	public function image(): MorphOne
 	{
 		return $this->morphOne(Image::class, 'imageable');
+	}
+
+	/**
+	 * Tags that belong to this category.
+	 */
+	public function tags(): HasMany
+	{
+		return $this->hasMany(Tag::class);
 	}
 
 	/**

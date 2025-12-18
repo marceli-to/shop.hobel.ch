@@ -17,7 +17,7 @@ class GetProducts
   {
     return $category->products()
       ->where('published', true)
-      ->with('previewImage')
+      ->with(['previewImage', 'tags'])
       ->orderBy('name')
       ->get();
   }

@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use App\Traits\HasGermanSlug;
 
 class Product extends Model
 {
 	use HasSlug;
+	use HasGermanSlug;
 	use SoftDeletes;
 
 	protected $fillable = [
@@ -55,6 +57,14 @@ class Product extends Model
 	public function categories(): BelongsToMany
 	{
 		return $this->belongsToMany(Category::class);
+	}
+
+	/**
+	 * Tags that belong to this product.
+	 */
+	public function tags(): BelongsToMany
+	{
+		return $this->belongsToMany(Tag::class);
 	}
 
 	/**

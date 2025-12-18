@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Products\Schemas;
 
 use App\Models\Category;
 use App\Models\ShippingMethod;
+use App\Models\Tag;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -139,19 +140,27 @@ class ProductForm
 							->inline(false)
 							->default(false),
 
-						TextInput::make('slug')
-							->label('Slug')
-							->required()
-							->disabled()
-							->dehydrated()
-							->unique(ignoreRecord: true),
-
 						CheckboxList::make('categories')
 							->label('Kategorien')
 							->relationship('categories', 'name')
 							->options(Category::pluck('name', 'id'))
 							->columns(2)
-							->helperText('Wählen Sie eine oder mehrere Kategorien aus'),
+							->live(),
+
+						CheckboxList::make('tags')
+							->label('Tags')
+							->relationship('tags', 'name')
+							->options(function (callable $get) {
+								$categoryIds = $get('categories');
+								if (empty($categoryIds)) {
+									return [];
+								}
+								return Tag::whereIn('category_id', $categoryIds)
+									->orderBy('order')
+									->pluck('name', 'id');
+							})
+							->columns(2)
+							->visible(fn (callable $get) => !empty($get('categories'))),
 
 						CheckboxList::make('shippingMethods')
 							->label('Versandarten')

@@ -26,11 +26,11 @@
 
     <ul class="flex flex-col gap-y-20 items-end lg:items-start">
 
-      {{-- @foreach($menuItems ?? [['url' => route('page.tables'), 'title' => 'Tische']] as $item)
-        <x-menu.item
-          :url="$item['url'] ?? '#'"
-          :title="$item['title'] ?? ''" />
-      @endforeach --}}
+      @foreach($categories as $category)
+        <x-menu.page.item
+          :url="route('page.category', $category)"
+          :title="$category->name" />
+      @endforeach
 
     </ul>
 

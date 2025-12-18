@@ -28,6 +28,10 @@ class CategoriesTable
 					->label('Name')
 					->searchable()
 					->sortable(),
+				TextColumn::make('tags.name')
+					->label('Tags')
+					->badge()
+					->separator(','),
 				TextColumn::make('products_count')
 					->label('Produkte')
 					->counts('products')

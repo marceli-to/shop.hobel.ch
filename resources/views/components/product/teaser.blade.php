@@ -5,6 +5,6 @@
 <a 
   href="{{ $url }}"
   aria-label="{{ $title }}"
-  class="relative group overflow-hidden">
+  {{ $attributes->merge(['class' => 'relative group overflow-hidden']) }}>
   {{ $slot }}
 </a>

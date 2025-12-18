@@ -10,7 +10,7 @@
   <x-layout.header :title="$title" :showDesktopTitle="true" :backlink="$backlink" />
 @endif
 <x-layout.body>
-  <x-layout.debug />
+  {{-- <x-layout.debug /> --}}
   <x-layout.main class="{{ request()->routeIs('page.landing') ? 'pt-40 lg:pt-0' : '' }}">
     {{ $slot ?? '' }}
   </x-layout.main>

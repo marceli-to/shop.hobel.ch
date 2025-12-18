@@ -5,6 +5,7 @@ use App\Filament\Admin\Resources\Categories\Pages\EditCategory;
 use App\Filament\Admin\Resources\Categories\Pages\ListCategories;
 use App\Filament\Admin\Resources\Categories\Schemas\CategoryForm;
 use App\Filament\Admin\Resources\Categories\Tables\CategoriesTable;
+use App\Filament\Admin\Resources\Categories\RelationManagers\TagsRelationManager;
 use App\Models\Category;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -41,7 +42,7 @@ class CategoryResource extends Resource
 	public static function getRelations(): array
 	{
 		return [
-			//
+			TagsRelationManager::class,
 		];
 	}
 
