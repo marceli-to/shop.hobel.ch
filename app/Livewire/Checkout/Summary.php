@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Actions\Cart\Get as GetCartAction;
 use App\Actions\Order\Create as CreateOrderAction;
 use App\Actions\Order\Finalize as FinalizeOrderAction;
-use App\Actions\Order\GenerateOrderNumber;
+use App\Actions\Order\GeneratePaymentReference;
 use App\Services\PayrexxService;
 
 class Summary extends Component
@@ -77,8 +77,8 @@ class Summary extends Component
 
   private function processCreditCardOrder(): void
   {
-    // Generate unique order number as reference ID
-    $referenceId = (new GenerateOrderNumber())->execute();
+    // Generate unique payment reference for Payrexx
+    $referenceId = (new GeneratePaymentReference())->execute();
 
     // Store reference in session for later verification
     session()->put('payment_reference', $referenceId);

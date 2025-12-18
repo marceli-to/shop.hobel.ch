@@ -13,10 +13,13 @@ class OrderItem extends Model
 		'product_description',
 		'product_price',
 		'quantity',
+		'shipping_name',
+		'shipping_price',
 	];
 
 	protected $casts = [
 		'product_price' => 'decimal:2',
+		'shipping_price' => 'decimal:2',
 	];
 
 	/**

@@ -162,7 +162,6 @@ class Order extends Model
 		$useInvoiceAddress = empty($deliveryAddress);
 
 		$order = self::create([
-			'order_number' => $paymentReference,
 			'invoice_salutation' => !empty($invoiceAddress['salutation']) ? $invoiceAddress['salutation'] : null,
 			'invoice_firstname' => $invoiceAddress['firstname'],
 			'invoice_lastname' => $invoiceAddress['lastname'],
@@ -197,6 +196,8 @@ class Order extends Model
 				'product_description' => $item['description'] ?? null,
 				'product_price' => $item['price'],
 				'quantity' => $item['quantity'],
+				'shipping_name' => $item['shipping_name'] ?? null,
+				'shipping_price' => $item['shipping_price'] ?? 0,
 			]);
 		}
 
@@ -214,8 +215,12 @@ class Order extends Model
 			if (empty($order->uuid)) {
 				$order->uuid = (string) Str::uuid();
 			}
+		});
+
+		static::created(function ($order) {
 			if (empty($order->order_number)) {
-				$order->order_number = (new GenerateOrderNumber())->execute();
+				$order->order_number = (new GenerateOrderNumber())->execute($order);
+				$order->saveQuietly();
 			}
 		});
 	}

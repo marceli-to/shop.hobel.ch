@@ -9,6 +9,21 @@
             <td class="currency">Fr.</td>
             <td class="amount text-right">{!! number_format($item->subtotal, 2, '.', "'") !!}</td>
           </tr>
+          @if($item->product_description)
+            <tr>
+              <td colspan="3">{{ $item->product_description }}</td>
+            </tr>
+          @endif
+          <tr>
+            <td>{{ $item->shipping_name ?? ($item->shipping_price > 0 ? 'Versand' : 'Abholung') }}</td>
+            <td class="currency">{{ $item->shipping_price > 0 ? 'Fr.' : '' }}</td>
+            <td class="amount text-right">{{ $item->shipping_price > 0 ? number_format($item->shipping_price, 2, '.', "'") : '' }}</td>
+          </tr>
+          @if(!$loop->last)
+            <tr>
+              <td colspan="3" class="no-border">&nbsp;</td>
+            </tr>
+          @endif
         @endforeach
         <tr>
           <td>Netto</td>

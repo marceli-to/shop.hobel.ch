@@ -6,25 +6,14 @@ use App\Models\Order;
 
 class GenerateOrderNumber
 {
-	public function execute(): string
+	/**
+	 * Generate order number from order ID.
+	 * Format: YYNNNNN (e.g., 2500001 for order ID 1 in 2025)
+	 */
+	public function execute(Order $order): string
 	{
-		do {
-			$number = 'HOBEL-' . $this->generateCode(6);
-		} while (Order::where('order_number', $number)->exists());
-
-		return $number;
-	}
-
-	private function generateCode(int $length): string
-	{
-		// Excludes 0, O, 1, I, L to avoid confusion
-		$chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-		$code = '';
-
-		for ($i = 0; $i < $length; $i++) {
-			$code .= $chars[random_int(0, strlen($chars) - 1)];
-		}
-
-		return $code;
+		$year = $order->created_at->format('y');
+		$paddedId = str_pad($order->id, 5, '0', STR_PAD_LEFT);
+		return $year . $paddedId;
 	}
 }
