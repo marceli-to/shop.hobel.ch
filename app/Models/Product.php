@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use App\Traits\HasGermanSlug;
+use App\Enums\ProductType;
 
 class Product extends Model
 {
@@ -19,16 +21,20 @@ class Product extends Model
 
 	protected $fillable = [
 		'uuid',
+		'type',
 		'name',
 		'slug',
     'short_description',
 		'description',
+		'sku',
+		'delivery_time',
 		'price',
 		'stock',
 		'published',
 	];
 
 	protected $casts = [
+		'type' => ProductType::class,
 		'price' => 'decimal:2',
 		'published' => 'boolean',
 	];
@@ -95,6 +101,22 @@ class Product extends Model
 			->withPivot('price')
 			->withTimestamps()
 			->orderBy('order');
+	}
+
+	/**
+	 * Attributes for this product.
+	 */
+	public function attributes(): HasMany
+	{
+		return $this->hasMany(ProductAttribute::class)->orderBy('order');
+	}
+
+	/**
+	 * Variations for this product.
+	 */
+	public function variations(): HasMany
+	{
+		return $this->hasMany(ProductVariation::class)->orderBy('order');
 	}
 
 	/**

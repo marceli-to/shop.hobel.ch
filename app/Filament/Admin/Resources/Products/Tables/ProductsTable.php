@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Products\Tables;
 
+use App\Enums\ProductType;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -25,8 +26,17 @@ class ProductsTable
 					->getStateUsing(function ($record) {
 						return $record->images()->orderBy('order')->first()?->file_path;
 					}),
+				TextColumn::make('type')
+					->label('Typ')
+					->badge()
+					->formatStateUsing(fn ($state) => $state->label())
+					->color(fn ($state) => match ($state) {
+						ProductType::Simple => 'gray',
+						ProductType::Configurable => 'info',
+						ProductType::Variations => 'success',
+					}),
 				TextColumn::make('name')
-					->label('Titel')
+					->label('Name')
 					->searchable()
 					->sortable(),
 				TextColumn::make('description')
@@ -35,10 +45,10 @@ class ProductsTable
 					->limit(50),
 				TextColumn::make('price')
 					->label('Preis')
-					->formatStateUsing(fn ($state) => 'CHF ' . number_format($state, 2, '.', '\''))
+					->formatStateUsing(fn ($state) => number_format($state, 2, '.', '\''))
 					->sortable(),
 				TextColumn::make('stock')
-					->label('Verfügbar')
+					->label('Lagerbestand')
 					->numeric()
 					->sortable(),
 				IconColumn::make('published')

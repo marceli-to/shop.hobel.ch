@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Products;
 use App\Filament\Admin\Resources\Products\Pages\CreateProduct;
 use App\Filament\Admin\Resources\Products\Pages\EditProduct;
 use App\Filament\Admin\Resources\Products\Pages\ListProducts;
+use App\Filament\Admin\Resources\Products\RelationManagers\VariationsRelationManager;
 use App\Filament\Admin\Resources\Products\Schemas\ProductForm;
 use App\Filament\Admin\Resources\Products\Tables\ProductsTable;
 use App\Models\Product;
@@ -43,7 +44,7 @@ class ProductResource extends Resource
 	public static function getRelations(): array
 	{
 		return [
-			//
+			VariationsRelationManager::class,
 		];
 	}
 

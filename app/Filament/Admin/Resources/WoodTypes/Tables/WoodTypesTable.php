@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Resources\ShippingMethods\Tables;
+namespace App\Filament\Admin\Resources\WoodTypes\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -10,7 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class ShippingMethodsTable
+class WoodTypesTable
 {
 	public static function configure(Table $table): Table
 	{
@@ -23,12 +23,8 @@ class ShippingMethodsTable
 					->searchable()
 					->sortable(),
 				TextColumn::make('price')
-					->label('Preis')
-					->formatStateUsing(fn ($state) => $state > 0 ? number_format($state, 2, '.', '\'') : '–')
-					->sortable(),
-				TextColumn::make('products_count')
-					->label('Produkte')
-					->counts('products')
+					->label('Preis/m³')
+					->formatStateUsing(fn ($state) => number_format($state, 2, '.', '\''))
 					->sortable(),
 			])
 			->filters([
