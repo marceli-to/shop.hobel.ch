@@ -92,8 +92,9 @@ class Button extends Component
 				return $item;
 			})->toArray();
 		} else {
-			// Get shipping methods for this product
-			$shippingMethods = $product->shippingMethods->map(function ($method) {
+			// For child products, get shipping methods from parent
+			$shippingProduct = $product->parent_id ? $product->parent : $product;
+			$shippingMethods = $shippingProduct->shippingMethods->map(function ($method) {
 				return [
 					'id' => $method->id,
 					'name' => $method->name,
@@ -102,16 +103,26 @@ class Button extends Component
 				];
 			})->toArray();
 
+			// For child products, get image from parent
+			$imageProduct = $product->parent_id ? $product->parent : $product;
+			$image = $imageProduct->images->first()?->file_path;
+
+			// Display name: parent name + child label (if child)
+			$displayName = $product->parent_id && $product->label
+				? $product->parent->name
+				: $product->name;
+
 			// Add new item
 			$cart['items'][] = [
 				'cart_key' => $this->cartKey,
 				'uuid' => $product->uuid,
-				'name' => $product->name,
+				'name' => $displayName,
+				'label' => $product->label, // For child products
 				'description' => $product->description,
 				'price' => $product->price,
 				'base_price' => $product->price,
 				'quantity' => min($this->quantity, $product->stock),
-				'image' => $product->images->first()?->file_path,
+				'image' => $image,
 				'configuration' => [],
 				'shipping_methods' => $shippingMethods,
 				'selected_shipping' => $shippingMethods[0]['id'] ?? null,

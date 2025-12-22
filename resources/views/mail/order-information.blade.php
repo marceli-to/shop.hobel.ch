@@ -9,6 +9,11 @@
             <td class="currency">Fr.</td>
             <td class="amount text-right">{!! number_format($item->subtotal, 2, '.', "'") !!}</td>
           </tr>
+          @if($item->product_label)
+            <tr>
+              <td colspan="3">{{ $item->product_label }}</td>
+            </tr>
+          @endif
           @if($item->product_description)
             <tr>
               <td colspan="3">{{ $item->product_description }}</td>

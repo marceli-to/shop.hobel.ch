@@ -268,6 +268,9 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
                 <div class="invoice__row-currency">Fr.</div>
                 <div class="invoice__row-price">{!! number_format($item->subtotal, 2, '.', "'") !!}</div>
               </div>
+              @if($item->product_label)
+                <div class="invoice__row--detail">{{ $item->product_label }}</div>
+              @endif
               @if($item->product_description)
                 <div class="invoice__row--detail">{{ $item->product_description }}</div>
               @endif

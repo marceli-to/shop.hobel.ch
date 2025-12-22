@@ -14,6 +14,6 @@ class Find
    */
   public function execute(Product $product): Product
   {
-    return $product->load('images');
+    return $product->load(['images', 'children', 'attributes']);
   }
 }

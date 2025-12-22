@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->string('sku')->nullable()->after('description');
-            $table->string('delivery_time')->nullable()->after('sku');
+        Schema::table('order_items', function (Blueprint $table) {
+            $table->string('product_label')->nullable()->after('product_name');
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn(['sku', 'delivery_time']);
+        Schema::table('order_items', function (Blueprint $table) {
+            $table->dropColumn('product_label');
         });
     }
 };

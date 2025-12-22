@@ -18,6 +18,7 @@ class ProductsTable
 	public static function configure(Table $table): Table
 	{
 		return $table
+			->modifyQueryUsing(fn ($query) => $query->whereNull('parent_id'))
 			->columns([
 				ImageColumn::make('media.file_path')
 					->label('Bild')

@@ -17,7 +17,8 @@ class GetProducts
   {
     return $category->products()
       ->where('published', true)
-      ->with(['previewImage', 'tags'])
+      ->whereNull('parent_id') // Only parent products
+      ->with(['previewImage', 'tags', 'children'])
       ->orderBy('name')
       ->get();
   }

@@ -43,17 +43,16 @@
 
               </x-layout.row>
 
-              <!-- Description -->
-              @if($item['description'])
+              @if(!empty($item['label']))
                 <x-layout.row class="border-b">
-                  <span>{{ $item['description'] }}</span>
+                  {{ $item['label'] }}
                 </x-layout.row>
               @endif
 
               <!-- Configuration Details -->
               @if(!empty($item['configuration']))
                 @foreach($item['configuration'] as $config)
-                  <x-layout.row>
+                  <x-layout.row class="border-b">
                     <span>{{ $config['label'] }}</span>
                   </x-layout.row>
                 @endforeach

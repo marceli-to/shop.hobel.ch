@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -12,6 +13,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use App\Traits\HasGermanSlug;
 use App\Enums\ProductType;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Product extends Model
 {
@@ -21,15 +23,18 @@ class Product extends Model
 
 	protected $fillable = [
 		'uuid',
+		'parent_id',
 		'type',
 		'name',
 		'slug',
-    'short_description',
+		'short_description',
+		'label',
 		'description',
 		'sku',
 		'delivery_time',
 		'price',
 		'stock',
+		'order',
 		'published',
 	];
 
@@ -38,6 +43,38 @@ class Product extends Model
 		'price' => 'decimal:2',
 		'published' => 'boolean',
 	];
+
+	/**
+	 * Check if product is of type simple.
+	 */
+	protected function isSimple(): Attribute
+	{
+		return Attribute::get(fn () => $this->type === ProductType::Simple);
+	}
+
+	/**
+	 * Check if product is of type configurable.
+	 */
+	protected function isConfigurable(): Attribute
+	{
+		return Attribute::get(fn () => $this->type === ProductType::Configurable);
+	}
+
+	/**
+	 * Check if product has children (is a parent with variations).
+	 */
+	protected function isVariations(): Attribute
+	{
+		return Attribute::get(fn () => $this->children()->exists());
+	}
+
+	/**
+	 * Check if product is a child (variation).
+	 */
+	protected function isChild(): Attribute
+	{
+		return Attribute::get(fn () => $this->parent_id !== null);
+	}
 
 	/**
 	 * Get the options for generating the slug.
@@ -112,11 +149,19 @@ class Product extends Model
 	}
 
 	/**
-	 * Variations for this product.
+	 * Parent product (for child products).
 	 */
-	public function variations(): HasMany
+	public function parent(): BelongsTo
 	{
-		return $this->hasMany(ProductVariation::class)->orderBy('order');
+		return $this->belongsTo(Product::class, 'parent_id');
+	}
+
+	/**
+	 * Child products (variations).
+	 */
+	public function children(): HasMany
+	{
+		return $this->hasMany(Product::class, 'parent_id')->orderBy('order');
 	}
 
 	/**

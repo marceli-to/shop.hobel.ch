@@ -47,9 +47,12 @@
               wire:key="mini-cart-item-{{ $cartKey }}">
 
               <x-layout.row class="justify-between border-y !border-white relative">
-                
+
                 <x-headings.h3 class="font-sans">
                   {{ $item['name'] }}
+                  @if(!empty($item['label']))
+                    <span class="inline font-normal text-sm">{{ $item['label'] }}</span>
+                  @endif
                 </x-headings.h3>
 
                 <button

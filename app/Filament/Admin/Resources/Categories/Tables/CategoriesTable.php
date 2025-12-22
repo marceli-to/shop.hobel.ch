@@ -31,7 +31,7 @@ class CategoriesTable
 				TextColumn::make('tags.name')
 					->label('Tags')
 					->badge()
-					->separator(','),
+					->limitList(6),
 				TextColumn::make('products_count')
 					->label('Produkte')
 					->counts('products')

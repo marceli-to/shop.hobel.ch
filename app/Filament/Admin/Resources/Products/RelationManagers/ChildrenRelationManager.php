@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Products\RelationManagers;
 
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Hidden;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -17,9 +18,9 @@ use Filament\Actions\BulkActionGroup;
 use App\Enums\ProductType;
 use Illuminate\Database\Eloquent\Model;
 
-class VariationsRelationManager extends RelationManager
+class ChildrenRelationManager extends RelationManager
 {
-	protected static string $relationship = 'variations';
+	protected static string $relationship = 'children';
 
 	protected static ?string $title = 'Produktvarianten';
 
@@ -36,13 +37,15 @@ class VariationsRelationManager extends RelationManager
 	{
 		return $schema
 			->components([
-				TextInput::make('name')
-					->label('Name')
-					->required()
-					->columnSpanFull(),
+				Hidden::make('type')
+					->default('simple'),
+
+				Hidden::make('published')
+					->default(true),
 
 				TextInput::make('label')
 					->label('Label')
+					->required()
 					->maxLength(255)
 					->columnSpanFull(),
 
@@ -80,12 +83,12 @@ class VariationsRelationManager extends RelationManager
 			->reorderable('order')
 			->defaultSort('order', 'asc')
 			->columns([
-				TextColumn::make('name')
-					->label('Name')
-					->searchable()
-					->sortable(),
 				TextColumn::make('label')
 					->label('Label')
+					->searchable()
+					->sortable(),
+				TextColumn::make('sku')
+					->label('SKU')
 					->searchable(),
 				TextColumn::make('price')
 					->label('Preis')
@@ -98,7 +101,13 @@ class VariationsRelationManager extends RelationManager
 			->headerActions([
 				CreateAction::make()
 					->label('Variante erstellen')
-					->modalWidth('lg'),
+					->modalWidth('lg')
+					->mutateFormDataUsing(function (array $data): array {
+						// Child products inherit name from parent
+						$data['name'] = $this->ownerRecord->name;
+						$data['slug'] = \Illuminate\Support\Str::slug($this->ownerRecord->name . '-' . $data['label']) . '-' . \Illuminate\Support\Str::random(6);
+						return $data;
+					}),
 			])
 			->actions([
 				ActionGroup::make([

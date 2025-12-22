@@ -14,33 +14,26 @@ Export the following tables to JSON format:
   - product_images
   - category_product
   - product_tag
+  - product_shipping_method
 
-Export as phpMyAdmin JSON format into: data.json
-
-
-2. PREPARE PRODUCT IMAGES JSON
-------------------------------
-Export product_images separately with a clean 'name' field to: product-images.json
-
-Required fields: imageable_id, name, position
+Export as phpMyAdmin JSON format into a single file: data.json
 
 
-3. PLACE FILES IN STORAGE
--------------------------
-Copy the JSON files to:
+2. PLACE FILE IN STORAGE
+------------------------
+Copy the JSON file to:
 
   storage/app/data-import/data.json
-  storage/app/data-import/product-images.json
 
 
-4. COPY IMAGE FILES
+3. COPY IMAGE FILES
 -------------------
 Copy product images to:
 
   storage/app/public/products/
 
 
-5. RUN IMPORT
+4. RUN IMPORT
 -------------
 php artisan app:data-import
 
@@ -50,4 +43,5 @@ NOTES
 - Import clears all tables before importing (fresh import)
 - Stock defaults to 10 when missing or zero
 - Image paths are set to 'products/' folder
+- Product variations are imported as child products (parent_id relationship)
 - Safe to re-run anytime

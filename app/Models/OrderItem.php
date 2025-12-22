@@ -10,6 +10,7 @@ class OrderItem extends Model
 	protected $fillable = [
 		'order_id',
 		'product_name',
+		'product_label',
 		'product_description',
 		'product_price',
 		'quantity',
@@ -36,5 +37,17 @@ class OrderItem extends Model
 	public function getSubtotalAttribute(): float
 	{
 		return $this->product_price * $this->quantity;
+	}
+
+	/**
+	 * Get the full product name including label.
+	 */
+	public function getFullNameAttribute(): string
+	{
+		if ($this->product_label) {
+			return $this->product_name . ', ' . $this->product_label;
+		}
+
+		return $this->product_name;
 	}
 }
