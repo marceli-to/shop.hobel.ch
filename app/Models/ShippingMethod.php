@@ -12,7 +12,7 @@ class ShippingMethod extends Model
         'uuid',
         'name',
         'price',
-        'sort',
+        'order',
     ];
 
     protected $casts = [

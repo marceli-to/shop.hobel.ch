@@ -6,13 +6,14 @@ use App\Enums\ProductType;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductAttribute;
-use App\Models\ProductVariation;
 use App\Models\Tag;
 use App\Models\Image;
 use App\Models\WoodType;
+use App\Models\ShippingMethod;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DataImport extends Command
 {
@@ -59,6 +60,8 @@ class DataImport extends Command
         $this->importProductImages();
         $this->importCategoryProduct();
         $this->importProductTag();
+        $this->importShippingMethods();
+        $this->importProductShippingMethod();
 
         $this->info('Data import completed!');
 
@@ -71,15 +74,16 @@ class DataImport extends Command
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
+        DB::table('product_shipping_method')->truncate();
         DB::table('product_tag')->truncate();
         DB::table('category_product')->truncate();
         Image::truncate();
-        ProductVariation::truncate();
         ProductAttribute::truncate();
         Product::truncate();
         Tag::truncate();
         Category::truncate();
         WoodType::truncate();
+        ShippingMethod::truncate();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
@@ -239,9 +243,16 @@ class DataImport extends Command
         $count = 0;
 
         foreach ($this->data['product_variations'] as $index => $item) {
-            $productId = $this->idMaps['products'][$item['product_id']] ?? null;
+            $parentId = $this->idMaps['products'][$item['product_id']] ?? null;
 
-            if (!$productId) {
+            if (!$parentId) {
+                continue;
+            }
+
+            // Get parent product for inherited fields
+            $parent = Product::find($parentId);
+
+            if (!$parent) {
                 continue;
             }
 
@@ -253,41 +264,38 @@ class DataImport extends Command
                 $stock = 10;
             }
 
-            ProductVariation::create([
-                'product_id' => $productId,
-                'name' => $item['name'],
-                'label' => $item['label'] ?: null,
+            $label = $item['label'] ?: $item['name'];
+
+            // Create child product
+            Product::create([
+                'parent_id' => $parentId,
+                'type' => ProductType::Simple, // Child products are simple
+                'name' => $parent->name, // Inherit name from parent
+                'slug' => Str::slug($parent->name . '-' . $label) . '-' . Str::random(6),
+                'label' => $label,
                 'sku' => $item['sku'],
                 'short_description' => $description,
                 'price' => $item['price'] ?: 0,
                 'stock' => $stock,
                 'order' => $index,
+                'published' => true,
             ]);
             $count++;
         }
 
-        $this->info("  - Imported {$count} product variations");
+        $this->info("  - Imported {$count} child products (variations)");
     }
 
     protected function importProductImages(): void
     {
-        $path = 'data-import/product-images.json';
-
-        if (!Storage::disk('local')->exists($path)) {
-            $this->warn("No product-images.json found");
-            return;
-        }
-
-        $images = json_decode(Storage::disk('local')->get($path), true);
-
-        if (!$images) {
-            $this->warn('Failed to parse product-images.json');
+        if (!isset($this->data['product_images'])) {
+            $this->warn('No product_images data found');
             return;
         }
 
         $count = 0;
 
-        foreach ($images as $item) {
+        foreach ($this->data['product_images'] as $item) {
             $productId = $this->idMaps['products'][$item['imageable_id']] ?? null;
 
             if (!$productId) {
@@ -363,5 +371,56 @@ class DataImport extends Command
         }
 
         $this->info("  - Imported {$count} product-tag relations");
+    }
+
+    protected function importShippingMethods(): void
+    {
+        if (!isset($this->data['shipping_methods'])) {
+            $this->warn('No shipping_methods data found');
+            return;
+        }
+
+        $this->idMaps['shipping_methods'] = [];
+        $count = 0;
+
+        foreach ($this->data['shipping_methods'] as $index => $item) {
+            $shippingMethod = ShippingMethod::create([
+                'name' => $item['name'],
+                'price' => $item['price'] ?: 0,
+                'order' => $index,
+            ]);
+            $this->idMaps['shipping_methods'][$item['id']] = $shippingMethod->id;
+            $count++;
+        }
+
+        $this->info("  - Imported {$count} shipping methods");
+    }
+
+    protected function importProductShippingMethod(): void
+    {
+        if (!isset($this->data['product_shipping_method'])) {
+            $this->warn('No product_shipping_method data found');
+            return;
+        }
+
+        $count = 0;
+
+        foreach ($this->data['product_shipping_method'] as $item) {
+            $productId = $this->idMaps['products'][$item['product_id']] ?? null;
+            $shippingMethodId = $this->idMaps['shipping_methods'][$item['shipping_method_id']] ?? null;
+
+            if (!$productId || !$shippingMethodId) {
+                continue;
+            }
+
+            DB::table('product_shipping_method')->insert([
+                'product_id' => $productId,
+                'shipping_method_id' => $shippingMethodId,
+                'price' => $item['price'] ?? null,
+            ]);
+            $count++;
+        }
+
+        $this->info("  - Imported {$count} product-shipping_method relations");
     }
 }
