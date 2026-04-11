@@ -6,6 +6,7 @@ use App\Actions\Order\GenerateOrderNumber;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class Order extends Model
@@ -159,6 +160,7 @@ class Order extends Model
 		string $paymentMethod,
 		?string $paymentReference = null
 	): self {
+		return DB::transaction(function () use ($cart, $invoiceAddress, $deliveryAddress, $paymentMethod, $paymentReference) {
 		$useInvoiceAddress = empty($deliveryAddress);
 
 		$order = self::create([
@@ -200,9 +202,13 @@ class Order extends Model
 				'shipping_name' => $item['shipping_name'] ?? null,
 				'shipping_price' => $item['shipping_price'] ?? 0,
 			]);
+
+			// Deduct stock
+			Product::where('uuid', $item['uuid'])->decrement('stock', $item['quantity']);
 		}
 
 		return $order->load('items');
+		});
 	}
 
 	/**

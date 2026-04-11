@@ -57,7 +57,7 @@ class MiniCart extends Component
 		if ($this->cart['quantity'] <= 0) {
 			(new DestroyCartAction())->execute();
 			$this->dispatch('cart-updated');
-			$this->redirect(route('page.checkout.basket'));
+			$this->close();
 			return;
 		}
 
@@ -66,9 +66,21 @@ class MiniCart extends Component
 
 	private function updateTotal(): void
 	{
-		$this->cart['total'] = collect($this->cart['items'])->sum(function ($item) {
-			return $item['price'] * $item['quantity'];
-		});
+		$taxRate = config('invoice.tax_rate') / 100;
+		$flatRate = config('invoice.shipping_flat_rate');
+		$freeThreshold = config('invoice.shipping_free_threshold');
+		$items = collect($this->cart['items']);
+
+		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
+
+		$hasShipping = $items->contains(fn($item) => str_contains($item['shipping_name'] ?? '', 'Versand'));
+		$shipping = ($hasShipping && $subtotal < $freeThreshold) ? $flatRate : 0;
+
+		$this->cart['subtotal'] = $subtotal;
+		$this->cart['shipping'] = $shipping;
+		$this->cart['tax'] = ($subtotal + $shipping) * $taxRate;
+		$this->cart['total'] = $subtotal + $shipping + $this->cart['tax'];
+		$this->cart['quantity'] = $items->sum('quantity');
 
 		(new UpdateCartAction())->execute($this->cart);
 		$this->dispatch('cart-updated');

@@ -28,15 +28,20 @@ class Cart extends Component
 	private function calculateTotals(): void
 	{
 		$taxRate = config('invoice.tax_rate') / 100;
+		$flatRate = config('invoice.shipping_flat_rate');
+		$freeThreshold = config('invoice.shipping_free_threshold');
 		$items = collect($this->cart['items'] ?? []);
-		
+
 		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
-		$shipping = $items->sum(fn($item) => $item['shipping_price'] ?? 0);
-		
-		$this->cart['subtotal'] = $subtotal + $shipping;
+
+		// Flat rate shipping: CHF 20 if any item uses "Versand", free if subtotal >= threshold
+		$hasShipping = $items->contains(fn($item) => str_contains($item['shipping_name'] ?? '', 'Versand'));
+		$shipping = ($hasShipping && $subtotal < $freeThreshold) ? $flatRate : 0;
+
+		$this->cart['subtotal'] = $subtotal;
 		$this->cart['shipping'] = $shipping;
-		$this->cart['tax'] = $this->cart['subtotal'] * $taxRate;
-		$this->cart['total'] = $this->cart['subtotal'] + $this->cart['tax'];
+		$this->cart['tax'] = ($subtotal + $shipping) * $taxRate;
+		$this->cart['total'] = $subtotal + $shipping + $this->cart['tax'];
 	}
 
 	public function removeItem(string $cartKey): void
@@ -92,8 +97,8 @@ class Cart extends Component
 				if (($item['cart_key'] ?? $item['uuid']) === $cartKey) {
 					$item['selected_shipping'] = $shippingMethodId;
 					$method = collect($item['shipping_methods'] ?? [])->firstWhere('id', $shippingMethodId);
-					$item['shipping_price'] = $method['price'] ?? 0;
 					$item['shipping_name'] = $method['name'] ?? 'Versand';
+					$item['shipping_price'] = 0;
 				}
 				return $item;
 			})
@@ -106,17 +111,21 @@ class Cart extends Component
 	private function updateTotal(): void
 	{
 		$taxRate = config('invoice.tax_rate') / 100;
+		$flatRate = config('invoice.shipping_flat_rate');
+		$freeThreshold = config('invoice.shipping_free_threshold');
 		$items = collect($this->cart['items']);
-		
+
 		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
-		$shipping = $items->sum(fn($item) => $item['shipping_price'] ?? 0);
-		
-		$this->cart['subtotal'] = $subtotal + $shipping;
+
+		$hasShipping = $items->contains(fn($item) => str_contains($item['shipping_name'] ?? '', 'Versand'));
+		$shipping = ($hasShipping && $subtotal < $freeThreshold) ? $flatRate : 0;
+
+		$this->cart['subtotal'] = $subtotal;
 		$this->cart['shipping'] = $shipping;
-		$this->cart['tax'] = $this->cart['subtotal'] * $taxRate;
-		$this->cart['total'] = $this->cart['subtotal'] + $this->cart['tax'];
+		$this->cart['tax'] = ($subtotal + $shipping) * $taxRate;
+		$this->cart['total'] = $subtotal + $shipping + $this->cart['tax'];
 		$this->cart['quantity'] = $items->sum('quantity');
-		
+
 		(new UpdateCartAction())->execute($this->cart);
 	}
 

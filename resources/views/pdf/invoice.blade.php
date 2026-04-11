@@ -274,11 +274,9 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
               @if($item->product_description)
                 <div class="invoice__row--detail">{{ $item->product_description }}</div>
               @endif
-              <div class="invoice__row">
-                <div class="invoice__row-label">{{ $item->shipping_name ?? ($item->shipping_price > 0 ? 'Versand' : 'Abholung') }}</div>
-                <div class="invoice__row-currency">{{ $item->shipping_price > 0 ? 'Fr.' : '' }}</div>
-                <div class="invoice__row-price">{{ $item->shipping_price > 0 ? number_format($item->shipping_price, 2, '.', "'") : '' }}</div>
-              </div>
+              @if($item->shipping_name)
+                <div class="invoice__row--detail">{{ $item->shipping_name }}</div>
+              @endif
             </td>
           </tr>
         </table>
@@ -293,7 +291,12 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
               <div class="invoice__row">
                 <div class="invoice__row-label">Netto</div>
                 <div class="invoice__row-currency">Fr.</div>
-                <div class="invoice__row-price">{!! number_format($order->subtotal + $order->shipping, 2, '.', "'") !!}</div>
+                <div class="invoice__row-price">{!! number_format($order->subtotal, 2, '.', "'") !!}</div>
+              </div>
+              <div class="invoice__row">
+                <div class="invoice__row-label">Versand</div>
+                <div class="invoice__row-currency">{{ $order->shipping > 0 ? 'Fr.' : '' }}</div>
+                <div class="invoice__row-price">{!! $order->shipping > 0 ? number_format($order->shipping, 2, '.', "'") : 'Kostenlos' !!}</div>
               </div>
               <div class="invoice__row">
                 <div class="invoice__row-label">MwSt.</div>

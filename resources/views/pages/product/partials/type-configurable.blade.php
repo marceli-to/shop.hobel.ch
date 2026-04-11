@@ -1,0 +1,1 @@
+{{-- TODO: Configurable product type --}}

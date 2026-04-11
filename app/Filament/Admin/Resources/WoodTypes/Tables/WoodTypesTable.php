@@ -7,6 +7,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -18,6 +19,10 @@ class WoodTypesTable
 			->reorderable('order')
 			->defaultSort('order', 'asc')
 			->columns([
+				ImageColumn::make('image.file_path')
+					->label('Bild')
+					->disk('public')
+					->circular(),
 				TextColumn::make('name')
 					->label('Name')
 					->searchable()

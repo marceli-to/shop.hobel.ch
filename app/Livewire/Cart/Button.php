@@ -26,6 +26,15 @@ class Button extends Component
 		$this->syncWithCart();
 	}
 
+	public function switchProduct(string $uuid): void
+	{
+		$this->productUuid = $uuid;
+		$this->cartKey = $uuid;
+		$this->quantity = 1;
+		$this->loadProduct();
+		$this->syncWithCart();
+	}
+
 	#[On('cart-updated')]
 	public function syncWithCart(): void
 	{
@@ -79,6 +88,12 @@ class Button extends Component
 			return;
 		}
 
+		// Check flat_rate_shipping (use parent's value for child products)
+		$shippingProduct = $product->parent_id ? $product->parent : $product;
+		if (!$shippingProduct->flat_rate_shipping) {
+			return;
+		}
+
 		$cart = (new GetCartAction())->execute();
 		$cartItems = collect($cart['items']);
 		$existingItem = $cartItems->firstWhere('cart_key', $this->cartKey);
@@ -98,7 +113,6 @@ class Button extends Component
 				return [
 					'id' => $method->id,
 					'name' => $method->name,
-					'key' => $method->key,
 					'price' => $method->pivot->price ?? $method->price,
 				];
 			})->toArray();
@@ -126,7 +140,8 @@ class Button extends Component
 				'configuration' => [],
 				'shipping_methods' => $shippingMethods,
 				'selected_shipping' => $shippingMethods[0]['id'] ?? null,
-				'shipping_price' => $shippingMethods[0]['price'] ?? 0,
+				'shipping_name' => $shippingMethods[0]['name'] ?? null,
+				'shipping_price' => 0,
 			];
 		}
 
@@ -160,11 +175,21 @@ class Button extends Component
 
 	private function updateTotal(array $cart): void
 	{
-		$cart['total'] = collect($cart['items'])->sum(function ($item) {
-			return $item['price'] * $item['quantity'];
-		});
+		$taxRate = config('invoice.tax_rate') / 100;
+		$flatRate = config('invoice.shipping_flat_rate');
+		$freeThreshold = config('invoice.shipping_free_threshold');
+		$items = collect($cart['items']);
 
-		$cart['quantity'] = collect($cart['items'])->sum('quantity');
+		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
+
+		$hasShipping = $items->contains(fn($item) => str_contains($item['shipping_name'] ?? '', 'Versand'));
+		$shipping = ($hasShipping && $subtotal < $freeThreshold) ? $flatRate : 0;
+
+		$cart['subtotal'] = $subtotal;
+		$cart['shipping'] = $shipping;
+		$cart['tax'] = ($subtotal + $shipping) * $taxRate;
+		$cart['total'] = $subtotal + $shipping + $cart['tax'];
+		$cart['quantity'] = $items->sum('quantity');
 
 		// Initialize order_step if not set (cart has items, so step 1 is complete)
 		if (!isset($cart['order_step'])) {

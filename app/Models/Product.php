@@ -34,6 +34,7 @@ class Product extends Model
 		'delivery_time',
 		'price',
 		'stock',
+		'flat_rate_shipping',
 		'order',
 		'published',
 	];
@@ -41,6 +42,7 @@ class Product extends Model
 	protected $casts = [
 		'type' => ProductType::class,
 		'price' => 'decimal:2',
+		'flat_rate_shipping' => 'boolean',
 		'published' => 'boolean',
 	];
 

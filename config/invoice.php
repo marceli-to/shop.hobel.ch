@@ -8,6 +8,13 @@ return [
   'tax_rate' => 8.1,
 
   /**
+   * Shipping
+   */
+
+  'shipping_flat_rate' => 20.00,
+  'shipping_free_threshold' => 100.00,
+
+  /**
    * Payment methods
    */
 

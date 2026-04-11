@@ -33,16 +33,15 @@
 
           <!-- Description -->
           @if($item['description'])
-            <x-layout.row class="{{ empty($item['shipping_price']) ? 'border-b' : '' }}">
+            <x-layout.row class="{{ empty($item['shipping_name']) ? 'border-b' : '' }}">
               <span>{{ $item['description'] }}</span>
             </x-layout.row>
           @endif
 
-          <!-- Shipping -->
-          @if(!empty($item['shipping_price']))
-            <x-layout.row class="justify-between border-b">
-              <span>{{ $item['shipping_name'] ?? 'Versand' }}</span>
-              <x-cart.money :amount="$item['shipping_price']" />
+          <!-- Shipping method -->
+          @if(!empty($item['shipping_name']))
+            <x-layout.row class="border-b">
+              <span>{{ $item['shipping_name'] }}</span>
             </x-layout.row>
           @endif
 
@@ -55,6 +54,15 @@
         <x-layout.row class="justify-between">
           <span>Netto</span>
           <x-cart.money :amount="$cart['subtotal'] ?? $cart['total']" />
+        </x-layout.row>
+
+        <x-layout.row class="justify-between">
+          <span>Versand</span>
+          @if(($cart['shipping'] ?? 0) > 0)
+            <x-cart.money :amount="$cart['shipping']" />
+          @else
+            <span>Kostenlos</span>
+          @endif
         </x-layout.row>
 
         <x-layout.row class="justify-between">

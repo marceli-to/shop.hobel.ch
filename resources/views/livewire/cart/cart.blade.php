@@ -26,18 +26,18 @@
             <div>
 
               <!-- Product header row: Name, X button, Price -->
-              <x-layout.row class="justify-between border-t relative">
-
-                <x-headings.h3 class="font-sans">
-                  {{ $item['name'] }}
-                </x-headings.h3>
+              <x-layout.row class="justify-between gap-12 border-t relative">
 
                 <button
                   wire:click="removeItem('{{ $cartKey }}')"
-                  class="group flex items-center justify-center cursor-pointer w-40 h-40 absolute left-1/2 -translate-x-1/2"
+                  class="group flex items-center justify-center cursor-pointer w-12 h-40"
                   aria-label="Artikel entfernen">
                   <x-icons.cross :size="'sm'" class="group-hover:rotate-180 transition-all" />
                 </button>
+
+                <x-headings.h3 class="font-sans w-full truncate">
+                  {{ $item['name'] }}
+                </x-headings.h3>
 
                 <x-cart.money :amount="$item['price'] * $item['quantity']" />
 
@@ -63,7 +63,7 @@
             @if(!empty($item['shipping_methods']))
               <div>
                 @foreach($item['shipping_methods'] as $index => $method)
-                  <x-layout.row class="justify-between {{ $loop->last ? 'border-b' : '' }}">
+                  <x-layout.row class="{{ $loop->last ? 'border-b' : '' }}">
                     <label class="flex items-center gap-x-20 cursor-pointer">
                       <input
                         type="radio"
@@ -77,7 +77,6 @@
                       <x-icons.radio-checked class="hidden peer-checked:block" />
                       <span>{{ $method['name'] }}</span>
                     </label>
-                    <x-cart.money :amount="$method['price']" />
                   </x-layout.row>
                 @endforeach
               </div>
@@ -99,6 +98,15 @@
           <x-layout.row class="justify-between">
             <span>Netto</span>
             <x-cart.money :amount="$cart['subtotal'] ?? $cart['total']" />
+          </x-layout.row>
+
+          <x-layout.row class="justify-between">
+            <span>Versand</span>
+            @if(($cart['shipping'] ?? 0) > 0)
+              <x-cart.money :amount="$cart['shipping']" />
+            @else
+              <span>Kostenlos</span>
+            @endif
           </x-layout.row>
 
           <x-layout.row class="justify-between">

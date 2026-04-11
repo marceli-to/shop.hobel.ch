@@ -1,16 +1,26 @@
-<x-layout.app 
-  :title="$category->name" 
+<x-layout.app
+  :title="$category->name"
   :backlink="route('page.landing')">
-  
-  <x-grid.wrapper x-data="{ activeTag: null }">
+
+  <x-grid.wrapper x-data="{
+    activeTag: new URLSearchParams(window.location.search).get('tag') || '',
+    baseUrl: '{{ route('page.category', $category) }}',
+    setTag(slug) {
+      this.activeTag = this.activeTag === slug ? '' : slug;
+      const url = this.activeTag
+        ? this.baseUrl + '?tag=' + this.activeTag
+        : this.baseUrl;
+      window.history.pushState({}, '', url);
+    }
+  }" @popstate.window="activeTag = new URLSearchParams(window.location.search).get('tag') || ''">
 
     <x-grid.span class="flex flex-col gap-y-20 lg:col-span-6">
-      
+
       @foreach($products as $product)
-        <x-product.teaser 
-          :url="route('page.product', ['category' => $category, 'product' => $product])" 
+        <x-product.teaser
+          :url="route('page.product', ['category' => $category, 'product' => $product])"
           :title="$product->name"
-          x-show="activeTag === null || {{ json_encode($product->tags->pluck('slug')->toArray()) }}.includes(activeTag)"
+          x-show="!activeTag || {{ json_encode($product->tags->pluck('slug')->toArray()) }}.includes(activeTag)"
           x-transition:enter="transition ease-out duration-200"
           x-transition:enter-start="opacity-0"
           x-transition:enter-end="opacity-100"
@@ -56,25 +66,25 @@
         <x-headings.h3 class="text-sm text-ash mb-8 w-full">Filter</x-headings.h3>
         <ul class="flex flex-col border-b">
           <li class="border-t border-black py-6">
-            <button 
-              type="button"
+            <a
+              href="{{ route('page.category', $category) }}"
               class="flex items-center justify-between w-full text-left cursor-pointer"
-              :class="{ 'font-sa': activeTag === null }"
-              @click.prevent="activeTag = null">
+              :class="{ 'font-sa': !activeTag }"
+              @click.prevent="setTag('')">
               <span>Alle</span>
-              <x-icons.cross size="sm" x-show="activeTag === null" class="ml-auto" />
-            </button>
+              <x-icons.cross size="sm" x-show="!activeTag" class="ml-auto" />
+            </a>
           </li>
           @foreach($tags as $tag)
             <li class="border-t border-black py-6">
-              <button 
-                type="button"
+              <a
+                href="{{ route('page.category', ['category' => $category, 'tag' => $tag->slug]) }}"
                 class="flex items-center justify-between w-full text-left cursor-pointer"
                 :class="{ 'font-sa': activeTag === '{{ $tag->slug }}' }"
-                @click.prevent="activeTag = activeTag === '{{ $tag->slug }}' ? null : '{{ $tag->slug }}'">
+                @click.prevent="setTag('{{ $tag->slug }}')">
                 <span>{{ $tag->name }}</span>
                 <x-icons.cross size="sm" x-show="activeTag === '{{ $tag->slug }}'" class="ml-auto" />
-              </button>
+              </a>
             </li>
           @endforeach
         </ul>

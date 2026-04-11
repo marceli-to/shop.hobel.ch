@@ -46,23 +46,23 @@
               class="flex flex-col gap-y-40"
               wire:key="mini-cart-item-{{ $cartKey }}">
 
-              <x-layout.row class="justify-between border-y !border-white relative">
+              <x-layout.row class="justify-between gap-12 border-y !border-white relative">
 
-                <x-headings.h3 class="font-sans">
+                <button
+                  wire:click="removeItem('{{ $cartKey }}')"
+                  class="group flex items-center justify-center cursor-pointer w-12 h-40"
+                  aria-label="Artikel entfernen">
+                  <x-icons.cross :size="'sm'" class="group-hover:rotate-180 transition-all" />
+                </button>
+
+                <x-headings.h3 class="font-sans w-full truncate">
                   {{ $item['name'] }}
                   @if(!empty($item['label']))
                     <span class="inline font-normal text-sm">{{ $item['label'] }}</span>
                   @endif
                 </x-headings.h3>
 
-                <button
-                  wire:click="removeItem('{{ $cartKey }}')"
-                  class="group flex items-center justify-center cursor-pointer w-40 h-40 absolute left-1/2 -translate-x-1/2"
-                  aria-label="Artikel entfernen">
-                  <x-icons.cross :size="'sm'" class="group-hover:rotate-180 transition-all" />
-                </button>
-
-                <x-cart.money :amount="$item['price'] * $item['quantity']" />
+                <x-cart.money :amount="$item['price'] * $item['quantity']" :show-currency="false" />
 
               </x-layout.row>
 
@@ -97,7 +97,7 @@
 
         <x-layout.row class="font-sans justify-between border-y !border-white">
           <span>Total</span>
-          <x-cart.money :amount="$cart['total']" />
+          <x-cart.money :amount="$cart['subtotal']" :show-currency="false" />
         </x-layout.row>
 
         <a
@@ -106,6 +106,8 @@
           class="flex items-center justify-center font-sans w-full border border-white h-40 cursor-pointer">
           <span>Zum Warenkorb</span>
         </a>
+
+        <span class="text-xxs">Alle Preise in CHF</span>
 
       </div>
     @endif

@@ -67,15 +67,15 @@ class PayrexxService
                     'quantity' => $item['quantity'],
                     'amount' => (int) round($item['price'] * 100),
                 ];
-                
-                // Shipping per item (if applicable)
-                if (!empty($item['shipping_price']) && $item['shipping_price'] > 0) {
-                    $basketItems[] = [
-                        'name' => 'Versand: ' . $item['name'],
-                        'quantity' => 1,
-                        'amount' => (int) round($item['shipping_price'] * 100),
-                    ];
-                }
+            }
+
+            // Order-level shipping (flat rate)
+            if (!empty($cart['shipping']) && $cart['shipping'] > 0) {
+                $basketItems[] = [
+                    'name' => 'Versand (Schweiz)',
+                    'quantity' => 1,
+                    'amount' => (int) round($cart['shipping'] * 100),
+                ];
             }
             
             // Add tax as separate line item

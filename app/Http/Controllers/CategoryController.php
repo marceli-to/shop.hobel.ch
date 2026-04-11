@@ -10,12 +10,13 @@ class CategoryController extends Controller
    * Display a category with its products.
    *
    * @param Category $category
+   * @param Request $request
    * @return View
    */
   public function get(Category $category): View
   {
     $products = (new GetProductsAction())->execute($category);
-    
+
     // Get only tags that are actually used by products in this category
     $usedTagIds = $products->flatMap->tags->pluck('id')->unique();
     $tags = $category->tags()
