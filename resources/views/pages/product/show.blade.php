@@ -30,13 +30,13 @@
 
       @switch($product->type)
         @case(\App\Enums\ProductType::Variations)
-          @include('pages.product.partials.type-variations')
+          @livewire('product.variations-product', ['product' => $product], key('product-' . $product->uuid))
           @break
         @case(\App\Enums\ProductType::Configurable)
-          @include('pages.product.partials.type-configurable')
+          @livewire('product.configurable-product', ['product' => $product], key('product-' . $product->uuid))
           @break
         @default
-          @include('pages.product.partials.type-simple')
+          @livewire('product.simple-product', ['product' => $product], key('product-' . $product->uuid))
       @endswitch
 
     </x-grid.span>
