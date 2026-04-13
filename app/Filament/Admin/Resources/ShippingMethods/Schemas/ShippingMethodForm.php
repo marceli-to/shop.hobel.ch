@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\ShippingMethods\Schemas;
 
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -24,6 +25,11 @@ class ShippingMethodForm
 							->prefix('CHF')
 							->default(0)
 							->required(),
+
+						Toggle::make('is_shipping')
+							->label('Versand')
+							->helperText('Aktivieren, wenn diese Versandart einen physischen Versand beinhaltet.')
+							->default(false),
 					]),
 			]);
 	}

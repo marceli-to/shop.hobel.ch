@@ -88,12 +88,6 @@ class Button extends Component
 			return;
 		}
 
-		// Check flat_rate_shipping (use parent's value for child products)
-		$shippingProduct = $product->parent_id ? $product->parent : $product;
-		if (!$shippingProduct->flat_rate_shipping) {
-			return;
-		}
-
 		$cart = (new GetCartAction())->execute();
 		$cartItems = collect($cart['items']);
 		$existingItem = $cartItems->firstWhere('cart_key', $this->cartKey);
@@ -114,6 +108,7 @@ class Button extends Component
 					'id' => $method->id,
 					'name' => $method->name,
 					'price' => $method->pivot->price ?? $method->price,
+					'is_shipping' => $method->is_shipping,
 				];
 			})->toArray();
 
@@ -142,6 +137,7 @@ class Button extends Component
 				'selected_shipping' => $shippingMethods[0]['id'] ?? null,
 				'shipping_name' => $shippingMethods[0]['name'] ?? null,
 				'shipping_price' => 0,
+				'is_shipping' => $shippingMethods[0]['is_shipping'] ?? false,
 			];
 		}
 
@@ -182,8 +178,9 @@ class Button extends Component
 
 		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
 
-		$hasShipping = $items->contains(fn($item) => str_contains($item['shipping_name'] ?? '', 'Versand'));
-		$shipping = ($hasShipping && $subtotal < $freeThreshold) ? $flatRate : 0;
+		$shippingItems = $items->filter(fn($item) => $item['is_shipping'] ?? false);
+		$shippingSubtotal = $shippingItems->sum(fn($item) => $item['price'] * $item['quantity']);
+		$shipping = ($shippingItems->isNotEmpty() && $shippingSubtotal < $freeThreshold) ? $flatRate : 0;
 
 		$cart['subtotal'] = $subtotal;
 		$cart['shipping'] = $shipping;

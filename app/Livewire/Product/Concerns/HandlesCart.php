@@ -41,8 +41,7 @@ trait HandlesCart
         $product = Product::where('uuid', $this->productUuid)->first();
         if ($product) {
             $this->maxStock = $product->stock;
-            $shippingProduct = $product->parent_id ? $product->parent : $product;
-            $this->canAddToCart = $shippingProduct->flat_rate_shipping && $product->stock >= 1;
+            $this->canAddToCart = $product->stock >= 1;
         }
     }
 
@@ -76,11 +75,6 @@ trait HandlesCart
             return;
         }
 
-        $shippingProduct = $product->parent_id ? $product->parent : $product;
-        if (!$shippingProduct->flat_rate_shipping) {
-            return;
-        }
-
         $cart = (new GetCartAction())->execute();
         $cartItems = collect($cart['items']);
         $existingItem = $cartItems->firstWhere('cart_key', $this->productUuid);
@@ -93,11 +87,13 @@ trait HandlesCart
                 return $item;
             })->toArray();
         } else {
+            $shippingProduct = $product->parent_id ? $product->parent : $product;
             $shippingMethods = $shippingProduct->shippingMethods->map(function ($method) {
                 return [
                     'id' => $method->id,
                     'name' => $method->name,
                     'price' => $method->pivot->price ?? $method->price,
+                    'is_shipping' => $method->is_shipping,
                 ];
             })->toArray();
 
@@ -123,6 +119,7 @@ trait HandlesCart
                 'selected_shipping' => $shippingMethods[0]['id'] ?? null,
                 'shipping_name' => $shippingMethods[0]['name'] ?? null,
                 'shipping_price' => 0,
+                'is_shipping' => $shippingMethods[0]['is_shipping'] ?? false,
             ];
         }
 
@@ -163,8 +160,9 @@ trait HandlesCart
 
         $subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
 
-        $hasShipping = $items->contains(fn($item) => str_contains($item['shipping_name'] ?? '', 'Versand'));
-        $shipping = ($hasShipping && $subtotal < $freeThreshold) ? $flatRate : 0;
+        $shippingItems = $items->filter(fn($item) => $item['is_shipping'] ?? false);
+        $shippingSubtotal = $shippingItems->sum(fn($item) => $item['price'] * $item['quantity']);
+        $shipping = ($shippingItems->isNotEmpty() && $shippingSubtotal < $freeThreshold) ? $flatRate : 0;
 
         $cart['subtotal'] = $subtotal;
         $cart['shipping'] = $shipping;

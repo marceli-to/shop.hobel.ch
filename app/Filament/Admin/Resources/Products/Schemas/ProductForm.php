@@ -98,12 +98,6 @@ class ProductForm
 									->inline(false)
 									->default(false),
 
-								Toggle::make('flat_rate_shipping')
-									->label('Pauschalversand')
-									->helperText('Nein: "Bitte kontaktieren Sie uns" wird angezeigt')
-									->inline(false)
-									->default(true),
-
 								Select::make('type')
 									->label('Typ')
 									->options(collect(ProductType::cases())->mapWithKeys(fn ($type) => [$type->value => $type->label()]))

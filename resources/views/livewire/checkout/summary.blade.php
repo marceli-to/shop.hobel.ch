@@ -56,14 +56,16 @@
           <x-cart.money :amount="$cart['subtotal'] ?? $cart['total']" />
         </x-layout.row>
 
-        <x-layout.row class="justify-between">
-          <span>Versand</span>
-          @if(($cart['shipping'] ?? 0) > 0)
-            <x-cart.money :amount="$cart['shipping']" />
-          @else
-            <span>Kostenlos</span>
-          @endif
-        </x-layout.row>
+        @if(collect($cart['items'])->contains(fn($item) => $item['is_shipping'] ?? false))
+          <x-layout.row class="justify-between">
+            <span>Versand</span>
+            @if(($cart['shipping'] ?? 0) > 0)
+              <x-cart.money :amount="$cart['shipping']" />
+            @else
+              <span>Kostenlos</span>
+            @endif
+          </x-layout.row>
+        @endif
 
         <x-layout.row class="justify-between">
           <span>MwSt.</span>

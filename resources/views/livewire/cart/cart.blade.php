@@ -26,7 +26,7 @@
             <div>
 
               <!-- Product header row: Name, X button, Price -->
-              <x-layout.row class="justify-between gap-12 border-t relative">
+              <x-layout.row class="justify-between gap-12 border-t {{ empty($item['label']) ? 'border-b' : '' }} relative">
 
                 <button
                   wire:click="removeItem('{{ $cartKey }}')"
@@ -80,6 +80,10 @@
                   </x-layout.row>
                 @endforeach
               </div>
+            @else
+              <x-layout.row class="border-b">
+                <span>Bitte <a href="mailto:info@hobel.ch" aria-label="Kontaktieren Sie uns per E-Mail" class="underline underline-offset-2 decoration-1 hover:no-underline">kontaktieren Sie uns</a> für Abholung oder Versand</span>
+              </x-layout.row>
             @endif
 
             <!-- Quantity Selector -->
@@ -100,14 +104,16 @@
             <x-cart.money :amount="$cart['subtotal'] ?? $cart['total']" />
           </x-layout.row>
 
-          <x-layout.row class="justify-between">
-            <span>Versand</span>
-            @if(($cart['shipping'] ?? 0) > 0)
-              <x-cart.money :amount="$cart['shipping']" />
-            @else
-              <span>Kostenlos</span>
-            @endif
-          </x-layout.row>
+          @if(collect($cart['items'])->contains(fn($item) => $item['is_shipping'] ?? false))
+            <x-layout.row class="justify-between">
+              <span>Versand</span>
+              @if(($cart['shipping'] ?? 0) > 0)
+                <x-cart.money :amount="$cart['shipping']" />
+              @else
+                <span>Kostenlos</span>
+              @endif
+            </x-layout.row>
+          @endif
 
           <x-layout.row class="justify-between">
             <span>MwSt. {{ config('invoice.tax_rate') }}%</span>

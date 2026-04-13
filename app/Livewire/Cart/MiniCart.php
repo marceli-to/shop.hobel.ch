@@ -73,8 +73,9 @@ class MiniCart extends Component
 
 		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
 
-		$hasShipping = $items->contains(fn($item) => str_contains($item['shipping_name'] ?? '', 'Versand'));
-		$shipping = ($hasShipping && $subtotal < $freeThreshold) ? $flatRate : 0;
+		$shippingItems = $items->filter(fn($item) => $item['is_shipping'] ?? false);
+		$shippingSubtotal = $shippingItems->sum(fn($item) => $item['price'] * $item['quantity']);
+		$shipping = ($shippingItems->isNotEmpty() && $shippingSubtotal < $freeThreshold) ? $flatRate : 0;
 
 		$this->cart['subtotal'] = $subtotal;
 		$this->cart['shipping'] = $shipping;
