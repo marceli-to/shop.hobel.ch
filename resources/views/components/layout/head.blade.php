@@ -28,5 +28,4 @@ $pageTitle = filled($title) ? "{$title} – {$appName}" : $appName;
 <meta name="apple-mobile-web-app-title" content="{{ $appName }}" />
 <link rel="manifest" href="/site.webmanifest" />
 @vite('resources/css/app.css')
-@livewireStyles
 </head>
