@@ -27,7 +27,7 @@
       </x-form.label>
     </x-layout.row>
     <x-layout.row class="col-span-4 h-40">
-      <x-form.input id="salutation" wire:model="salutation" placeholder="Anrede" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
+      <x-form.input id="salutation" wire:model="salutation" placeholder="Anrede" :disabled="$sameAsInvoice" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
     </x-layout.row>
 
     <x-layout.row class="hidden lg:block lg:col-span-2 h-40">
@@ -36,7 +36,7 @@
       </x-form.label>
     </x-layout.row>
     <x-layout.row class="col-span-4 h-40">
-      <x-form.input id="firstname" wire:model="firstname" placeholder="Vorname" :error="$errors->has('firstname')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
+      <x-form.input id="firstname" wire:model="firstname" placeholder="Vorname" :disabled="$sameAsInvoice" :error="$errors->has('firstname')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
     </x-layout.row>
 
     <x-layout.row class="hidden lg:block lg:col-span-2 h-40">
@@ -45,7 +45,7 @@
       </x-form.label>
     </x-layout.row>
     <x-layout.row class="col-span-4 h-40">
-      <x-form.input id="lastname" wire:model="lastname" placeholder="Nachname" :error="$errors->has('lastname')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
+      <x-form.input id="lastname" wire:model="lastname" placeholder="Nachname" :disabled="$sameAsInvoice" :error="$errors->has('lastname')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
     </x-layout.row>
 
     <x-layout.row class="hidden lg:block lg:col-span-2 h-40">
@@ -54,7 +54,7 @@
       </x-form.label>
     </x-layout.row>
     <x-layout.row class="col-span-4 h-40">
-      <x-form.input id="street" wire:model="street" placeholder="Strasse" :error="$errors->has('street')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
+      <x-form.input id="street" wire:model="street" placeholder="Strasse" :disabled="$sameAsInvoice" :error="$errors->has('street')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
     </x-layout.row>
 
     <x-layout.row class="hidden lg:block lg:col-span-2 h-40">
@@ -63,7 +63,7 @@
       </x-form.label>
     </x-layout.row>
     <x-layout.row class="col-span-4 h-40">
-      <x-form.input id="street_number" wire:model="street_number" placeholder="Hausnummer" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
+      <x-form.input id="street_number" wire:model="street_number" placeholder="Hausnummer" :disabled="$sameAsInvoice" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
     </x-layout.row>
 
     <x-layout.row class="hidden lg:block lg:col-span-2 h-40">
@@ -72,7 +72,7 @@
       </x-form.label>
     </x-layout.row>
     <x-layout.row class="col-span-4 h-40">
-      <x-form.input id="zip" wire:model="zip" placeholder="PLZ" :error="$errors->has('zip')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
+      <x-form.input id="zip" wire:model="zip" placeholder="PLZ" :disabled="$sameAsInvoice" :error="$errors->has('zip')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
     </x-layout.row>
 
     <x-layout.row class="hidden lg:block lg:col-span-2 h-40">
@@ -81,7 +81,7 @@
       </x-form.label>
     </x-layout.row>
     <x-layout.row class="col-span-4 h-40">
-      <x-form.input id="city" wire:model="city" placeholder="Ort" :error="$errors->has('city')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
+      <x-form.input id="city" wire:model="city" placeholder="Ort" :disabled="$sameAsInvoice" :error="$errors->has('city')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
     </x-layout.row>
 
     <x-layout.row class="hidden lg:block lg:col-span-2 h-40 border-b">
@@ -90,7 +90,7 @@
       </x-form.label>
     </x-layout.row>
     <x-layout.row class="col-span-4 h-40 border-b">
-      <x-form.input id="country" wire:model="country" placeholder="Schweiz" :error="$errors->has('country')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
+      <x-form.input id="country" wire:model="country" placeholder="Schweiz" :disabled="$sameAsInvoice" :error="$errors->has('country')" class="{{ $sameAsInvoice ? 'text-ash' : '' }}" />
     </x-layout.row>
 
     <x-form.button type="submit" :title="'Zahlung'" class="col-span-6 mt-40" />
