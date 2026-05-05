@@ -43,7 +43,7 @@ class Summary extends Component
 
     $subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
 
-    $shippingItems = $items->filter(fn($item) => $item['requires_delivery_address'] ?? false);
+    $shippingItems = $items->filter(fn($item) => $item['is_shipping'] ?? false);
     $shippingSubtotal = $shippingItems->sum(fn($item) => $item['price'] * $item['quantity']);
     $shipping = ($shippingItems->isNotEmpty() && $shippingSubtotal < $freeThreshold) ? $flatRate : 0;
 

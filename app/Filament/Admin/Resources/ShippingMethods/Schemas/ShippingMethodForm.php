@@ -26,9 +26,9 @@ class ShippingMethodForm
 							->default(0)
 							->required(),
 
-						Toggle::make('requires_delivery_address')
-							->label('Lieferadresse erforderlich')
-							->helperText('Aktivieren, wenn für diese Versandart eine Lieferadresse benötigt wird (z. B. Versand per Post). Deaktivieren bei Selbstabholung oder digitalen Lieferungen.')
+						Toggle::make('is_shipping')
+							->label('Versand')
+							->helperText('Aktivieren, wenn diese Versandart einen physischen Versand beinhaltet.')
 							->default(false),
 					]),
 			]);

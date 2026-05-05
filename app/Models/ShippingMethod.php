@@ -12,13 +12,13 @@ class ShippingMethod extends Model
         'uuid',
         'name',
         'price',
-        'requires_delivery_address',
+        'is_shipping',
         'order',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
-        'requires_delivery_address' => 'boolean',
+        'is_shipping' => 'boolean',
     ];
 
     /**
