@@ -56,7 +56,7 @@
           <x-cart.money :amount="$cart['subtotal'] ?? $cart['total']" />
         </x-layout.row>
 
-        @if(collect($cart['items'])->contains(fn($item) => $item['is_shipping'] ?? false))
+        @if(collect($cart['items'])->contains(fn($item) => $item['requires_delivery_address'] ?? false))
           <x-layout.row class="justify-between">
             <span>Versand</span>
             @if(($cart['shipping'] ?? 0) > 0)

@@ -34,7 +34,7 @@ class Cart extends Component
 
 		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
 
-		$shippingItems = $items->filter(fn($item) => $item['is_shipping'] ?? false);
+		$shippingItems = $items->filter(fn($item) => $item['requires_delivery_address'] ?? false);
 		$shippingSubtotal = $shippingItems->sum(fn($item) => $item['price'] * $item['quantity']);
 		$shipping = ($shippingItems->isNotEmpty() && $shippingSubtotal < $freeThreshold) ? $flatRate : 0;
 
@@ -99,7 +99,7 @@ class Cart extends Component
 					$method = collect($item['shipping_methods'] ?? [])->firstWhere('id', $shippingMethodId);
 					$item['shipping_name'] = $method['name'] ?? 'Versand';
 					$item['shipping_price'] = 0;
-					$item['is_shipping'] = $method['is_shipping'] ?? false;
+					$item['requires_delivery_address'] = $method['requires_delivery_address'] ?? false;
 				}
 				return $item;
 			})
@@ -118,7 +118,7 @@ class Cart extends Component
 
 		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
 
-		$shippingItems = $items->filter(fn($item) => $item['is_shipping'] ?? false);
+		$shippingItems = $items->filter(fn($item) => $item['requires_delivery_address'] ?? false);
 		$shippingSubtotal = $shippingItems->sum(fn($item) => $item['price'] * $item['quantity']);
 		$shipping = ($shippingItems->isNotEmpty() && $shippingSubtotal < $freeThreshold) ? $flatRate : 0;
 

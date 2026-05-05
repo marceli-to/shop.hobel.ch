@@ -108,7 +108,7 @@ class Button extends Component
 					'id' => $method->id,
 					'name' => $method->name,
 					'price' => $method->pivot->price ?? $method->price,
-					'is_shipping' => $method->is_shipping,
+					'requires_delivery_address' => $method->requires_delivery_address,
 				];
 			})->toArray();
 
@@ -137,7 +137,7 @@ class Button extends Component
 				'selected_shipping' => $shippingMethods[0]['id'] ?? null,
 				'shipping_name' => $shippingMethods[0]['name'] ?? null,
 				'shipping_price' => 0,
-				'is_shipping' => $shippingMethods[0]['is_shipping'] ?? false,
+				'requires_delivery_address' => $shippingMethods[0]['requires_delivery_address'] ?? false,
 			];
 		}
 
@@ -178,7 +178,7 @@ class Button extends Component
 
 		$subtotal = $items->sum(fn($item) => $item['price'] * $item['quantity']);
 
-		$shippingItems = $items->filter(fn($item) => $item['is_shipping'] ?? false);
+		$shippingItems = $items->filter(fn($item) => $item['requires_delivery_address'] ?? false);
 		$shippingSubtotal = $shippingItems->sum(fn($item) => $item['price'] * $item['quantity']);
 		$shipping = ($shippingItems->isNotEmpty() && $shippingSubtotal < $freeThreshold) ? $flatRate : 0;
 
