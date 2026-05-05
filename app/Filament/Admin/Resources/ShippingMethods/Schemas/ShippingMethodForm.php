@@ -28,7 +28,7 @@ class ShippingMethodForm
 
 						Toggle::make('is_shipping')
 							->label('Versand')
-							->helperText('Aktivieren, wenn diese Versandart einen physischen Versand beinhaltet.')
+							->helperText('Aktivieren, wenn bei dieser Versandart Versandkosten anfallen und im Warenkorb sowie in der Bestellübersicht eine Versandzeile angezeigt werden soll. Bei reiner Abholung deaktiviert lassen.')
 							->default(false),
 					]),
 			]);
