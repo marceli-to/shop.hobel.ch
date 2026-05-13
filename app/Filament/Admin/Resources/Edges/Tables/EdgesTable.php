@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Filament\Admin\Resources\WoodTypes\Tables;
+namespace App\Filament\Admin\Resources\Edges\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class WoodTypesTable
+class EdgesTable
 {
 	public static function configure(Table $table): Table
 	{
@@ -19,20 +18,12 @@ class WoodTypesTable
 			->reorderable('order')
 			->defaultSort('order', 'asc')
 			->columns([
-				ImageColumn::make('image.file_path')
-					->label('Bild')
-					->disk('public')
-					->circular(),
 				TextColumn::make('name')
 					->label('Name')
 					->searchable()
 					->sortable(),
 				TextColumn::make('price')
-					->label('Preis/m³')
-					->formatStateUsing(fn ($state) => number_format($state, 2, '.', '\''))
-					->sortable(),
-				TextColumn::make('sorting_factor')
-					->label('Sortier-/Verschnittfaktor')
+					->label('Preis/m')
 					->formatStateUsing(fn ($state) => number_format($state, 2, '.', '\''))
 					->sortable(),
 			])

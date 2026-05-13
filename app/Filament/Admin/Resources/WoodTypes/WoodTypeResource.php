@@ -28,6 +28,8 @@ class WoodTypeResource extends Resource
 
 	protected static ?string $breadcrumb = 'Holzarten';
 
+	protected static string|\UnitEnum|null $navigationGroup = 'Einstellungen';
+
 	protected static ?int $navigationSort = 4;
 
 	public static function form(Schema $schema): Schema

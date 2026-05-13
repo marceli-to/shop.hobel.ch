@@ -27,6 +27,13 @@ class WoodTypeForm
 							->default(0)
 							->required(),
 
+						TextInput::make('sorting_factor')
+							->label('Sortier-/Verschnittfaktor')
+							->numeric()
+							->step(0.01)
+							->default(1)
+							->required(),
+
 						Repeater::make('image')
 							->label('Bild')
 							->relationship('image')

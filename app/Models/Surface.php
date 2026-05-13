@@ -4,38 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
 
-class WoodType extends Model
+class Surface extends Model
 {
     protected $fillable = [
         'uuid',
         'name',
         'price',
-        'sorting_factor',
+        'minimum_amount',
         'order',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
-        'sorting_factor' => 'decimal:2',
+        'minimum_amount' => 'decimal:2',
     ];
 
     protected static function boot()
     {
         parent::boot();
 
-        static::creating(function ($woodType) {
-            if (empty($woodType->uuid)) {
-                $woodType->uuid = (string) Str::uuid();
+        static::creating(function ($surface) {
+            if (empty($surface->uuid)) {
+                $surface->uuid = (string) Str::uuid();
             }
         });
-    }
-
-    public function image(): MorphOne
-    {
-        return $this->morphOne(Image::class, 'imageable');
     }
 
     public function products(): BelongsToMany

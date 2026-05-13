@@ -6,6 +6,9 @@ use App\Filament\Admin\Resources\Products\Pages\CreateProduct;
 use App\Filament\Admin\Resources\Products\Pages\EditProduct;
 use App\Filament\Admin\Resources\Products\Pages\ListProducts;
 use App\Filament\Admin\Resources\Products\RelationManagers\ChildrenRelationManager;
+use App\Filament\Admin\Resources\Products\RelationManagers\EdgesRelationManager;
+use App\Filament\Admin\Resources\Products\RelationManagers\SurfacesRelationManager;
+use App\Filament\Admin\Resources\Products\RelationManagers\WoodTypesRelationManager;
 use App\Filament\Admin\Resources\Products\Schemas\ProductForm;
 use App\Filament\Admin\Resources\Products\Tables\ProductsTable;
 use App\Models\Product;
@@ -45,6 +48,9 @@ class ProductResource extends Resource
 	{
 		return [
 			ChildrenRelationManager::class,
+			WoodTypesRelationManager::class,
+			SurfacesRelationManager::class,
+			EdgesRelationManager::class,
 		];
 	}
 

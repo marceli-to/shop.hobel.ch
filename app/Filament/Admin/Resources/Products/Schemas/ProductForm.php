@@ -86,6 +86,80 @@ class ProductForm
 									->default(0)
 									->minValue(0),
 							]),
+
+						Section::make('Min/Max Werte')
+							->columns(2)
+							->schema([
+								TextInput::make('min_length')
+									->label('Min. Länge')
+									->numeric()
+									->step(0.01)
+									->suffix('cm'),
+								TextInput::make('max_length')
+									->label('Max. Länge')
+									->numeric()
+									->step(0.01)
+									->suffix('cm'),
+								TextInput::make('min_width')
+									->label('Min. Breite')
+									->numeric()
+									->step(0.01)
+									->suffix('cm'),
+								TextInput::make('max_width')
+									->label('Max. Breite')
+									->numeric()
+									->step(0.01)
+									->suffix('cm'),
+							])
+							->visible(fn (callable $get) => $get('type') === ProductType::Configurable->value),
+
+						Section::make('Preisparameter')
+							->columns(2)
+							->schema([
+								TextInput::make('base_price')
+									->label('Modellbasis')
+									->numeric()
+									->step(0.01)
+									->prefix('CHF'),
+								TextInput::make('material_factor')
+									->label('Material-Verkaufsfaktor')
+									->numeric()
+									->step(0.01),
+								TextInput::make('surface_processing_price')
+									->label('Flächenbearbeitung')
+									->numeric()
+									->step(0.01)
+									->prefix('CHF')
+									->suffix('/m²'),
+								TextInput::make('minimum_price')
+									->label('Mindestpreis exkl. MwSt.')
+									->numeric()
+									->step(0.01)
+									->prefix('CHF'),
+								TextInput::make('large_format_threshold')
+									->label('Grossformat ab')
+									->numeric()
+									->step(0.01)
+									->suffix('m²'),
+								TextInput::make('large_format_surcharge')
+									->label('Grossformatzuschlag')
+									->numeric()
+									->step(0.01)
+									->prefix('CHF')
+									->suffix('/m²'),
+								TextInput::make('oversize_threshold')
+									->label('Überformat ab')
+									->numeric()
+									->step(0.01)
+									->suffix('m²'),
+								TextInput::make('oversize_surcharge')
+									->label('Überformatzuschlag')
+									->numeric()
+									->step(0.01)
+									->prefix('CHF')
+									->suffix('/m²'),
+							])
+							->visible(fn (callable $get) => $get('type') === ProductType::Configurable->value),
 					])
 					->columnSpan(['lg' => 8]),
 
@@ -102,7 +176,8 @@ class ProductForm
 									->label('Typ')
 									->options(collect(ProductType::cases())->mapWithKeys(fn ($type) => [$type->value => $type->label()]))
 									->default(ProductType::Simple->value)
-									->required(),
+									->required()
+									->live(),
 
 								Section::make('Kategorien / Tags')
 									->schema([
@@ -137,7 +212,13 @@ class ProductForm
 											->label('Versandarten')
 											->relationship('shippingMethods', 'name')
 											->options(ShippingMethod::orderBy('order')->pluck('name', 'id'))
-											->columns(1),
+											->columns(1)
+											->required()
+											->minItems(1)
+											->validationMessages([
+												'required' => 'Bitte wählen Sie mindestens eine Versandart aus.',
+												'min' => 'Bitte wählen Sie mindestens eine Versandart aus.',
+											]),
 									])
 									->collapsible()
 									->collapsed(),

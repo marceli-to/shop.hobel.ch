@@ -11,6 +11,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class ProductsTable
@@ -40,10 +41,6 @@ class ProductsTable
 					->label('Name')
 					->searchable()
 					->sortable(),
-				TextColumn::make('description')
-					->label('Beschreibung')
-					->searchable()
-					->limit(50),
 				TextColumn::make('price')
 					->label('Preis')
 					->formatStateUsing(fn ($state) => number_format($state, 2, '.', '\''))
@@ -75,7 +72,9 @@ class ProductsTable
 					->toggleable(isToggledHiddenByDefault: true),
 			])
 			->filters([
-				//
+				SelectFilter::make('type')
+					->label('Typ')
+					->options(collect(ProductType::cases())->mapWithKeys(fn ($type) => [$type->value => $type->label()])),
 			])
 			->recordActions([
 				ActionGroup::make([

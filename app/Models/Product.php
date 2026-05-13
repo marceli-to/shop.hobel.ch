@@ -36,12 +36,36 @@ class Product extends Model
 		'stock',
 		'order',
 		'published',
+		'min_length',
+		'max_length',
+		'min_width',
+		'max_width',
+		'base_price',
+		'material_factor',
+		'surface_processing_price',
+		'large_format_threshold',
+		'large_format_surcharge',
+		'oversize_threshold',
+		'oversize_surcharge',
+		'minimum_price',
 	];
 
 	protected $casts = [
 		'type' => ProductType::class,
 		'price' => 'decimal:2',
 		'published' => 'boolean',
+		'min_length' => 'decimal:2',
+		'max_length' => 'decimal:2',
+		'min_width' => 'decimal:2',
+		'max_width' => 'decimal:2',
+		'base_price' => 'decimal:2',
+		'material_factor' => 'decimal:2',
+		'surface_processing_price' => 'decimal:2',
+		'large_format_threshold' => 'decimal:2',
+		'large_format_surcharge' => 'decimal:2',
+		'oversize_threshold' => 'decimal:2',
+		'oversize_surcharge' => 'decimal:2',
+		'minimum_price' => 'decimal:2',
 	];
 
 	/**
@@ -146,6 +170,30 @@ class Product extends Model
 	public function attributes(): HasMany
 	{
 		return $this->hasMany(ProductAttribute::class)->orderBy('order');
+	}
+
+	/**
+	 * Wood types available for this configurable product.
+	 */
+	public function woodTypes(): BelongsToMany
+	{
+		return $this->belongsToMany(WoodType::class)->orderBy('order');
+	}
+
+	/**
+	 * Surfaces available for this configurable product.
+	 */
+	public function surfaces(): BelongsToMany
+	{
+		return $this->belongsToMany(Surface::class)->orderBy('order');
+	}
+
+	/**
+	 * Edges available for this configurable product.
+	 */
+	public function edges(): BelongsToMany
+	{
+		return $this->belongsToMany(Edge::class)->orderBy('order');
 	}
 
 	/**
