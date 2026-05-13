@@ -26,7 +26,7 @@
             <div>
 
               <!-- Product header row: Name, X button, Price -->
-              <x-layout.row class="justify-between gap-12 border-t {{ empty($item['label']) ? 'border-b' : '' }} relative">
+              <x-layout.row class="justify-between gap-12 border-t {{ empty($item['label']) && empty($item['configuration']) ? 'border-b' : '' }} relative">
 
                 <button
                   wire:click="removeItem('{{ $cartKey }}')"
@@ -52,7 +52,7 @@
               <!-- Configuration Details -->
               @if(!empty($item['configuration']))
                 @foreach($item['configuration'] as $config)
-                  <x-layout.row class="border-b">
+                  <x-layout.row>
                     <span>{{ $config['label'] }}</span>
                   </x-layout.row>
                 @endforeach

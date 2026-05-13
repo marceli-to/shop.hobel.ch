@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Products\Schemas;
 
 use App\Enums\ProductType;
+use App\Enums\TableShape;
 use App\Models\Category;
 use App\Models\ShippingMethod;
 use App\Models\Tag;
@@ -158,6 +159,20 @@ class ProductForm
 									->step(0.01)
 									->prefix('CHF')
 									->suffix('/m²'),
+							])
+							->visible(fn (callable $get) => $get('type') === ProductType::Configurable->value),
+
+						Section::make('Form')
+							->columns(2)
+							->schema([
+								Select::make('shape')
+									->label('Tischform')
+									->options(collect(TableShape::cases())->mapWithKeys(fn ($shape) => [$shape->value => $shape->label()])),
+								TextInput::make('form_surcharge')
+									->label('Formzuschlag')
+									->numeric()
+									->step(0.01)
+									->prefix('CHF'),
 							])
 							->visible(fn (callable $get) => $get('type') === ProductType::Configurable->value),
 					])

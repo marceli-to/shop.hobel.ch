@@ -13,6 +13,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use App\Traits\HasGermanSlug;
 use App\Enums\ProductType;
+use App\Enums\TableShape;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Product extends Model
@@ -25,6 +26,7 @@ class Product extends Model
 		'uuid',
 		'parent_id',
 		'type',
+		'shape',
 		'name',
 		'slug',
 		'short_description',
@@ -48,10 +50,12 @@ class Product extends Model
 		'oversize_threshold',
 		'oversize_surcharge',
 		'minimum_price',
+		'form_surcharge',
 	];
 
 	protected $casts = [
 		'type' => ProductType::class,
+		'shape' => TableShape::class,
 		'price' => 'decimal:2',
 		'published' => 'boolean',
 		'min_length' => 'decimal:2',
@@ -66,6 +70,7 @@ class Product extends Model
 		'oversize_threshold' => 'decimal:2',
 		'oversize_surcharge' => 'decimal:2',
 		'minimum_price' => 'decimal:2',
+		'form_surcharge' => 'decimal:2',
 	];
 
 	/**

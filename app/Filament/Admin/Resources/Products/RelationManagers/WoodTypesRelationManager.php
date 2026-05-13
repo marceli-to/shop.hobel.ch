@@ -59,13 +59,20 @@ class WoodTypesRelationManager extends RelationManager
 					->label('Holzart hinzufügen')
 					->modalHeading('Holzarten hinzufügen')
 					->modalSubmitActionLabel('Hinzufügen')
-					->modalWidth('2xl')
+					->modalWidth('4xl')
 					->schema([
 						CheckboxList::make('records')
 							->label('Holzarten')
 							->options(fn () => WoodType::orderBy('order')
 								->whereNotIn('id', $this->getOwnerRecord()->woodTypes()->pluck('wood_types.id'))
 								->pluck('name', 'id'))
+							->descriptions(fn () => WoodType::orderBy('order')
+								->whereNotIn('id', $this->getOwnerRecord()->woodTypes()->pluck('wood_types.id'))
+								->get()
+								->mapWithKeys(fn (WoodType $woodType) => [
+									$woodType->id => number_format($woodType->price, 2, '.', "'").' CHF/m³ · Faktor '.number_format($woodType->sorting_factor, 2, '.', "'"),
+								])
+								->all())
 							->columns(3)
 							->required(),
 					])
