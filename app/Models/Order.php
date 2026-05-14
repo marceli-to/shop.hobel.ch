@@ -44,6 +44,8 @@ class Order extends Model
 		'payment_method',
 		'payment_reference',
 		'paid_at',
+		'confirmation_email_sent',
+		'admin_email_sent',
 	];
 
 	protected $casts = [
@@ -53,6 +55,8 @@ class Order extends Model
 		'total' => 'decimal:2',
 		'use_invoice_address' => 'boolean',
 		'paid_at' => 'datetime',
+		'confirmation_email_sent' => 'boolean',
+		'admin_email_sent' => 'boolean',
 	];
 
 	protected $appends = [

@@ -28,15 +28,21 @@ class ProcessOrderJob implements ShouldQueue
 
 	public function handle(): void
 	{
-		// Generate invoice PDF
-		$invoicePath = (new GenerateInvoicePdf())->execute($this->order);
+		$invoicePath = "invoices/invoice-{$this->order->order_number}.pdf";
+		if (!Storage::disk('local')->exists($invoicePath)) {
+			$invoicePath = (new GenerateInvoicePdf())->execute($this->order);
+		}
 
-		// Send confirmation email to customer (with PDF attachment)
-		Notification::route('mail', $this->order->invoice_email)
-			->notify(new ConfirmationNotification($this->order, $invoicePath));
+		if (!$this->order->confirmation_email_sent) {
+			Notification::route('mail', $this->order->invoice_email)
+				->notify(new ConfirmationNotification($this->order, $invoicePath));
+			$this->order->update(['confirmation_email_sent' => true]);
+		}
 
-		// Send information email to admin (with PDF attachment)
-		Notification::route('mail', config('mail.to'))
-			->notify(new InformationNotification($this->order, $invoicePath));
+		if (!$this->order->admin_email_sent) {
+			Notification::route('mail', config('mail.to'))
+				->notify(new InformationNotification($this->order, $invoicePath));
+			$this->order->update(['admin_email_sent' => true]);
+		}
 	}
 }
