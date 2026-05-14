@@ -89,7 +89,7 @@ class ProductForm
 			TextInput::make('delivery_time')
 				->label('Lieferzeit')
 				->maxLength(255)
-				->helperText('z.B. "2-3 Werktage"'),
+				->helperText('z.B. "ca. 2-3 Werktage"'),
 
 			TextInput::make('price')
 				->label('Preis')
