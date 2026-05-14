@@ -19,8 +19,8 @@ class ConfigurableProduct extends Component
 
     public Product $product;
 
-    public ?float $lengthCm = null;
-    public ?float $widthCm = null;
+    public ?float $length = null;
+    public ?float $width = null;
     public ?int $woodTypeId = null;
     public ?int $surfaceId = null;
     public ?int $edgeId = null;
@@ -32,19 +32,18 @@ class ConfigurableProduct extends Component
         $this->product = $product;
         $this->productUuid = $product->uuid;
 
-        $this->lengthCm = $product->min_length ? (float) $product->min_length : null;
-        $this->widthCm = $product->min_width ? (float) $product->min_width : null;
+        $this->length = $product->min_length ? (float) $product->min_length : null;
+        $this->width = $product->min_width ? (float) $product->min_width : null;
         $this->woodTypeId = ($product->woodTypes->firstWhere('pivot.is_default', true) ?? $product->woodTypes->first())?->id;
         $this->surfaceId = ($product->surfaces->firstWhere('pivot.is_default', true) ?? $product->surfaces->first())?->id;
         $this->edgeId = ($product->edges->firstWhere('pivot.is_default', true) ?? $product->edges->first())?->id;
 
-        $this->initializeHandlesCart();
         $this->recalculatePrice();
     }
 
     public function updated(string $name): void
     {
-        if (in_array($name, ['lengthCm', 'widthCm', 'woodTypeId', 'surfaceId', 'edgeId'], true)) {
+        if (in_array($name, ['length', 'width', 'woodTypeId', 'surfaceId', 'edgeId'], true)) {
             $this->recalculatePrice();
         }
     }
@@ -55,15 +54,15 @@ class ConfigurableProduct extends Component
         $surface = $this->surfaceId ? Surface::find($this->surfaceId) : null;
         $edge = $this->edgeId ? Edge::find($this->edgeId) : null;
 
-        if (! $woodType || ! $surface || ! $edge || ! $this->lengthCm) {
+        if (! $woodType || ! $surface || ! $edge || ! $this->length) {
             $this->price = 0.0;
             return;
         }
 
         $result = (new ConfigurablePriceCalculator())->calculate(
             $this->product,
-            (float) $this->lengthCm,
-            $this->widthCm !== null ? (float) $this->widthCm : null,
+            (float) $this->length,
+            $this->width !== null ? (float) $this->width : null,
             $woodType,
             $surface,
             $edge,
@@ -84,8 +83,8 @@ class ConfigurableProduct extends Component
         $edge = $this->edgeId ? $this->product->edges->firstWhere('id', $this->edgeId) : null;
 
         $dimensions = $this->isRound()
-            ? ($this->lengthCm ? sprintf('Ø %s cm', $this->lengthCm) : null)
-            : ($this->lengthCm && $this->widthCm ? sprintf('%s × %s cm', $this->lengthCm, $this->widthCm) : null);
+            ? ($this->length ? sprintf('Ø %s cm', $this->length) : null)
+            : ($this->length && $this->width ? sprintf('%s × %s cm', $this->length, $this->width) : null);
 
         return implode(', ', array_filter([
             $woodType?->name,
@@ -146,11 +145,11 @@ class ConfigurableProduct extends Component
 
     public function canAddConfiguration(): bool
     {
-        if (! $this->lengthCm || ! $this->woodTypeId || ! $this->surfaceId || ! $this->edgeId) {
+        if (! $this->length || ! $this->woodTypeId || ! $this->surfaceId || ! $this->edgeId) {
             return false;
         }
 
-        if (! $this->isRound() && ! $this->widthCm) {
+        if (! $this->isRound() && ! $this->width) {
             return false;
         }
 
@@ -162,8 +161,8 @@ class ConfigurableProduct extends Component
         return sprintf(
             '%s|L%s|W%s|wt%s|s%s|e%s',
             $this->product->uuid,
-            $this->lengthCm,
-            $this->isRound() ? '' : $this->widthCm,
+            $this->length,
+            $this->isRound() ? '' : $this->width,
             $this->woodTypeId,
             $this->surfaceId,
             $this->edgeId,

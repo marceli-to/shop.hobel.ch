@@ -16,7 +16,6 @@ class SimpleProduct extends Component
     {
         $this->product = $product;
         $this->productUuid = $product->uuid;
-        $this->initializeHandlesCart();
     }
 
     public function render()

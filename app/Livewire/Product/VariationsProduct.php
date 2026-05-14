@@ -25,7 +25,6 @@ class VariationsProduct extends Component
         $this->selectedPrice = (float) $firstChild->price;
 
         $this->productUuid = $firstChild->uuid;
-        $this->initializeHandlesCart();
     }
 
     public function selectVariation(string $uuid): void

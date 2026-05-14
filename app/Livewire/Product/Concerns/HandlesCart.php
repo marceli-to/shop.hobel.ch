@@ -15,7 +15,7 @@ trait HandlesCart
     public bool $inCart = false;
     public bool $canAddToCart = false;
 
-    public function initializeHandlesCart(): void
+    public function mountHandlesCart(): void
     {
         $this->loadCartProduct();
         $this->syncWithCart();
