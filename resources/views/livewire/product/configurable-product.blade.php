@@ -48,7 +48,7 @@
           step="1"
           min="{{ $product->min_length }}"
           max="{{ $product->max_length }}"
-          wire:model.live.debounce.400ms="lengthCm"
+          wire:model.live.debounce.400ms="length"
           class="w-full bg-transparent outline-none placeholder:text-ash text-right appearance-none">
       </div>
     </x-layout.row>
@@ -64,7 +64,7 @@
             step="1"
             min="{{ $product->min_width }}"
             max="{{ $product->max_width }}"
-            wire:model.live.debounce.400ms="widthCm"
+            wire:model.live.debounce.400ms="width"
             class="w-full bg-transparent outline-none placeholder:text-ash text-right">
           </div>
       </x-layout.row>
