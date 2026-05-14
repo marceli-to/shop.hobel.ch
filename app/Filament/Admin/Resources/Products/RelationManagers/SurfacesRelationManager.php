@@ -22,7 +22,7 @@ class SurfacesRelationManager extends RelationManager
 
 	protected static ?string $recordTitleAttribute = 'name';
 
-	protected static ?string $title = 'Oberflächen';
+	protected static ?string $title = '';
 
 	protected static ?string $modelLabel = 'Oberfläche';
 
@@ -40,7 +40,6 @@ class SurfacesRelationManager extends RelationManager
 			->columns([
 				TextColumn::make('name')
 					->label('Name')
-					->searchable()
 					->sortable(),
 				TextColumn::make('price')
 					->label('Preis/m²')
@@ -58,7 +57,7 @@ class SurfacesRelationManager extends RelationManager
 			])
 			->headerActions([
 				Action::make('attach')
-					->label('Oberfläche hinzufügen')
+					->label('Hinzufügen')
 					->modalHeading('Oberflächen hinzufügen')
 					->modalSubmitActionLabel('Hinzufügen')
 					->modalWidth('md')

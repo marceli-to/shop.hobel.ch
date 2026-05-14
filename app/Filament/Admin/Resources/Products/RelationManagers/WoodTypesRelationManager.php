@@ -23,7 +23,7 @@ class WoodTypesRelationManager extends RelationManager
 
 	protected static ?string $recordTitleAttribute = 'name';
 
-	protected static ?string $title = 'Holzarten';
+	protected static ?string $title = '';
 
 	protected static ?string $modelLabel = 'Holzart';
 
@@ -45,7 +45,6 @@ class WoodTypesRelationManager extends RelationManager
 					->circular(),
 				TextColumn::make('name')
 					->label('Name')
-					->searchable()
 					->sortable(),
 				TextColumn::make('price')
 					->label('Preis/m³')
@@ -63,7 +62,7 @@ class WoodTypesRelationManager extends RelationManager
 			])
 			->headerActions([
 				Action::make('attach')
-					->label('Holzart hinzufügen')
+					->label('Hinzufügen')
 					->modalHeading('Holzarten hinzufügen')
 					->modalSubmitActionLabel('Hinzufügen')
 					->modalWidth('4xl')

@@ -22,7 +22,7 @@ class EdgesRelationManager extends RelationManager
 
 	protected static ?string $recordTitleAttribute = 'name';
 
-	protected static ?string $title = 'Kanten';
+	protected static ?string $title = '';
 
 	protected static ?string $modelLabel = 'Kante';
 
@@ -40,7 +40,6 @@ class EdgesRelationManager extends RelationManager
 			->columns([
 				TextColumn::make('name')
 					->label('Name')
-					->searchable()
 					->sortable(),
 				TextColumn::make('price')
 					->label('Preis/m')
@@ -54,7 +53,7 @@ class EdgesRelationManager extends RelationManager
 			])
 			->headerActions([
 				Action::make('attach')
-					->label('Kante hinzufügen')
+					->label('Hinzufügen')
 					->modalHeading('Kanten hinzufügen')
 					->modalSubmitActionLabel('Hinzufügen')
 					->modalWidth('md')
