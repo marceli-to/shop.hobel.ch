@@ -4,9 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Laravel 10 e-commerce application (shop.hobel.ch) for selling products with integrated Stripe payments, built with Filament admin panel, Livewire components, and Tailwind CSS. The application is a German/Swiss market shop with multilingual support.
-
-**Note:** This codebase serves as reference for building a modernized Laravel 12 prototype with Filament 4 and Tailwind CSS 4. The new prototype will use a simplified architecture (no product variations, no CMS pages, deferred payment integration).
+Modern Laravel 12 e-commerce prototype (shop.hobel.ch) for the German/Swiss market (CHF, German). Built with Filament 4 admin, Livewire 3 components, Tailwind CSS 4, and Payrexx for payments.
 
 ## Development Commands
 
@@ -24,11 +22,8 @@ php artisan migrate
 # Start development server
 php artisan serve
 
-# Frontend development (Vite)
+# Frontend dev (Vite)
 npm run dev
-
-# Watch for changes
-npm run watch
 
 # Build for production
 npm run build
@@ -36,50 +31,35 @@ npm run build
 
 ### Testing
 ```bash
-# Run all tests
+# Run all tests (PHPUnit 11)
 php artisan test
 
-# Run specific test suite
 php artisan test --testsuite=Feature
 php artisan test --testsuite=Unit
-
-# Run single test file
 php artisan test tests/Feature/ExampleTest.php
 ```
 
 ### Code Quality
 ```bash
-# Format code with Laravel Pint
+# Format with Laravel Pint
 ./vendor/bin/pint
-
-# Run specific file
 ./vendor/bin/pint app/Models/Product.php
 ```
 
 ### Database
 ```bash
-# Run migrations
 php artisan migrate
-
-# Rollback migrations
 php artisan migrate:rollback
-
-# Fresh migration with seeding
 php artisan migrate:fresh --seed
-
-# Create new migration
 php artisan make:migration create_table_name
 ```
 
 ### Cache Management
 ```bash
-# Clear all caches
 php artisan cache:clear
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
-
-# Optimize for production
 php artisan optimize
 ```
 
@@ -87,113 +67,124 @@ php artisan optimize
 
 ### Directory Structure
 
-- **app/Actions/** - Single-purpose action classes organized by domain (Cart, Order, Product, Landing)
-  - Follow the pattern: `(new ActionName())->execute($params)`
-  - Used to encapsulate business logic outside controllers
+- **app/Actions/** — Single-purpose action classes organized by domain (`Cart`, `Category`, `Order`, `Product`)
+  - Pattern: `(new ActionName())->execute($params)`
+  - Encapsulate business logic outside controllers
 
-- **app/Livewire/** - Real-time interactive components for cart functionality
-  - `Cart.php`, `CartButton.php`, `CartIcon.php`, `CartItem.php`, `CartTotal.php`
-  - `ProductNotification.php` for product-related notifications
+- **app/Livewire/** — Interactive components
+  - `Cart/` — `Cart`, `Button`, `Icon`, `MiniCart`
+  - `Checkout/` — `InvoiceAddress`, `DeliveryAddress`, `Payment`, `Summary`, `Confirmation`
+  - `Product/` — `SimpleProduct`, `VariationsProduct`, `ConfigurableProduct`
 
-- **app/Filament/** - Admin panel resources and configuration
-  - Resources for Products, Orders, ProductCategories, ProductVariations, ContactPage, IdeaPage, LandingPage
-  - Admin panel accessible at `/admin`
+- **app/Filament/Admin/Resources/** — Filament 4 admin resources
+  - `Products`, `Categories`, `Orders`, `ShippingMethods`, `WoodTypes`, `Surfaces`, `Edges`
+  - Admin panel at `/admin`
 
-- **app/Models/** - Eloquent models with key relationships:
-  - `Product` - Has many `ProductVariation`, belongs to `ProductCategory`
-  - `Order` - Has many `OrderProduct`, belongs to many `Product` through pivot
-  - Models use soft deletes and Spatie Sluggable for SEO-friendly URLs
+- **app/Models/** — Eloquent models
+  - `Product` — Has many self-referencing variations via `parent_id`; belongs to many `Category`, `Tag`, `WoodType`, `Surface`, `Edge`, `ShippingMethod`; uses `HasSlug` + soft deletes
+  - `Category` — Belongs to many `Product`; sluggable
+  - `Order` — Has many `OrderItem`
+  - Other: `Edge`, `Image`, `OrderItem`, `ProductAttribute`, `ShippingMethod`, `Surface`, `Tag`, `User`, `WoodType`
 
-- **app/Http/Middleware/** - Custom middleware for order flow:
-  - `EnsureCartIsNotEmpty` - Protects checkout routes
-  - `EnsureCorrectOrderStep` - Validates sequential checkout process
-  - `EnsureOrderIsPaid` - Validates payment completion
+- **app/Http/Middleware/** — Checkout flow guards
+  - `EnsureCartIsNotEmpty` — Protects checkout routes
+  - `EnsureCorrectOrderStep` — Validates sequential step progression
+  - `EnsureOrderIsPaid` — Validates payment completion
 
-- **app/Notifications/** - Email notifications:
-  - `OrderConfirmationNotification` - Sent to customers
-  - `OrderInformationNotification` - Sent to shop owners
-  - `ProductNotification` - Product-related alerts
+- **app/Http/Controllers/** — `LandingController`, `CategoryController`, `ProductController`, `CartController`, `PaymentController`, `ImageController`, `PdfController`
 
-- **app/Services/Pdf/** - PDF generation services using DomPDF (for invoices)
+- **app/Services/** — `PayrexxService` (payment gateway), `ConfigurablePriceCalculator` (configurable product pricing)
+
+- **app/Notifications/Order/** — `ConfirmationNotification` (customer), `InformationNotification` (shop owner)
+
+- **app/Jobs/** — `ProcessOrderJob` (queued order processing)
+
+- **app/Enums/** — `ProductType` (simple, configurable, variations), `TableShape`
 
 ### Key Patterns
 
 **Session-Based Cart System**
-- Cart data stored in session, managed through Action classes
-- Cart structure includes: items, invoice_address, shipping_address, payment_method, order_step, is_paid
-- Cart operations: `GetCart`, `StoreCart`, `UpdateCart`, `DestroyCart`
+- Cart state lives in session, mediated by Action classes
+- Cart structure: items, invoice_address, shipping_address, payment_method, order_step, is_paid
+- Operations: `Cart/Get`, `Cart/Store`, `Cart/Update`, `Cart/Destroy`
 
-**Multi-Step Checkout Flow**
-1. Overview → 2. Invoice Address → 3. Shipping Address → 4. Payment Method → 5. Summary → 6. Stripe Payment → 7. Confirmation
-- Protected by `ensure.cart.not.empty` and `ensure.correct.order.step` middleware
-- Step validation in `OrderController::handleStep()`
+**Multi-Step Checkout Flow (German routes)**
+1. `/bestellung/warenkorb` — Basket
+2. `/bestellung/rechnungsadresse` — Invoice address (step 1)
+3. `/bestellung/lieferadresse` — Delivery address (step 2)
+4. `/bestellung/zahlung` — Payment method (step 3)
+5. `/bestellung/zusammenfassung` — Summary (step 4)
+6. Payrexx redirect → `/bestellung/bestaetigung` — Confirmation
+- Protected by `ensure.cart.not.empty` and `ensure.correct.order.step:{n}` middleware
 
 **Product System**
-- Products have a `state` enum (ProductState): available, not_available, on_request
-- Products support variations through `ProductVariation` model
-- Use Spatie Sluggable for URL routing (route key: `slug`)
-- Products have `group_title` (for grouping variations) and individual `title`
+- `ProductType` enum: `Simple`, `Configurable`, `Variations`
+- Variations modeled as self-referencing rows via `parent_id` (no separate variations table)
+- Configurable products compose price from selected `WoodType`, `Surface`, `Edge`, and `ProductAttribute` options
+- `Spatie\Sluggable\HasSlug` + custom `HasGermanSlug` trait for SEO-friendly URLs (route key `slug`)
 
-**Payment Integration**
-- Stripe Checkout integration in `OrderController::finalize()`
-- Success/cancel webhook routes configured
-- Payment confirmation triggers `HandleOrder` action to persist order
+**Payment Integration (Payrexx)**
+- `PayrexxService` creates gateway sessions; `PaymentController` handles `success`, `cancel`, and `webhook`
+- On successful payment, `Order/Finalize` action persists the order and triggers notifications
 
-**Image Management**
-- Custom image caching system via `ImageController`
-- Images served through `/img/{template}/{filename}` route
-- Templates defined in `app/Filters/Image/Template/` (Small, Medium, Large)
-- Uses Intervention Image v2 (not compatible with Laravel 12 - will need alternative for new prototype)
+**Image Management (Glide)**
+- League Glide 3 handles on-the-fly image manipulation/caching
+- Served via `ImageController` at `/img/{path}`
+
+**PDF Generation**
+- Spatie Laravel PDF using Browsershot (Puppeteer) running on AWS Lambda via Hammerstone Sidecar (`wnx/sidecar-browsershot`)
+- Invoice route: `/pdf/invoice/{order:uuid}` via `Order/GenerateInvoicePdf`
 
 ### Database Schema
 
 **Key Tables:**
-- `products` - Main product catalog with category relationship
-- `product_variations` - Product variants (size, color, etc.)
-- `product_categories` - Product categorization
-- `orders` - Customer orders with invoice/shipping addresses
-- `order_product` - Pivot table linking orders to products with price snapshot
-- `landing_page`, `idea_page`, `contact_page` - CMS-managed pages
+- `products` — Catalog, with `type`, `parent_id` (self-referencing for variations), configurable fields
+- `categories` + `category_product` — Many-to-many categorization
+- `tags` + `product_tag`
+- `wood_types`, `surfaces`, `edges` + pivots (`product_wood_type`, `product_surface`, `edge_product`) — Configurable product options
+- `product_attributes` — Additional configurable attributes
+- `shipping_methods` + `product_shipping_method`
+- `orders`, `order_items` — Order persistence with snapshotted prices and shipping
+- `images` — Polymorphic image attachments
+- `users` — Admin users (Filament)
 
 **Important Fields:**
-- Products: `uuid`, `slug`, `state`, `publish`, `attributes` (JSON), `cards` (JSON)
-- Orders: `uuid`, `payed_at`, `use_invoice_address`, `payment_method`
-- Both use soft deletes (`deleted_at`)
+- Products: `uuid`, `slug`, `type` (enum), `parent_id`, configurable pricing fields
+- Orders: `uuid`, `order_number`, payment reference, tax/shipping fields
+- Soft deletes on `Product`, `Category`, `Tag`, `Order`
 
 ### Third-Party Integrations
 
-- **Filament v3.2** - Admin panel framework
-- **Livewire v3.4** - Real-time components
-- **Stripe PHP** - Payment processing
-- **Laravel Scout + Algolia** - Product search (configured but check implementation)
-- **Spatie Packages**:
-  - `laravel-sluggable` - SEO-friendly URLs
-  - `laravel-honeypot` - Form spam protection
-  - `laravel-ray` - Debugging tool
-- **Intervention Image v2** - Image manipulation and caching (not compatible with Laravel 12)
+- **Filament v4** — Admin panel
+- **Livewire v3.6** — Reactive components
+- **Payrexx PHP SDK** (`payrexx/payrexx`) — Payment gateway
+- **Resend** (`resend/resend-laravel`) — Transactional email
+- **League Glide v3** — Image manipulation
+- **Spatie Laravel PDF** + **Hammerstone Sidecar** + **wnx/sidecar-browsershot** — Headless-Chrome PDFs via AWS Lambda
+- **Spatie Sluggable** — SEO-friendly URLs
+- **Puppeteer** (npm) — Used by sidecar-browsershot
 
 ### Frontend Stack
 
-- **Vite** - Asset bundler (replaces Laravel Mix)
-- **Tailwind CSS** - Utility-first CSS framework
-- **Alpine.js** - Lightweight JavaScript framework
-- **Swiper** - Carousel/slider library
-- Views in `resources/views/` using Blade templates
+- **Vite 5** — Asset bundler
+- **Tailwind CSS 4 (beta)** via `@tailwindcss/vite`; `@tailwindcss/typography` plugin
+- **Alpine.js 3** + `@alpinejs/collapse`
+- Blade templates in `resources/views/` (`components/`, `livewire/`, `mail/`, `pages/`, `pdf/`)
 
 ## Important Notes
 
-- This is a **Swiss market** shop - currency is CHF, language is German
-- Order numbers use format: `FS-{6-digit-padded-id}` (e.g., FS-000042)
-- Shipping validation checks if country is in `config('countries.delivery')`
-- Environment requires Stripe keys: `PAYMENT_STRIPE_PRIVATE_KEY`
-- Session-based cart means no persistent cart for logged-out users
-- Admin panel uses Filament - customize in `app/Providers/Filament/AdminPanelProvider.php`
+- Swiss market shop — currency CHF, language German
+- Order numbers generated via `Order/GenerateOrderNumber`
+- Shipping country validation uses `config('countries.delivery')` (see `config/countries.php`, `config/shop.php`)
+- Payrexx config in `config/payrexx.php`
+- Sidecar (AWS Lambda) config in `config/sidecar.php` and `config/sidecar-browsershot.php` — required for PDF generation
+- Session-based cart — no persistent cart for guests
+- Admin panel customized in `app/Providers/Filament/AdminPanelProvider.php`
 
-## Modernization Notes (for Laravel 12 Prototype)
+## Stack Summary
 
-When building the new prototype, consider:
-- **Image handling**: Intervention Image v2 is not Laravel 12 compatible. Research alternatives: Intervention Image v3, Spatie Media Library, or Laravel's built-in image manipulation
-- **Simplified database**: Single products table (no variations), no CMS pages
-- **Payment integration**: Deferred to later stage (no Stripe integration initially)
-- **Checkout flow**: Simplified to 3-4 steps instead of 7
-- **Removed for prototype**: Algolia/Scout search, soft deletes, PDF generation, email notifications
+- PHP **8.4**, Laravel **12**
+- Filament **4**, Livewire **3.6**
+- Tailwind CSS **4 beta**, Vite **5**, Alpine.js **3**
+- Payrexx (not Stripe), Resend (not SMTP/Mailgun), League Glide (not Intervention Image), Spatie PDF via Browsershot/Sidecar (not DomPDF)
+- PHPUnit **11**, Laravel Pint

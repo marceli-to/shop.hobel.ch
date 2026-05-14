@@ -31,9 +31,10 @@
 
   </x-layout.row>
 
-  <x-layout.row 
-    x-show="open" 
-    x-cloak 
+  <x-layout.row
+    x-show="open"
+    x-collapse
+    x-cloak
     class="grid grid-cols-3 gap-x-20 items-start !border-t-0 pb-20">
     @foreach($items as $item)
 

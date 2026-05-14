@@ -31,15 +31,28 @@
             <x-cart.money :amount="$item['price'] * $item['quantity']" />
           </x-layout.row>
 
-          <!-- Description -->
-          @if($item['description'])
-            <x-layout.row class="{{ empty($item['shipping_name']) ? 'border-b' : '' }}">
-              <span>{{ $item['description'] }}</span>
+          @php
+            $hasLabel = !empty($item['label']);
+            $hasConfiguration = !empty($item['configuration']);
+            $hasShipping = !empty($item['shipping_name']);
+          @endphp
+
+          <!-- Label (for child products) -->
+          @if($hasLabel)
+            <x-layout.row class="{{ !$hasConfiguration && !$hasShipping ? 'border-b' : '' }}">
+              <span>{{ $item['label'] }}</span>
+            </x-layout.row>
+          @endif
+
+          <!-- Configuration Details -->
+          @if($hasConfiguration)
+            <x-layout.row class="{{ !$hasShipping ? 'border-b' : '' }}">
+              <span>{{ $item['configuration'] }}</span>
             </x-layout.row>
           @endif
 
           <!-- Shipping method -->
-          @if(!empty($item['shipping_name']))
+          @if($hasShipping)
             <x-layout.row class="border-b">
               <span>{{ $item['shipping_name'] }}</span>
             </x-layout.row>
