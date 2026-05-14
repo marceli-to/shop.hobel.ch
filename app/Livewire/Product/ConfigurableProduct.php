@@ -43,9 +43,34 @@ class ConfigurableProduct extends Component
 
     public function updated(string $name): void
     {
+        if ($name === 'length') {
+            $this->length = $this->clamp($this->length, $this->product->min_length, $this->product->max_length);
+        }
+
+        if ($name === 'width') {
+            $this->width = $this->clamp($this->width, $this->product->min_width, $this->product->max_width);
+        }
+
         if (in_array($name, ['length', 'width', 'woodTypeId', 'surfaceId', 'edgeId'], true)) {
             $this->recalculatePrice();
         }
+    }
+
+    private function clamp(?float $value, ?float $min, ?float $max): ?float
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if ($min !== null && $value < $min) {
+            return (float) $min;
+        }
+
+        if ($max !== null && $value > $max) {
+            return (float) $max;
+        }
+
+        return $value;
     }
 
     public function recalculatePrice(): void

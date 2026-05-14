@@ -43,13 +43,10 @@
         Länge (cm)
       </div>
       <div class="col-span-2">
-        <input
-          type="number"
-          step="1"
-          min="{{ $product->min_length }}"
-          max="{{ $product->max_length }}"
-          wire:model.live.debounce.400ms="length"
-          class="w-full bg-transparent outline-none placeholder:text-ash text-right appearance-none">
+        <x-form.number
+          :min="$product->min_length"
+          :max="$product->max_length"
+          wire:model.live.debounce.400ms="length" />
       </div>
     </x-layout.row>
 
@@ -59,58 +56,46 @@
           Breite (cm)
         </div>
         <div class="col-span-2">
-          <input
-            type="number"
-            step="1"
-            min="{{ $product->min_width }}"
-            max="{{ $product->max_width }}"
-            wire:model.live.debounce.400ms="width"
-            class="w-full bg-transparent outline-none placeholder:text-ash text-right">
-          </div>
+          <x-form.number
+            :min="$product->min_width"
+            :max="$product->max_width"
+            wire:model.live.debounce.400ms="width" />
+        </div>
       </x-layout.row>
     @endunless
 
-    <div>
-      <label class="block mb-6">Holzart</label>
-      <div class="relative">
-        <select
-          wire:model.live="woodTypeId"
-          class="w-full border border-black px-12 py-6 h-40 pr-32 bg-white appearance-none cursor-pointer focus:outline-none truncate">
-          @foreach($product->woodTypes as $woodType)
-            <option value="{{ $woodType->id }}">{{ $woodType->name }}</option>
-          @endforeach
-        </select>
-        <x-icons.chevron-down class="absolute right-12 top-1/2 -translate-y-1/2 pointer-events-none" />
+    <x-layout.row class="grid grid-cols-3 gap-x-20">
+      <div class="col-span-1">
+        Oberfläche
       </div>
-    </div>
-
-    <div>
-      <label class="block mb-6">Oberfläche</label>
-      <div class="relative">
-        <select
-          wire:model.live="surfaceId"
-          class="w-full border border-black px-12 py-6 h-40 pr-32 bg-white appearance-none cursor-pointer focus:outline-none truncate">
+      <div class="col-span-2">
+        <x-form.select wire:model.live="surfaceId">
           @foreach($product->surfaces as $surface)
             <option value="{{ $surface->id }}">{{ $surface->name }}</option>
           @endforeach
-        </select>
-        <x-icons.chevron-down class="absolute right-12 top-1/2 -translate-y-1/2 pointer-events-none" />
+        </x-form.select>
       </div>
-    </div>
+    </x-layout.row>
 
-    <div>
-      <label class="block mb-6">Kante</label>
-      <div class="relative">
-        <select
-          wire:model.live="edgeId"
-          class="w-full border border-black px-12 py-6 h-40 pr-32 bg-white appearance-none cursor-pointer focus:outline-none truncate">
+    <x-layout.row class="grid grid-cols-3 gap-x-20">
+      <div class="col-span-1">
+        Kante
+      </div>
+      <div class="col-span-2">
+        <x-form.select wire:model.live="edgeId">
           @foreach($product->edges as $edge)
             <option value="{{ $edge->id }}">{{ $edge->name }}</option>
           @endforeach
-        </select>
-        <x-icons.chevron-down class="absolute right-12 top-1/2 -translate-y-1/2 pointer-events-none" />
+        </x-form.select>
       </div>
-    </div>
+    </x-layout.row>
+
+    <x-form.selector
+      class="border-b"
+      label="Holzart"
+      :items="$product->woodTypes"
+      :selected="$product->woodTypes->firstWhere('id', $woodTypeId)?->name"
+      wire:model.live="woodTypeId" />
   </div>
 
 
