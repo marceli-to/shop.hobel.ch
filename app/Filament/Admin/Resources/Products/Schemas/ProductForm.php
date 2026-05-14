@@ -388,6 +388,7 @@ class ProductForm
 						->columns(2)
 						->visible(fn (callable $get) => !empty($get('categories'))),
 				])
+				->collapsed()
 				->collapsible(),
 
 			Section::make('Versandarten')
@@ -404,6 +405,7 @@ class ProductForm
 							'min' => 'Bitte wählen Sie mindestens eine Versandart aus.',
 						]),
 				])
+				->collapsed()
 				->collapsible(),
 		];
 	}
