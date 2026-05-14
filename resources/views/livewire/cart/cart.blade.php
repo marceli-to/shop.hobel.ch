@@ -51,7 +51,7 @@
 
               <!-- Configuration Details -->
               @if(!empty($item['configuration']))
-                <x-layout.row>
+                <x-layout.row class="border-b">
                   <span>{{ $item['configuration'] }}</span>
                 </x-layout.row>
               @endif
