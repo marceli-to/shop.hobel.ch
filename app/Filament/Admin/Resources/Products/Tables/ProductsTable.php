@@ -53,23 +53,6 @@ class ProductsTable
 					->label('Publiziert')
 					->boolean()
 					->sortable(),
-				TextColumn::make('uuid')
-					->label('UUID')
-					->searchable()
-					->toggleable(isToggledHiddenByDefault: true),
-				TextColumn::make('slug')
-					->searchable()
-					->toggleable(isToggledHiddenByDefault: true),
-				TextColumn::make('created_at')
-					->label('Erstellt')
-					->dateTime()
-					->sortable()
-					->toggleable(isToggledHiddenByDefault: true),
-				TextColumn::make('updated_at')
-					->label('Aktualisiert')
-					->dateTime()
-					->sortable()
-					->toggleable(isToggledHiddenByDefault: true),
 			])
 			->filters([
 				SelectFilter::make('type')

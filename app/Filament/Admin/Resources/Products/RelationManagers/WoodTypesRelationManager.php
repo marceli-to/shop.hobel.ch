@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Products\RelationManagers;
 use App\Enums\ProductType;
 use App\Models\WoodType;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
@@ -14,6 +15,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class WoodTypesRelationManager extends RelationManager
 {
@@ -53,6 +55,11 @@ class WoodTypesRelationManager extends RelationManager
 					->label('Sortier-/Verschnittfaktor')
 					->formatStateUsing(fn ($state) => number_format($state, 2, '.', '\''))
 					->sortable(),
+				TextColumn::make('is_default')
+					->label('Standard')
+					->state(fn ($record) => $record->pivot->is_default ? 'Standard' : null)
+					->badge()
+					->color('success'),
 			])
 			->headerActions([
 				Action::make('attach')
@@ -81,8 +88,27 @@ class WoodTypesRelationManager extends RelationManager
 					}),
 			])
 			->recordActions([
-				DetachAction::make()
-					->label('Entfernen'),
+				ActionGroup::make([
+					Action::make('setDefault')
+						->label('Als Standard setzen')
+						->icon('heroicon-o-star')
+						->visible(fn ($record) => ! $record->pivot->is_default)
+						->action(function ($record): void {
+							$owner = $this->getOwnerRecord();
+							DB::transaction(function () use ($owner, $record) {
+								DB::table('product_wood_type')
+									->where('product_id', $owner->id)
+									->update(['is_default' => false]);
+								DB::table('product_wood_type')
+									->where('product_id', $owner->id)
+									->where('wood_type_id', $record->id)
+									->update(['is_default' => true]);
+							});
+						}),
+					DetachAction::make()
+						->label('Löschen')
+						->icon('heroicon-o-trash'),
+				]),
 			])
 			->toolbarActions([
 				BulkActionGroup::make([

@@ -182,7 +182,9 @@ class Product extends Model
 	 */
 	public function woodTypes(): BelongsToMany
 	{
-		return $this->belongsToMany(WoodType::class)->orderBy('order');
+		return $this->belongsToMany(WoodType::class)
+			->withPivot('is_default')
+			->orderBy('order');
 	}
 
 	/**
@@ -190,7 +192,9 @@ class Product extends Model
 	 */
 	public function surfaces(): BelongsToMany
 	{
-		return $this->belongsToMany(Surface::class)->orderBy('order');
+		return $this->belongsToMany(Surface::class)
+			->withPivot('is_default')
+			->orderBy('order');
 	}
 
 	/**
@@ -198,7 +202,9 @@ class Product extends Model
 	 */
 	public function edges(): BelongsToMany
 	{
-		return $this->belongsToMany(Edge::class)->orderBy('order');
+		return $this->belongsToMany(Edge::class)
+			->withPivot('is_default')
+			->orderBy('order');
 	}
 
 	/**

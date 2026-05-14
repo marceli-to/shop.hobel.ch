@@ -34,9 +34,9 @@ class ConfigurableProduct extends Component
 
         $this->lengthCm = $product->min_length ? (float) $product->min_length : null;
         $this->widthCm = $product->min_width ? (float) $product->min_width : null;
-        $this->woodTypeId = $product->woodTypes->first()?->id;
-        $this->surfaceId = $product->surfaces->first()?->id;
-        $this->edgeId = $product->edges->first()?->id;
+        $this->woodTypeId = ($product->woodTypes->firstWhere('pivot.is_default', true) ?? $product->woodTypes->first())?->id;
+        $this->surfaceId = ($product->surfaces->firstWhere('pivot.is_default', true) ?? $product->surfaces->first())?->id;
+        $this->edgeId = ($product->edges->firstWhere('pivot.is_default', true) ?? $product->edges->first())?->id;
 
         $this->initializeHandlesCart();
         $this->recalculatePrice();

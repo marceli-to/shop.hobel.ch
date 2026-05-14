@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Products\RelationManagers;
 use App\Enums\ProductType;
 use App\Models\Edge;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
@@ -13,6 +14,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class EdgesRelationManager extends RelationManager
 {
@@ -44,6 +46,11 @@ class EdgesRelationManager extends RelationManager
 					->label('Preis/m')
 					->formatStateUsing(fn ($state) => number_format($state, 2, '.', '\''))
 					->sortable(),
+				TextColumn::make('is_default')
+					->label('Standard')
+					->state(fn ($record) => $record->pivot->is_default ? 'Standard' : null)
+					->badge()
+					->color('success'),
 			])
 			->headerActions([
 				Action::make('attach')
@@ -64,8 +71,27 @@ class EdgesRelationManager extends RelationManager
 					}),
 			])
 			->recordActions([
-				DetachAction::make()
-					->label('Entfernen'),
+				ActionGroup::make([
+					Action::make('setDefault')
+						->label('Als Standard setzen')
+						->icon('heroicon-o-star')
+						->visible(fn ($record) => ! $record->pivot->is_default)
+						->action(function ($record): void {
+							$owner = $this->getOwnerRecord();
+							DB::transaction(function () use ($owner, $record) {
+								DB::table('edge_product')
+									->where('product_id', $owner->id)
+									->update(['is_default' => false]);
+								DB::table('edge_product')
+									->where('product_id', $owner->id)
+									->where('edge_id', $record->id)
+									->update(['is_default' => true]);
+							});
+						}),
+					DetachAction::make()
+						->label('Löschen')
+						->icon('heroicon-o-trash'),
+				]),
 			])
 			->toolbarActions([
 				BulkActionGroup::make([
