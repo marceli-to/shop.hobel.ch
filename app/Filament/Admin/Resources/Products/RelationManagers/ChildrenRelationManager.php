@@ -22,7 +22,7 @@ class ChildrenRelationManager extends RelationManager
 {
 	protected static string $relationship = 'children';
 
-	protected static ?string $title = 'Produktvarianten';
+	protected static ?string $title = '';
 
 	protected static ?string $modelLabel = 'Variante';
 
@@ -85,11 +85,9 @@ class ChildrenRelationManager extends RelationManager
 			->columns([
 				TextColumn::make('label')
 					->label('Label')
-					->searchable()
 					->sortable(),
 				TextColumn::make('sku')
-					->label('SKU')
-					->searchable(),
+					->label('SKU'),
 				TextColumn::make('price')
 					->label('Preis')
 					->formatStateUsing(fn ($state) => 'CHF ' . number_format($state, 2, '.', '\''))
@@ -100,7 +98,7 @@ class ChildrenRelationManager extends RelationManager
 			])
 			->headerActions([
 				CreateAction::make()
-					->label('Variante erstellen')
+					->label('Hinzufügen')
 					->modalWidth('lg')
 					->mutateFormDataUsing(function (array $data): array {
 						// Child products inherit name from parent

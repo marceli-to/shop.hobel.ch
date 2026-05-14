@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Products\Schemas;
 use App\Enums\ProductType;
 use App\Enums\TableShape;
 use App\Filament\Admin\Resources\Products\Pages\EditProduct;
+use App\Filament\Admin\Resources\Products\RelationManagers\ChildrenRelationManager;
 use App\Filament\Admin\Resources\Products\RelationManagers\EdgesRelationManager;
 use App\Filament\Admin\Resources\Products\RelationManagers\SurfacesRelationManager;
 use App\Filament\Admin\Resources\Products\RelationManagers\WoodTypesRelationManager;
@@ -51,8 +52,13 @@ class ProductForm
 						Tab::make('Einstellungen')
 							->schema(self::settingsTab()),
 
-						Tab::make('Typ')
-							->schema(self::typeTab()),
+						Tab::make('Konfiguration')
+							->visible(fn (callable $get) => $get('type') === ProductType::Configurable->value)
+							->schema(self::configurationTab()),
+
+						Tab::make('Varianten')
+							->visible(fn (callable $get) => $get('type') === ProductType::Variations->value)
+							->schema(self::variationsTab()),
 					]),
 			]);
 	}
@@ -125,21 +131,13 @@ class ProductForm
 		];
 	}
 
-	protected static function typeTab(): array
+	protected static function configurationTab(): array
 	{
 		return [
-			Select::make('type')
-				->label('Typ')
-				->options(collect(ProductType::cases())->mapWithKeys(fn ($type) => [$type->value => $type->label()]))
-				->default(ProductType::Simple->value)
-				->required()
-				->live(),
-
 			Section::make('Min/Max Werte')
 				->collapsible()
 				->collapsed()
 				->columns(2)
-				->visible(fn (callable $get) => $get('type') === ProductType::Configurable->value)
 				->schema([
 					TextInput::make('min_length')
 						->label('Min. Länge')
@@ -167,7 +165,6 @@ class ProductForm
 				->collapsible()
 				->collapsed()
 				->columns(2)
-				->visible(fn (callable $get) => $get('type') === ProductType::Configurable->value)
 				->schema([
 					TextInput::make('base_price')
 						->label('Modellbasis')
@@ -217,7 +214,6 @@ class ProductForm
 				->collapsible()
 				->collapsed()
 				->columns(2)
-				->visible(fn (callable $get) => $get('type') === ProductType::Configurable->value)
 				->schema([
 					Select::make('shape')
 						->label('Tischform')
@@ -232,7 +228,7 @@ class ProductForm
 			Section::make('Holzarten')
 				->collapsible()
 				->collapsed()
-				->visible(fn (callable $get, $record) => $record !== null && $get('type') === ProductType::Configurable->value)
+				->visible(fn ($record) => $record !== null)
 				->schema([
 					Livewire::make(WoodTypesRelationManager::class, fn ($record) => [
 						'ownerRecord' => $record,
@@ -243,7 +239,7 @@ class ProductForm
 			Section::make('Oberflächen')
 				->collapsible()
 				->collapsed()
-				->visible(fn (callable $get, $record) => $record !== null && $get('type') === ProductType::Configurable->value)
+				->visible(fn ($record) => $record !== null)
 				->schema([
 					Livewire::make(SurfacesRelationManager::class, fn ($record) => [
 						'ownerRecord' => $record,
@@ -254,9 +250,24 @@ class ProductForm
 			Section::make('Kanten')
 				->collapsible()
 				->collapsed()
-				->visible(fn (callable $get, $record) => $record !== null && $get('type') === ProductType::Configurable->value)
+				->visible(fn ($record) => $record !== null)
 				->schema([
 					Livewire::make(EdgesRelationManager::class, fn ($record) => [
+						'ownerRecord' => $record,
+						'pageClass' => EditProduct::class,
+					]),
+				]),
+		];
+	}
+
+	protected static function variationsTab(): array
+	{
+		return [
+			Section::make('Produktvarianten')
+				->collapsible()
+				->visible(fn ($record) => $record !== null)
+				->schema([
+					Livewire::make(ChildrenRelationManager::class, fn ($record) => [
 						'ownerRecord' => $record,
 						'pageClass' => EditProduct::class,
 					]),
@@ -345,6 +356,13 @@ class ProductForm
 				->label('Publizieren')
 				->inline(false)
 				->default(false),
+
+			Select::make('type')
+				->label('Typ')
+				->options(collect(ProductType::cases())->mapWithKeys(fn ($type) => [$type->value => $type->label()]))
+				->default(ProductType::Simple->value)
+				->required()
+				->live(),
 
 			Section::make('Kategorien / Tags')
 				->schema([
