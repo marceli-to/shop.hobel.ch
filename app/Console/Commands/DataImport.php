@@ -11,13 +11,16 @@ use App\Models\Image;
 use App\Models\WoodType;
 use App\Models\ShippingMethod;
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class DataImport extends Command
 {
-    protected $signature = 'app:data-import';
+    use ConfirmableTrait;
+
+    protected $signature = 'app:data-import {--force : Force the operation to run when in production}';
 
     protected $description = 'Import data from data.json';
 
@@ -26,6 +29,10 @@ class DataImport extends Command
 
     public function handle(): int
     {
+        if (! $this->confirmToProceed()) {
+            return Command::FAILURE;
+        }
+
         $path = 'data-import/data.json';
 
         if (!Storage::disk('local')->exists($path)) {

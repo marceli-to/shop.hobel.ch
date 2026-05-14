@@ -5,16 +5,23 @@ namespace App\Console\Commands;
 use App\Models\Product;
 use App\Models\ShippingMethod;
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Support\Facades\DB;
 
 class SetupShippingMethods extends Command
 {
-    protected $signature = 'app:setup-shipping-methods';
+    use ConfirmableTrait;
+
+    protected $signature = 'app:setup-shipping-methods {--force : Force the operation to run when in production}';
 
     protected $description = 'Set up shipping methods (Abholung, Versand Schweiz) and attach to all products';
 
     public function handle(): int
     {
+        if (! $this->confirmToProceed()) {
+            return Command::FAILURE;
+        }
+
         // Update or create the two required shipping methods
         $pickup = ShippingMethod::find(1);
         if ($pickup) {

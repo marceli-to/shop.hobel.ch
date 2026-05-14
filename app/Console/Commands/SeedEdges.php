@@ -4,15 +4,22 @@ namespace App\Console\Commands;
 
 use App\Models\Edge;
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 
 class SeedEdges extends Command
 {
-    protected $signature = 'app:seed-edges';
+    use ConfirmableTrait;
+
+    protected $signature = 'app:seed-edges {--force : Force the operation to run when in production}';
 
     protected $description = 'Seed the edges table with default Kanten';
 
     public function handle(): int
     {
+        if (! $this->confirmToProceed()) {
+            return Command::FAILURE;
+        }
+
         $edges = [
             ['name' => 'Standardkante',        'price' => 40,  'order' => 0],
             ['name' => 'Rundkante',            'price' => 65,  'order' => 1],

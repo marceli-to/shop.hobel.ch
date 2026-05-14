@@ -1,6 +1,7 @@
 <?php
 namespace App\Console\Commands;
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 use App\Models\Order;
 use App\Services\Pdf\Pdf;
 use Illuminate\Support\Facades\Notification;
@@ -8,12 +9,14 @@ use App\Notifications\OrderConfirmationNotification;
 
 class CreateInvoice extends Command
 {
+  use ConfirmableTrait;
+
   /**
    * The name and signature of the console command.
    *
    * @var string
    */
-  protected $signature = 'create:invoice';
+  protected $signature = 'create:invoice {--force : Force the operation to run when in production}';
 
   /**
    * The console command description.
@@ -39,6 +42,10 @@ class CreateInvoice extends Command
    */
   public function handle()
   {
+    if (! $this->confirmToProceed()) {
+      return Command::FAILURE;
+    }
+
     $order = Order::with('products')->latest()->first();
     $invoice = (new Pdf())->create([
       'data' => $order,

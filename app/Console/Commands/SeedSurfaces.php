@@ -4,15 +4,22 @@ namespace App\Console\Commands;
 
 use App\Models\Surface;
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 
 class SeedSurfaces extends Command
 {
-    protected $signature = 'app:seed-surfaces';
+    use ConfirmableTrait;
+
+    protected $signature = 'app:seed-surfaces {--force : Force the operation to run when in production}';
 
     protected $description = 'Seed the surfaces table with default Oberflächen';
 
     public function handle(): int
     {
+        if (! $this->confirmToProceed()) {
+            return Command::FAILURE;
+        }
+
         $surfaces = [
             ['name' => 'Öl farblos',        'price' => 120, 'minimum_amount' => 160, 'order' => 0],
             ['name' => 'Pigmentiertes Öl',  'price' => 180, 'minimum_amount' => 220, 'order' => 1],

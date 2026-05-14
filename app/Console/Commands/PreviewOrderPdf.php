@@ -5,17 +5,25 @@ namespace App\Console\Commands;
 use App\Actions\Order\GenerateInvoicePdf;
 use App\Models\Order;
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 
 class PreviewOrderPdf extends Command
 {
+    use ConfirmableTrait;
+
     protected $signature = 'pdf:preview
                             {order : The order ID or UUID}
-                            {--lambda : Generate using AWS Lambda instead of local}';
+                            {--lambda : Generate using AWS Lambda instead of local}
+                            {--force : Force the operation to run when in production}';
 
     protected $description = 'Generate an invoice PDF for an order';
 
     public function handle(): int
     {
+        if (! $this->confirmToProceed()) {
+            return Command::FAILURE;
+        }
+
         $identifier = $this->argument('order');
 
         $order = Order::with('items')

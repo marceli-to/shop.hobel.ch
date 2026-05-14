@@ -4,17 +4,24 @@ namespace App\Console\Commands;
 
 use App\Models\Image;
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class ImportImages extends Command
 {
-    protected $signature = 'app:import-images';
+    use ConfirmableTrait;
+
+    protected $signature = 'app:import-images {--force : Force the operation to run when in production}';
 
     protected $description = 'Import upscaled images from image-import directory, replacing existing product images';
 
     public function handle(): int
     {
+        if (! $this->confirmToProceed()) {
+            return Command::FAILURE;
+        }
+
         $importPath = storage_path('app/image-import');
         $productsPath = storage_path('app/public/products');
 

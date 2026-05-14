@@ -4,18 +4,26 @@ namespace App\Console\Commands;
 
 use App\Services\PayrexxService;
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 use Payrexx\PayrexxException;
 
 class CreatePayrexxDesign extends Command
 {
-    protected $signature = 'payrexx:create-design 
+    use ConfirmableTrait;
+
+    protected $signature = 'payrexx:create-design
                             {--name=Shop Design : Name for the design}
-                            {--default : Set as default design}';
+                            {--default : Set as default design}
+                            {--force : Force the operation to run when in production}';
 
     protected $description = 'Create a custom Payrexx payment page design';
 
     public function handle(PayrexxService $payrexxService): int
     {
+        if (! $this->confirmToProceed()) {
+            return Command::FAILURE;
+        }
+
         $this->info('Creating Payrexx design...');
 
         try {

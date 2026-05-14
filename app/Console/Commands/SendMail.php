@@ -1,18 +1,21 @@
 <?php
 namespace App\Console\Commands;
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 use App\Models\Order;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\OrderConfirmationNotification;
 
 class SendMail extends Command
 {
+  use ConfirmableTrait;
+
   /**
    * The name and signature of the console command.
    *
    * @var string
    */
-  protected $signature = 'send:mail';
+  protected $signature = 'send:mail {--force : Force the operation to run when in production}';
 
   /**
    * The console command description.
@@ -38,6 +41,10 @@ class SendMail extends Command
    */
   public function handle()
   {
+    if (! $this->confirmToProceed()) {
+      return Command::FAILURE;
+    }
+
     $order = Order::with('products')->latest()->first();
     try {
       Notification::route('mail', env('MAIL_TO'))
