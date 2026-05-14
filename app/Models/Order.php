@@ -203,7 +203,6 @@ class Order extends Model
 				'product_name' => $item['name'],
 				'product_label' => $item['label'] ?? null,
 				'product_configuration' => $item['configuration'] ?? null,
-				'product_description' => $item['description'] ?? null,
 				'product_price' => $item['price'],
 				'quantity' => $item['quantity'],
 				'shipping_name' => $item['shipping_name'] ?? null,

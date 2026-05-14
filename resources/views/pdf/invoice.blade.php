@@ -274,9 +274,6 @@ $fontRegular = base64_encode(file_get_contents($fontPath . 'Muoto-Regular.woff2'
               @if($item->product_configuration)
                 <div class="invoice__row--detail">{{ $item->product_configuration }}</div>
               @endif
-              @if($item->product_description)
-                <div class="invoice__row--detail">{{ $item->product_description }}</div>
-              @endif
               @if($item->shipping_name)
                 <div class="invoice__row--detail">{{ $item->shipping_name }}</div>
               @endif

@@ -150,7 +150,6 @@ class ConfigurableProduct extends Component
                 'uuid' => $this->product->uuid,
                 'name' => $this->product->name,
                 'label' => null,
-                'description' => $this->product->description,
                 'price' => $this->price,
                 'base_price' => $this->price,
                 'quantity' => $this->quantity,

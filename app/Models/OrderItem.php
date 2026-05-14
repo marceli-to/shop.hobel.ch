@@ -12,7 +12,6 @@ class OrderItem extends Model
 		'product_name',
 		'product_label',
 		'product_configuration',
-		'product_description',
 		'product_price',
 		'quantity',
 		'shipping_name',
@@ -41,14 +40,12 @@ class OrderItem extends Model
 	}
 
 	/**
-	 * Get the full product name including label.
+	 * Get the full product name including label or configuration.
 	 */
 	public function getFullNameAttribute(): string
 	{
-		if ($this->product_label) {
-			return $this->product_name . ', ' . $this->product_label;
-		}
+		$suffix = $this->product_configuration ?: $this->product_label;
 
-		return $this->product_name;
+		return $suffix ? $this->product_name . ', ' . $suffix : $this->product_name;
 	}
 }

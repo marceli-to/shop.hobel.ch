@@ -109,7 +109,6 @@ trait HandlesCart
                 'uuid' => $product->uuid,
                 'name' => $displayName,
                 'label' => $product->label,
-                'description' => $product->description,
                 'price' => $product->price,
                 'base_price' => $product->price,
                 'quantity' => min($this->quantity, $product->stock),

@@ -36,16 +36,11 @@ class OrderInfolist
 					->schema([
 						RepeatableEntry::make('items')
 							->hiddenLabel()
-							->columns(4)
+							->columns(3)
 							->schema([
-								TextEntry::make('product_name')
-									->label('Produkt'),
-								TextEntry::make('product_configuration')
-									->label('Konfiguration')
-									->placeholder('–'),
-								TextEntry::make('product_description')
-									->label('Beschreibung')
-									->placeholder('–'),
+								TextEntry::make('full_name')
+									->label('Produkt')
+									->columnSpan(1),
 								TextEntry::make('quantity')
 									->label('Anzahl'),
 								TextEntry::make('product_price')

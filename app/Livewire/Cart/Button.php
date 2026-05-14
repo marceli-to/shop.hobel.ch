@@ -127,7 +127,6 @@ class Button extends Component
 				'uuid' => $product->uuid,
 				'name' => $displayName,
 				'label' => $product->label, // For child products
-				'description' => $product->description,
 				'price' => $product->price,
 				'base_price' => $product->price,
 				'quantity' => min($this->quantity, $product->stock),
