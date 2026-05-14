@@ -38,7 +38,6 @@ class ConfigurableProduct extends Component
         $this->surfaceId = ($product->surfaces->firstWhere('pivot.is_default', true) ?? $product->surfaces->first())?->id;
         $this->edgeId = ($product->edges->firstWhere('pivot.is_default', true) ?? $product->edges->first())?->id;
 
-        $this->initializeHandlesCart();
         $this->recalculatePrice();
     }
 
