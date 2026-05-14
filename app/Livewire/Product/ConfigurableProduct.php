@@ -77,15 +77,29 @@ class ConfigurableProduct extends Component
         return $this->product->shape === TableShape::Round;
     }
 
+    public function summary(): string
+    {
+        $woodType = $this->woodTypeId ? $this->product->woodTypes->firstWhere('id', $this->woodTypeId) : null;
+        $surface = $this->surfaceId ? $this->product->surfaces->firstWhere('id', $this->surfaceId) : null;
+        $edge = $this->edgeId ? $this->product->edges->firstWhere('id', $this->edgeId) : null;
+
+        $dimensions = $this->isRound()
+            ? ($this->lengthCm ? sprintf('Ø %s cm', $this->lengthCm) : null)
+            : ($this->lengthCm && $this->widthCm ? sprintf('%s × %s cm', $this->lengthCm, $this->widthCm) : null);
+
+        return implode(', ', array_filter([
+            $woodType?->name,
+            $dimensions,
+            $surface?->name,
+            $edge?->name,
+        ]));
+    }
+
     public function addToCart(): void
     {
         if (! $this->canAddConfiguration()) {
             return;
         }
-
-        $woodType = WoodType::find($this->woodTypeId);
-        $surface = Surface::find($this->surfaceId);
-        $edge = Edge::find($this->edgeId);
 
         $cartKey = $this->buildCartKey();
 
@@ -117,7 +131,7 @@ class ConfigurableProduct extends Component
                 'base_price' => $this->price,
                 'quantity' => $this->quantity,
                 'image' => $this->product->images->first()?->file_path,
-                'configuration' => $this->buildConfigurationLabels($woodType, $surface, $edge),
+                'configuration' => $this->summary(),
                 'shipping_methods' => $shippingMethods,
                 'selected_shipping' => $shippingMethods[0]['id'] ?? null,
                 'shipping_name' => $shippingMethods[0]['name'] ?? null,
@@ -141,21 +155,6 @@ class ConfigurableProduct extends Component
         }
 
         return $this->price > 0;
-    }
-
-    private function buildConfigurationLabels(?WoodType $woodType, ?Surface $surface, ?Edge $edge): array
-    {
-        $dimensions = $this->isRound()
-            ? sprintf('Ø %s cm', $this->lengthCm)
-            : sprintf('%s × %s cm', $this->lengthCm, $this->widthCm);
-
-        return array_values(array_filter([
-            $this->product->shape ? ['label' => $this->product->shape->label()] : null,
-            ['label' => $dimensions],
-            $woodType ? ['label' => $woodType->name] : null,
-            $surface ? ['label' => $surface->name] : null,
-            $edge ? ['label' => $edge->name] : null,
-        ]));
     }
 
     private function buildCartKey(): string

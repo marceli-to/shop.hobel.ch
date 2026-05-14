@@ -13,10 +13,27 @@
     @endforeach
   @endif
 
+  @if ($this->summary())
+    <x-layout.row>
+      {{ $this->summary() }}
+    </x-layout.row>
+  @endif
+
   @if ($product->delivery_time)
     <x-layout.row>
       Lieferfrist ca. {{ $product->delivery_time }}
     </x-layout.row>
+  @endif
+
+  <x-layout.row class="border-b border-b-black">
+    <x-cart.money :amount="$price" class="w-auto" />
+  </x-layout.row>
+
+  @if ($this->canAddConfiguration())
+    <div class="mt-40 space-y-40">
+      <x-cart.quantity :quantity="$quantity" :maxStock="$maxStock" />
+      <x-cart.button :inCart="$inCart" />
+    </div>
   @endif
 
   <div class="mt-40">
@@ -96,16 +113,7 @@
     </div>
   </div>
 
-  <x-layout.row class="mt-40 border-b border-b-black">
-    <x-cart.money :amount="$price" class="w-auto" />
-  </x-layout.row>
 
-  @if ($this->canAddConfiguration())
-    <div class="mt-40 space-y-40">
-      <x-cart.quantity :quantity="$quantity" :maxStock="$maxStock" />
-      <x-cart.button :inCart="$inCart" />
-    </div>
-  @endif
 
   @if ($product->description)
     <div class="my-40">

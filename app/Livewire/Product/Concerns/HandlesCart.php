@@ -114,7 +114,7 @@ trait HandlesCart
                 'base_price' => $product->price,
                 'quantity' => min($this->quantity, $product->stock),
                 'image' => $image,
-                'configuration' => [],
+                'configuration' => null,
                 'shipping_methods' => $shippingMethods,
                 'selected_shipping' => $shippingMethods[0]['id'] ?? null,
                 'shipping_name' => $shippingMethods[0]['name'] ?? null,

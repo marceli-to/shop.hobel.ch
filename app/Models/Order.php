@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Actions\Order\GenerateOrderNumber;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,6 +12,7 @@ use Illuminate\Support\Str;
 
 class Order extends Model
 {
+	use HasFactory;
 	use SoftDeletes;
 
 	protected $fillable = [
@@ -196,6 +198,7 @@ class Order extends Model
 			$order->items()->create([
 				'product_name' => $item['name'],
 				'product_label' => $item['label'] ?? null,
+				'product_configuration' => $item['configuration'] ?? null,
 				'product_description' => $item['description'] ?? null,
 				'product_price' => $item['price'],
 				'quantity' => $item['quantity'],

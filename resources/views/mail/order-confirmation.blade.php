@@ -14,6 +14,11 @@
               <td colspan="3">{{ $item->product_label }}</td>
             </tr>
           @endif
+          @if($item->product_configuration)
+            <tr>
+              <td colspan="3">{{ $item->product_configuration }}</td>
+            </tr>
+          @endif
           @if($item->product_description)
             <tr>
               <td colspan="3">{{ $item->product_description }}</td>

@@ -68,12 +68,8 @@
 
               <!-- Configuration Details -->
               {{-- @if(!empty($item['configuration']))
-                <div class="mt-1 space-y-0.5">
-                  @foreach($item['configuration'] as $config)
-                    <div class="text-xs text-gray-500">
-                      {{ $config['label'] }}
-                    </div>
-                  @endforeach
+                <div class="mt-1 text-xs text-gray-500">
+                  {{ $item['configuration'] }}
                 </div>
               @endif --}}
 

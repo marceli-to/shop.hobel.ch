@@ -51,11 +51,9 @@
 
               <!-- Configuration Details -->
               @if(!empty($item['configuration']))
-                @foreach($item['configuration'] as $config)
-                  <x-layout.row>
-                    <span>{{ $config['label'] }}</span>
-                  </x-layout.row>
-                @endforeach
+                <x-layout.row>
+                  <span>{{ $item['configuration'] }}</span>
+                </x-layout.row>
               @endif
             </div>
 

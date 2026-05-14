@@ -40,6 +40,9 @@ class OrderInfolist
 							->schema([
 								TextEntry::make('product_name')
 									->label('Produkt'),
+								TextEntry::make('product_configuration')
+									->label('Konfiguration')
+									->placeholder('–'),
 								TextEntry::make('product_description')
 									->label('Beschreibung')
 									->placeholder('–'),
