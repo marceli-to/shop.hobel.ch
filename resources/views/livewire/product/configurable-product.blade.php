@@ -1,4 +1,4 @@
-<div>
+<div data-product-configurator class="scroll-mt-[12.5rem]">
   @if ($product->short_description)
     <x-layout.row>
       {{ $product->short_description }}
@@ -46,7 +46,7 @@
         <x-form.number
           :min="$product->min_length"
           :max="$product->max_length"
-          wire:model.live.debounce.400ms="length" />
+          wire:model.blur="length" />
       </div>
     </x-layout.row>
 
@@ -59,7 +59,7 @@
           <x-form.number
             :min="$product->min_width"
             :max="$product->max_width"
-            wire:model.live.debounce.400ms="width" />
+            wire:model.blur="width" />
         </div>
       </x-layout.row>
     @endunless

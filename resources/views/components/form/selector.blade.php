@@ -12,8 +12,16 @@
   $modelName = $attributes->wire('model')->value();
 @endphp
 
-<div 
-  x-data="{ open: false }" 
+<div
+  x-data="{
+    open: false,
+    close() {
+      this.open = false;
+      this.$nextTick(() => {
+        document.querySelector('[data-product-configurator]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  }"
   class="{{ $class }}">
 
   <x-layout.row
@@ -33,7 +41,6 @@
 
   <x-layout.row
     x-show="open"
-    x-collapse
     x-cloak
     class="grid grid-cols-3 gap-x-20 items-start !border-t-0 pb-20">
     @foreach($items as $item)
@@ -50,7 +57,7 @@
           type="radio"
           value="{{ $itemValue }}"
           @if($modelName) wire:model.live="{{ $modelName }}" @endif
-          x-on:change="open = false"
+          x-on:change="close()"
           class="peer sr-only">
 
         <span class="block mb-6 text-xxs truncate">
