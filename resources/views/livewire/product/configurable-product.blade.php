@@ -67,7 +67,7 @@
     <x-layout.row>
       <x-form.select wire:model.live="surfaceId">
         @foreach($product->surfaces as $surface)
-          <option value="{{ $surface->id }}" class="[direction:ltr]">
+          <option value="{{ $surface->id }}">
             Oberfläche {{ $surface->name }}
           </option>
         @endforeach
@@ -77,7 +77,7 @@
     <x-layout.row>
       <x-form.select wire:model.live="edgeId">
         @foreach($product->edges as $edge)
-          <option value="{{ $edge->id }}" class="[direction:ltr]">
+          <option value="{{ $edge->id }}">
             Kante {{ $edge->name }}
           </option>
         @endforeach
