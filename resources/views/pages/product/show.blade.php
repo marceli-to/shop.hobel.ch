@@ -4,21 +4,38 @@
 
   <x-grid.wrapper>
 
-    <x-grid.span class="flex flex-col gap-y-20 lg:col-span-6">
+    <x-grid.span class="lg:col-span-6">
       @if ($product->images)
-        @foreach($product->images as $image)
-          <x-media.image
-            :src="$image->file_path"
-            fit="max"
-            :quality="90"
-            :formats="['avif', 'webp', 'jpg']"
-            :breakpoints="[
-              ['media' => '(min-width: 1024px)', 'width' => 1280],
-              ['media' => '(min-width: 768px)', 'width' => 1024],
-              ['width' => 768],
-            ]"
-            class="block w-full h-auto" />
-        @endforeach
+        <x-swiper.container class="lg:!hidden">
+          @foreach($product->images as $image)
+            <x-swiper.slide>
+              <x-media.image
+                :src="$image->file_path"
+                fit="max"
+                :quality="90"
+                :formats="['avif', 'webp', 'jpg']"
+                :breakpoints="[
+                  ['media' => '(min-width: 768px)', 'width' => 1024],
+                  ['width' => 768],
+                ]"
+                class="block w-full h-auto" />
+            </x-swiper.slide>
+          @endforeach
+        </x-swiper.container>
+
+        <div class="hidden lg:flex lg:flex-col lg:gap-y-20">
+          @foreach($product->images as $image)
+            <x-media.image
+              :src="$image->file_path"
+              fit="max"
+              :quality="90"
+              :formats="['avif', 'webp', 'jpg']"
+              :breakpoints="[
+                ['media' => '(min-width: 1024px)', 'width' => 1280],
+              ]"
+              class="block w-full h-auto" />
+          @endforeach
+        </div>
       @endif
     </x-grid.span>
 

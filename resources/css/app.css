@@ -112,3 +112,12 @@
     appearance: none;
   }
 }
+
+.swiper-pagination-bullet {
+  @apply !bg-white !opacity-100;
+}
+
+.swiper-pagination-bullet-active {
+  @apply !bg-black !opacity-100;
+}
+

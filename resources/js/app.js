@@ -3,6 +3,7 @@
 
 import collapse from '@alpinejs/collapse'
 import dynamicHeader from './components/dynamicHeader'
+import './components/swiper'
 
 // Register Alpine plugins and components before Alpine starts
 document.addEventListener('alpine:init', () => {
