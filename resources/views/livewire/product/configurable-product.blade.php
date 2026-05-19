@@ -64,30 +64,24 @@
       </x-layout.row>
     @endunless
 
-    <x-layout.row class="grid grid-cols-3 gap-x-20">
-      <div class="col-span-1">
-        Oberfläche
-      </div>
-      <div class="col-span-2">
-        <x-form.select wire:model.live="surfaceId">
-          @foreach($product->surfaces as $surface)
-            <option value="{{ $surface->id }}">{{ $surface->name }}</option>
-          @endforeach
-        </x-form.select>
-      </div>
+    <x-layout.row>
+      <x-form.select wire:model.live="surfaceId">
+        @foreach($product->surfaces as $surface)
+          <option value="{{ $surface->id }}" class="[direction:ltr]">
+            Oberfläche {{ $surface->name }}
+          </option>
+        @endforeach
+      </x-form.select>
     </x-layout.row>
 
-    <x-layout.row class="grid grid-cols-3 gap-x-20">
-      <div class="col-span-1">
-        Kante
-      </div>
-      <div class="col-span-2">
-        <x-form.select wire:model.live="edgeId">
-          @foreach($product->edges as $edge)
-            <option value="{{ $edge->id }}">{{ $edge->name }}</option>
-          @endforeach
-        </x-form.select>
-      </div>
+    <x-layout.row>
+      <x-form.select wire:model.live="edgeId">
+        @foreach($product->edges as $edge)
+          <option value="{{ $edge->id }}" class="[direction:ltr]">
+            Kante {{ $edge->name }}
+          </option>
+        @endforeach
+      </x-form.select>
     </x-layout.row>
 
     <x-form.selector
@@ -97,8 +91,6 @@
       :selected="$product->woodTypes->firstWhere('id', $woodTypeId)?->name"
       wire:model.live="woodTypeId" />
   </div>
-
-
 
   @if ($product->description)
     <div class="my-40">
