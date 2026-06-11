@@ -50,7 +50,7 @@
 
                 <button
                   wire:click="removeItem('{{ $cartKey }}')"
-                  class="group flex items-center justify-center cursor-pointer w-12 h-40"
+                  class="group flex items-center justify-center cursor-pointer w-12 h-30"
                   aria-label="Artikel entfernen">
                   <x-icons.cross :size="'sm'" class="group-hover:rotate-180 transition-all" />
                 </button>
