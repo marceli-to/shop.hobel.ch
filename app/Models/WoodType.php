@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -9,6 +10,8 @@ use Illuminate\Support\Str;
 
 class WoodType extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'uuid',
         'name',
