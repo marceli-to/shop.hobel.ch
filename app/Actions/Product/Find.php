@@ -14,6 +14,10 @@ class Find
    */
   public function execute(Product $product): Product
   {
-    return $product->load(['images', 'children', 'attributes']);
+    return $product->load([
+      'images',
+      'children' => fn ($query) => $query->reorder('price', 'desc'),
+      'attributes',
+    ]);
   }
 }

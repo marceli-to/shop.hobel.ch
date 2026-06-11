@@ -48,8 +48,10 @@
           @endif
 
           <div class="text-md lg:text-lg absolute bottom-16 lg:bottom-32 left-20 z-20">
-            @if($product->children->isNotEmpty())
-              ab CHF {{ number_format($product->children->min('price'), 2, '.', '\'') }}
+            @if($product->is_configurable)
+              ab CHF {{ number_format($product->minimum_price, 2, '.', '\'') }}
+            @elseif($product->children->where('published', true)->isNotEmpty())
+              ab CHF {{ number_format($product->children->where('published', true)->min('price'), 2, '.', '\'') }}
             @else
               Fr. {{ number_format($product->price, 2, '.', '\'') }}
             @endif

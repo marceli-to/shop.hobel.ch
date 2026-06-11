@@ -19,12 +19,12 @@ class VariationsProduct extends Component
     {
         $this->product = $product;
 
-        $firstChild = $product->children->first();
-        $this->selectedUuid = $firstChild->uuid;
-        $this->selectedLabel = $firstChild->label ?? '';
-        $this->selectedPrice = (float) $firstChild->price;
+        $cheapestChild = $product->children->sortBy('price')->first();
+        $this->selectedUuid = $cheapestChild->uuid;
+        $this->selectedLabel = $cheapestChild->label ?? '';
+        $this->selectedPrice = (float) $cheapestChild->price;
 
-        $this->productUuid = $firstChild->uuid;
+        $this->productUuid = $cheapestChild->uuid;
     }
 
     public function selectVariation(string $uuid): void

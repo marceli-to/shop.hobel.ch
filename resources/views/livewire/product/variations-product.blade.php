@@ -26,7 +26,7 @@
       wire:change="selectVariation($event.target.value)"
       class="w-full border border-black px-12 py-6 h-40 pr-32 bg-white appearance-none cursor-pointer focus:outline-none truncate">
       @foreach($product->children as $child)
-        <option value="{{ $child->uuid }}">
+        <option value="{{ $child->uuid }}" @selected($child->uuid === $selectedUuid)>
           {{ $child->label }}
         </option>
       @endforeach
