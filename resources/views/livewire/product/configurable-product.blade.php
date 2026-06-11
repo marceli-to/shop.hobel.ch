@@ -64,25 +64,17 @@
       </x-layout.row>
     @endunless
 
-    <x-layout.row>
-      <x-form.select wire:model.live="surfaceId">
-        @foreach($product->surfaces as $surface)
-          <option value="{{ $surface->id }}">
-            Oberfläche {{ $surface->name }}
-          </option>
-        @endforeach
-      </x-form.select>
-    </x-layout.row>
+    <x-form.list-selector
+      label="Oberfläche"
+      :items="$product->surfaces"
+      :selected="$product->surfaces->firstWhere('id', $surfaceId)?->name"
+      wire:model.live="surfaceId" />
 
-    <x-layout.row>
-      <x-form.select wire:model.live="edgeId">
-        @foreach($product->edges as $edge)
-          <option value="{{ $edge->id }}">
-            Kante {{ $edge->name }}
-          </option>
-        @endforeach
-      </x-form.select>
-    </x-layout.row>
+    <x-form.list-selector
+      label="Kante"
+      :items="$product->edges"
+      :selected="$product->edges->firstWhere('id', $edgeId)?->name"
+      wire:model.live="edgeId" />
 
     <x-form.selector
       class="border-b"
