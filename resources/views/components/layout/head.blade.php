@@ -1,10 +1,15 @@
 @props([
-  'title' => null
+  'title' => null,
+  'description' => null,
+  'ogImage' => null,
+  'ogType' => 'website',
 ])
 
 @php
 $appName = config('app.name', 'Hobel AG');
 $pageTitle = filled($title) ? "{$title} – {$appName}" : $appName;
+$metaDescription = filled($description) ? $description : config('shop.meta.description');
+$ogImageUrl = filled($ogImage) ? $ogImage : url(config('shop.meta.og_image'));
 @endphp
 
 <!doctype html>
@@ -12,12 +17,24 @@ $pageTitle = filled($title) ? "{$title} – {$appName}" : $appName;
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ $pageTitle }}</title> 
-<meta name="description" content="{{ config('app.description') }}">
-<meta property="og:title" content="{{ $pageTitle }}"> 
-<meta property="og:description" content="{{ config('app.description') }}">
+<title>{{ $pageTitle }}</title>
+<meta name="description" content="{{ $metaDescription }}">
+<meta property="og:type" content="{{ $ogType }}">
+<meta property="og:title" content="{{ $pageTitle }}">
+<meta property="og:description" content="{{ $metaDescription }}">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:site_name" content="{{ $appName }}">
+@if ($ogImageUrl)
+<meta property="og:image" content="{{ $ogImageUrl }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+@endif
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $pageTitle }}">
+<meta name="twitter:description" content="{{ $metaDescription }}">
+@if ($ogImageUrl)
+<meta name="twitter:image" content="{{ $ogImageUrl }}">
+@endif
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="theme-color" content="#ffffff">
 <meta name="csrf-token" content="{{ csrf_token() }}">

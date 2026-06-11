@@ -34,6 +34,7 @@ class Product extends Model
 		'short_description',
 		'label',
 		'description',
+		'meta_description',
 		'sku',
 		'delivery_time',
 		'price',
@@ -159,6 +160,30 @@ class Product extends Model
       'id'      => 'MIN', // Tie-breaker: if no preview, pick the oldest/first uploaded
     ]);
   }
+
+	/**
+	 * Resolved meta description for SEO. Falls back to the short description,
+	 * then to the site default.
+	 */
+	protected function seoDescription(): Attribute
+	{
+		return Attribute::get(fn () => filled($this->meta_description)
+			? $this->meta_description
+			: (filled($this->short_description)
+				? $this->short_description
+				: config('shop.meta.description')));
+	}
+
+	/**
+	 * Absolute OpenGraph image URL (preview/first product image as a 1200×630
+	 * social card), or null to fall back to the site default in the layout.
+	 */
+	protected function ogImageUrl(): Attribute
+	{
+		return Attribute::get(fn () => $this->previewImage
+			? Image::ogCardUrl($this->previewImage->file_path)
+			: null);
+	}
 
 	/**
 	 * Shipping methods available for this product.

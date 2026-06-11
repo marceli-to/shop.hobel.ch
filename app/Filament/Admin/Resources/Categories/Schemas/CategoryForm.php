@@ -3,6 +3,7 @@ namespace App\Filament\Admin\Resources\Categories\Schemas;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Group;
@@ -25,6 +26,12 @@ class CategoryForm
 									->required()
 									->live(onBlur: true)
 									->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
+
+								Textarea::make('meta_description')
+									->label('Meta-Beschreibung')
+									->rows(3)
+									->maxLength(160)
+									->helperText('Für Suchmaschinen und Social Media (max. 160 Zeichen).'),
 							]),
 
 						Section::make('Bild')

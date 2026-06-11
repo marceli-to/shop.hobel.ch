@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,6 +22,7 @@ class Category extends Model
 	protected $fillable = [
 		'uuid',
 		'name',
+		'meta_description',
 		'slug',
 		'featured',
 		'order',
@@ -80,6 +82,27 @@ class Category extends Model
 	public function image(): MorphOne
 	{
 		return $this->morphOne(Image::class, 'imageable');
+	}
+
+	/**
+	 * Resolved meta description for SEO, with fallback to the site default.
+	 */
+	protected function seoDescription(): Attribute
+	{
+		return Attribute::get(fn () => filled($this->meta_description)
+			? $this->meta_description
+			: config('shop.meta.description'));
+	}
+
+	/**
+	 * Absolute OpenGraph image URL (the category image as a 1200×630 social
+	 * card), or null to fall back to the site default in the layout.
+	 */
+	protected function ogImageUrl(): Attribute
+	{
+		return Attribute::get(fn () => $this->image
+			? Image::ogCardUrl($this->image->file_path)
+			: null);
 	}
 
 	/**

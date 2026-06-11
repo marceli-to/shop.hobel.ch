@@ -1,5 +1,7 @@
 <x-layout.app
   :title="$category->name"
+  :description="$category->seoDescription"
+  :ogImage="$category->ogImageUrl"
   :backlink="route('page.landing')">
 
   <x-grid.wrapper x-data="{

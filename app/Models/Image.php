@@ -43,6 +43,21 @@ class Image extends Model
   }
 
   /**
+   * Build an absolute, social-card-sized (1200×630) OpenGraph image URL
+   * for a stored image path, served through Glide.
+   */
+  public static function ogCardUrl(string $filePath): string
+  {
+    return url('/img/' . $filePath . '?' . http_build_query([
+      'w' => 1200,
+      'h' => 630,
+      'fit' => 'crop',
+      'fm' => 'jpg',
+      'q' => 90,
+    ]));
+  }
+
+  /**
    * Delete the file when the model is deleted.
    */
   protected static function boot()

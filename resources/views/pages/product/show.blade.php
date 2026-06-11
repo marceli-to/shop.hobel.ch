@@ -1,5 +1,8 @@
 <x-layout.app
   :title="$product->name"
+  :description="$product->seoDescription"
+  :ogImage="$product->ogImageUrl"
+  ogType="product"
   :backlink="route('page.category', ['category' => $category])">
 
   <x-grid.wrapper>

@@ -1,9 +1,12 @@
 @props([
   'title' => 'Shop',
-  'backlink' => null
+  'backlink' => null,
+  'description' => null,
+  'ogImage' => null,
+  'ogType' => 'website',
 ])
 
-<x-layout.head :title="$title" />
+<x-layout.head :title="$title" :description="$description" :ogImage="$ogImage" :ogType="$ogType" />
 @if (request()->routeIs('page.landing'))
   <x-layout.header :dynamic="true" :showMobileTitle="false" :showDesktopTitle="false" />
 @else

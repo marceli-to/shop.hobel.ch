@@ -407,6 +407,17 @@ class ProductForm
 				])
 				->collapsed()
 				->collapsible(),
+
+			Section::make('SEO')
+				->schema([
+					Textarea::make('meta_description')
+						->label('Meta-Beschreibung')
+						->rows(3)
+						->maxLength(160)
+						->helperText('Für Suchmaschinen und Social Media (max. 160 Zeichen).'),
+				])
+				->collapsed()
+				->collapsible(),
 		];
 	}
 }
