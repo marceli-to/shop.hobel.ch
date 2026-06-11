@@ -1,4 +1,4 @@
-<div data-product-configurator class="scroll-mt-[12.5rem]">
+<div data-product-configurator x-data="{ length: @js($length), width: @js($width) }" class="scroll-mt-[12.5rem]">
   @if ($product->short_description)
     <x-layout.row>
       {{ $product->short_description }}
@@ -38,7 +38,7 @@
 
   <div class="mt-40">
 
-    <x-layout.row x-data class="grid grid-cols-3 gap-x-20">
+    <x-layout.row class="grid grid-cols-3 gap-x-20">
       <div class="col-span-1">
         Länge (cm)
       </div>
@@ -46,23 +46,23 @@
         <x-form.slider
           :min="$product->min_length"
           :max="$product->max_length"
-          x-on:input="$refs.lengthValue.value = $event.target.value"
-          wire:model.live.debounce.250ms="length" />
+          x-model.number="length"
+          x-on:change="$wire.set('length', length)" />
       </div>
       <div class="col-span-1 flex gap-x-4">
         <x-form.number
-          x-ref="lengthValue"
           :min="$product->min_length"
           :max="$product->max_length"
-          wire:model.blur="length" />
-        <button class="cursor-pointer pl-8">
+          x-model.number="length"
+          x-on:change="$wire.set('length', length)" />
+        <button type="button" class="cursor-pointer pl-8" x-on:click="$el.previousElementSibling.focus()">
           <x-icons.pencil class="w-12 h-auto" />
         </button>
       </div>
     </x-layout.row>
 
     @unless ($this->isRound())
-      <x-layout.row x-data class="grid grid-cols-3 gap-x-20">
+      <x-layout.row class="grid grid-cols-3 gap-x-20">
         <div class="col-span-1">
           Breite (cm)
         </div>
@@ -70,16 +70,16 @@
           <x-form.slider
             :min="$product->min_width"
             :max="$product->max_width"
-            x-on:input="$refs.widthValue.value = $event.target.value"
-            wire:model.live.debounce.250ms="width" />
+            x-model.number="width"
+            x-on:change="$wire.set('width', width)" />
         </div>
         <div class="col-span-1 flex gap-x-4">
           <x-form.number
-            x-ref="widthValue"
             :min="$product->min_width"
             :max="$product->max_width"
-            wire:model.blur="width" />
-          <button class="cursor-pointer pl-8">
+            x-model.number="width"
+            x-on:change="$wire.set('width', width)" />
+          <button type="button" class="cursor-pointer pl-8" x-on:click="$el.previousElementSibling.focus()">
             <x-icons.pencil class="w-12 h-auto" />
           </button>
         </div>
