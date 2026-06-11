@@ -63,5 +63,7 @@
         </x-layout.row>
       </label>
     @endforeach
+    <x-layout.row class="border-b-none">&nbsp;</x-layout.row>
+
   </div>
 </div>
