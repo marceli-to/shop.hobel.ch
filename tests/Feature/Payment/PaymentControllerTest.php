@@ -139,9 +139,9 @@ class PaymentControllerTest extends TestCase
 
 	public function test_webhook_accepts_a_transaction_payload(): void
 	{
-		$this->withoutMiddleware(VerifyCsrfToken::class);
-
-		$this->postJson(route('payment.webhook'), [
+		// CSRF is auto-bypassed in the test environment, so this covers the
+		// controller logic; the exemption itself is asserted separately below.
+		$this->post(route('payment.webhook'), [
 			'transaction' => ['id' => 1, 'status' => 'confirmed'],
 		])
 			->assertOk()
@@ -150,10 +150,18 @@ class PaymentControllerTest extends TestCase
 
 	public function test_webhook_rejects_an_empty_payload(): void
 	{
-		$this->withoutMiddleware(VerifyCsrfToken::class);
-
-		$this->postJson(route('payment.webhook'), [])
+		$this->post(route('payment.webhook'), [])
 			->assertStatus(400)
 			->assertJson(['error' => 'No transaction data']);
+	}
+
+	public function test_webhook_route_is_exempt_from_csrf(): void
+	{
+		// Payrexx posts server-to-server without a CSRF token, so the route must
+		// be in VerifyCsrfToken's except list to avoid a 419 in production.
+		$except = (new \ReflectionClass(VerifyCsrfToken::class))
+			->getDefaultProperties()['except'];
+
+		$this->assertContains('payment/webhook', $except);
 	}
 }

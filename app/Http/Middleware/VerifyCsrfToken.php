@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        // Payrexx posts webhooks server-to-server, without a CSRF token.
+        'payment/webhook',
     ];
 }
