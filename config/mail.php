@@ -113,10 +113,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | This address is used for sending order notifications to the shop admin.
+    | Supports multiple comma-separated addresses, each becoming a recipient.
     |
     */
 
-    'to' => env('MAIL_TO'),
+    'to' => array_values(array_filter(array_map('trim', explode(',', (string) env('MAIL_TO'))))),
 
     /*
     |--------------------------------------------------------------------------
