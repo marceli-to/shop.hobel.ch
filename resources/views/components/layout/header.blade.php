@@ -58,7 +58,6 @@
           <x-misc.backlink />
         </div>
       @else 
-
         @if($title)
           <h1 class="text-lg leading-none">
             {{ $title }}
@@ -116,7 +115,8 @@
           font-sans
           text-xxs
           leading-none
-          lg:hidden">
+          lg:hidden"
+          {{ request()->routeIs('page.product') ? 'hidden' : '' }}>
           {{ $title }}
         </h1>
         @endif
