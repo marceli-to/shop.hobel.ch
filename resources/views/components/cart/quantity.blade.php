@@ -9,6 +9,7 @@
 	<button
 		type="button"
 		wire:click="decrement"
+		aria-label="Menge verringern"
 		class="w-[30%] flex items-center justify-center cursor-pointer h-full {{ $quantity <= 1 ? '' : '' }}"
 		{{ $quantity <= 1 ? 'disabled' : '' }}>
     <x-icons.minus />
@@ -24,6 +25,7 @@
 	<button
 		type="button"
 		wire:click="increment"
+		aria-label="Menge erhöhen"
 		class="w-[30%] flex items-center justify-center cursor-pointer h-full {{ $maxStock && $quantity >= $maxStock ? '' : '' }}"
 		{{ $maxStock && $quantity >= $maxStock ? 'disabled' : '' }}>
     <x-icons.plus />

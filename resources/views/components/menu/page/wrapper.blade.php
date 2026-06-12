@@ -32,6 +32,11 @@
           :title="$category->name" />
       @endforeach
 
+      <x-menu.page.item
+        url="https://hobel.ch/kontakt"
+        title="Kontakt"
+        target="_blank" />
+
     </ul>
 
   </nav>

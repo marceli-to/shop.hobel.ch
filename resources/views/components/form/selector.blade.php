@@ -26,7 +26,13 @@
 
   <x-layout.row
     class="grid grid-cols-3 gap-x-20 cursor-pointer select-none"
-    x-on:click="open = !open">
+    role="button"
+    tabindex="0"
+    aria-label="{{ $label }}"
+    x-bind:aria-expanded="open"
+    x-on:click="open = !open"
+    x-on:keydown.enter="open = !open"
+    x-on:keydown.space.prevent="open = !open">
 
     <div class="col-span-1">
       {{ $label }}

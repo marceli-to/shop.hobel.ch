@@ -55,7 +55,7 @@
           :max="$product->max_length"
           x-model.number="length"
           x-on:change="$wire.set('length', length)" />
-        <button type="button" class="cursor-pointer pl-8" x-on:click="$el.previousElementSibling.focus()">
+        <button type="button" aria-label="Länge bearbeiten" class="cursor-pointer pl-8" x-on:click="$el.previousElementSibling.focus()">
           <x-icons.pencil class="w-12 h-auto" />
         </button>
       </div>
@@ -79,7 +79,7 @@
             :max="$product->max_width"
             x-model.number="width"
             x-on:change="$wire.set('width', width)" />
-          <button type="button" class="cursor-pointer pl-8" x-on:click="$el.previousElementSibling.focus()">
+          <button type="button" aria-label="Breite bearbeiten" class="cursor-pointer pl-8" x-on:click="$el.previousElementSibling.focus()">
             <x-icons.pencil class="w-12 h-auto" />
           </button>
         </div>

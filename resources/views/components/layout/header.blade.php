@@ -90,6 +90,7 @@
 
         <a
           href="/"
+          aria-label="Startseite"
           @if($dynamic)
           data-dynamic-logo
           @endif
