@@ -18,4 +18,5 @@ yarn-error.log
 /.vscode
 INSTALL.txt
 /public/robots.txt
+/public/.htaccess
 Todo.md
