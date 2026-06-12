@@ -5,16 +5,16 @@ use App\Actions\Cart\Update as UpdateCart;
 
 class InvoiceAddress extends Component
 {
-  public string $salutation = 'Herr';
-  public string $firstname = 'Marcel';
-  public string $lastname = 'Stadelmann';
-  public string $street = 'Letzigraben';
-  public string $street_number = '149';
-  public string $zip = '8047';
-  public string $city = 'Zürich';
+  public string $salutation = '';
+  public string $firstname = '';
+  public string $lastname = '';
+  public string $street = '';
+  public string $street_number = '';
+  public string $zip = '';
+  public string $city = '';
   public string $country = 'Schweiz';
-  public string $email = 'marcel.stadelmann@gmail.com';
-  public string $phone = '+41 78 749 74 09';
+  public string $email = '';
+  public string $phone = '';
 
   protected $rules = [
     'firstname' => 'required|string|max:255',
